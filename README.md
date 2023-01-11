@@ -1,4 +1,7 @@
-# CopperVIm
+![Neovim](https://img.shields.io/badge/NeoVim-%2357A143.svg?&style=for-the-badge&logo=neovim&logoColor=white)
+![Lua](https://img.shields.io/badge/lua-%232C2D72.svg?style=for-the-badge&logo=lua&logoColor=white)
+
+# CopperVim
 
 These are my config files for Neovim. Based on the suggestions from the Primeagen
 
@@ -22,4 +25,3 @@ Open Neovim and execute ```:PackerSync```, also execute ```:checkhealth``` to te
 missing packages.
 
 Chocolatey might be helpful to install MingW.
-

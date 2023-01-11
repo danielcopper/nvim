@@ -34,6 +34,6 @@ vim.opt.isfname:append("@-@")
 -- should improve response time
 vim.opt.updatetime = 50
 
-vim.opt.colorcolumn = "80"
+vim.opt.colorcolumn = "123"
 
 vim.g.mapleader = " "

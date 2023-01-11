@@ -61,4 +61,23 @@ return require('packer').startup(function(use)
 	  }
   }
 
+  -- file explorer
+  use {
+      'nvim-tree/nvim-tree.lua',
+      requires = {
+          'nvim-tree/nvim-web-devicons', -- optional, for file icons
+      },
+      -- tag = 'nightly' -- optional, updated every week. (see issue #1193)
+  }
+
+  -- tabs for open document
+  use('nvim-tree/nvim-web-devicons')
+  use {'romgrk/barbar.nvim', wants = 'nvim-web-devicons'}
+
+  -- better bottom status line
+  use {
+      'nvim-lualine/lualine.nvim',
+      requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+  }
+
 end)
