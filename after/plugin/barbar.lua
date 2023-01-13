@@ -1,5 +1,7 @@
 local map = vim.api.nvim_set_keymap
 local opts = { noremap = true, silent = true }
+local nvim_tree_events = require('nvim-tree.events')
+local bufferline_api = require('bufferline.api')
 
 -- Set barbar's options
 require'bufferline'.setup {
@@ -26,13 +28,13 @@ require'bufferline'.setup {
     {enabled = true, icon = 'ﬀ'}, -- ERROR
     {enabled = false}, -- WARN
     {enabled = false}, -- INFO
-    {enabled = true},  -- HINT
+    {enabled = false},  -- HINT
 
     -- OR `vim.diagnostic.severity`
     [vim.diagnostic.severity.ERROR] = {enabled = true, icon = 'ﬀ'},
     [vim.diagnostic.severity.WARN] = {enabled = false},
     [vim.diagnostic.severity.INFO] = {enabled = false},
-    [vim.diagnostic.severity.HINT] = {enabled = true},
+    [vim.diagnostic.severity.HINT] = {enabled = false},
   },
 
   -- Excludes buffers from the tabline
@@ -60,8 +62,8 @@ require'bufferline'.setup {
   icon_custom_colors = false,
 
   -- Configure icons on the bufferline.
-  icon_separator_active = '▎',
-  icon_separator_inactive = '▎',
+  icon_separator_active = '|',
+  icon_separator_inactive = '|',
   icon_close_tab = '',
   icon_close_tab_modified = '●',
   icon_pinned = '車',
@@ -69,7 +71,7 @@ require'bufferline'.setup {
   -- If true, new buffers will be inserted at the start/end of the list.
   -- Default is to insert after current buffer.
   insert_at_end = false,
-  insert_at_start = false,
+  insert_at_start = true,
 
   -- Sets the maximum padding width with which to surround each tab
   maximum_padding = 1,
@@ -96,9 +98,7 @@ require'bufferline'.setup {
   no_name_title = nil,
 }
 
-local nvim_tree_events = require('nvim-tree.events')
-local bufferline_api = require('bufferline.api')
-
+-- This is needed so that the tabs do start at the right from nvim tree and not on top
 local function get_tree_size()
     return require'nvim-tree.view'.View.width
 end

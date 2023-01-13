@@ -4,6 +4,7 @@ vim.g.mapleader = " "
 
 -- This one is to open netrw faster
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+vim.keymap.set("n", "<leader>e", ":NvimTreeFocus<CR>")
 
 vim.keymap.set("n", "<leader>pv", ":Ex<CR>")
 vim.keymap.set("n", "<leader>u", ":UndotreeShow<CR>")

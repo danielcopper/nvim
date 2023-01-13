@@ -19,9 +19,12 @@ For convenience it could be helpful to have a separate environment variable for 
 
 Clone this repo and move the contents to folder that was specified for vim in the Path variable.
 
-It should be something like this C:/Users/<username>/AppData/Local/neovim
+Normally this should look like this: C:/Users/<username>/AppData/Local/neovim
 
-Open Neovim and execute ```:PackerSync```, also execute ```:checkhealth``` to test for any
+Open Neovim, open lua/copper/packer.lua and execute ```:PackerSync```, also execute ```:checkhealth``` to test for any
 missing packages.
 
-Chocolatey might be helpful to install MingW.
+Maybe you need to :so first.
+
+Chocolatey might be helpful to install MingW and other missing tools that throw errors in :checkhealth.
+
