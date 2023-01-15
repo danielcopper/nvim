@@ -27,12 +27,12 @@ return require('packer').startup(function(use)
     use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
 
     -- Doesn't seem to work at the moment -> do some research
-    use('nvim-treesitter/playground')
+    -- use('nvim-treesitter/playground')
 
     -- Quick Navigation for recently used files
     -- Allows to add files to a quick switch list
     -- Check harpoon.lua
-    use('theprimeagen/harpoon')
+    -- use('theprimeagen/harpoon')
 
     -- visualize undo history of vim
     -- as always check the undotree.lua file
@@ -91,28 +91,6 @@ return require('packer').startup(function(use)
     -- Tab Out
     use {
         'abecodes/tabout.nvim',
-        config = function()
-            require('tabout').setup {
-                tabkey = '<Tab>', -- key to trigger tabout, set to an empty string to disable
-                backwards_tabkey = '<S-Tab>', -- key to trigger backwards tabout, set to an empty string to disable
-                act_as_tab = true, -- shift content if tab out is not possible
-                act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
-                default_tab = '<C-t>', -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
-                default_shift_tab = '<C-d>', -- reverse shift default action,
-                enable_backwards = true, -- well ...
-                completion = true, -- if the tabkey is used in a completion pum
-                tabouts = {
-                    {open = "'", close = "'"},
-                    {open = '"', close = '"'},
-                    {open = '`', close = '`'},
-                    {open = '(', close = ')'},
-                    {open = '[', close = ']'},
-                    {open = '{', close = '}'}
-                },
-                ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
-                exclude = {} -- tabout will ignore these filetypes
-            }
-        end,
         wants = {'nvim-treesitter'}, -- or require if not used so far
         after = {'nvim-cmp'} -- if a completion plugin is using tabs load it before
     }
@@ -123,8 +101,8 @@ return require('packer').startup(function(use)
     -- Debugging
     use 'mfussenegger/nvim-dap'
     -- Generate the documentation for nvim-dap using :helptags ALL
-
     use { "rcarriga/nvim-dap-ui", wants = {"mfussenegger/nvim-dap"} }
+
     -- maybe activate later
     --use 'nvim-telescope/telescope-dap.nvim'
 

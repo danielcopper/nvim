@@ -3,7 +3,7 @@
 
 # CopperVim
 
-These are my config files for Neovim. Based on the suggestions from the Primeagen
+These are my config files for Neovim. Big thanks to the Primageon for the initial setup guide.
 
 ## Install
 
@@ -27,4 +27,20 @@ missing packages.
 Maybe you need to :so first.
 
 Chocolatey might be helpful to install MingW and other missing tools that throw errors in :checkhealth.
+
+### Needed Packages from Chocolatey
+
+For needed compilers execute: ```choco install mingw```
+
+If running into problems with uv_dlopen remove everything treesitter related from config. Run PackerSync, make sure there
+are no other Path environment variables for c other than mingw.
+
+Reenable treesitter and the plugins requiring it. Run PackerSync again.
+
+## TODO
+
+- Add GUI Dashboard
+- Fully enable and configure debugging (csharp)
+- Automate installation process
+- Move from packer to lazy
 

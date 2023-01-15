@@ -37,3 +37,6 @@ vim.opt.updatetime = 50
 vim.opt.colorcolumn = "123"
 
 vim.g.mapleader = " "
+
+-- no ~ on gui
+vim.opt.fillchars = { eob = " " }

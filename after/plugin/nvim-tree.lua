@@ -8,7 +8,17 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 
 -- empty setup using defaults
-require("nvim-tree").setup()
+require("nvim-tree").setup({
+    git = {
+        ignore = false,
+      },
+    view = {
+        width = 35,
+    },
+    renderer = {
+        full_name = true,
+    }
+  })
 
 -- OR setup with some options
 -- require("nvim-tree").setup({
