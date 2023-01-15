@@ -9,7 +9,7 @@ require("indent_blankline").setup {
         "TelescopePrompt",
         "TelescopeResults",
         "mason",
-        "",
+        "NvimTree",
     },
     buftype_exclude = { "terminal" },
     show_trailing_blankline_indent = false,
