@@ -1,5 +1,7 @@
 vim.keymap.set("n", "<leader>t", ":FloatermToggle<CR>")
 vim.keymap.set("n", "<leader>nt", ":FloatermNew<CR>")
+vim.keymap.set("n", "<F8>", ":FloatermPrev<CR>")
+vim.keymap.set("n", "<F9>", ":FloatermNext<CR>")
 
 vim.g.floaterm_shell = "pwsh"
 
