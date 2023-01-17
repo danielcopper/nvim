@@ -42,5 +42,5 @@ Reenable treesitter and the plugins requiring it. Run PackerSync again.
 - Add GUI Dashboard
 - Fully enable and configure debugging (csharp)
 - Automate installation process
-- Move from packer to lazy
+- improve git workflow (lazygit?)
 
