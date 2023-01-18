@@ -1,8 +1,10 @@
 return {
     'nvim-lualine/lualine.nvim',
-    config = function()
+    init = function()
         require('lualine').setup ({
-            theme = 'auto'
+            -- TODO - fix this, it is not working
+            -- disabled_filetypes = { "NvimTree" },
+            -- globalstatus = true
         })
     end
 }
