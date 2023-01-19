@@ -22,7 +22,7 @@ return {
             renderer = {
                 full_name = true,
                 root_folder_label = ':t'
-            }
+            },
         })
     end
 }

@@ -37,10 +37,22 @@ are no other Path environment variables for c other than mingw.
 
 Reenable treesitter and the plugins requiring it. Run PackerSync again.
 
+### Troubleshooting
+
+On windows with some language parser errors in treesitter can occur, for example html and yaml.
+Check [this](https://github.com/nvim-treesitter/nvim-treesitter/issues/3587#issuecomment-1306608973) for a solution.
+
+What you have to do is to delete the libstdc++-6.dll that you can find in the install location from neovim.
+After that remove the nvim-data folder, restart the pc and let nvim initialize again.
+
 ## TODO
 
 - Add GUI Dashboard
 - Fully enable and configure debugging (csharp)
 - Automate installation process
 - improve git workflow (lazygit?)
+
+## Plugins to consider
+
+- [dap configs](https://github.com/ldelossa/nvim-dap-projects)
 
