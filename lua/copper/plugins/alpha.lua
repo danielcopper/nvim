@@ -1,6 +1,6 @@
 return {
     'goolord/alpha-nvim',
-    init = function()
+    config = function()
         local alpha = require("alpha")
         local dashboard = require("alpha.themes.dashboard")
 
@@ -25,20 +25,15 @@ return {
             dashboard.button( "q", "  > Quit NVIM", ":qa<CR>"),
         }
 
-        local handle = io.popen('fortune')
-        local fortune = handle:read("*a")
-        handle:close()
-        dashboard.section.footer.val = fortune
+        -- TODO: verify that any of the following is necessary
         dashboard.config.opts.noautocmd = true
         vim.cmd[[autocmd User AlphaReady echo 'ready']]
         alpha.setup(dashboard.config)
+        alpha.setup(dashboard.opts)
 
-        --
-        -- alpha.setup(dashboard.opts)
-        --
-        -- -- Disable folding on alpha buffer
-        -- vim.cmd([[
-        -- autocmd FileType alpha setlocal nofoldenable
-        -- ]])
+        -- Disable folding on alpha buffer
+        vim.cmd([[
+        autocmd FileType alpha setlocal nofoldenable
+        ]])
     end
 }

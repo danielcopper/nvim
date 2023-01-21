@@ -1,6 +1,7 @@
 return {
     'nvim-treesitter/nvim-treesitter',
     config = function()
+        -- TODO: hopefully this will be obsolete at some point
         require 'nvim-treesitter.install'.prefer_git = false
         require 'nvim-treesitter.install'.compilers = { 'gcc' }
         require'nvim-treesitter.configs'.setup {

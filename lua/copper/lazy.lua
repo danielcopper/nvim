@@ -18,4 +18,5 @@ require("lazy").setup("copper.plugins")
 
 -- make sure custom remaps and options are loaded
 require("copper.remap")
-require("copper.set")
+require("copper.options")
+require("copper.autocmds")

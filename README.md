@@ -51,6 +51,8 @@ After that remove the nvim-data folder, restart the pc and let nvim initialize a
 - Fully enable and configure debugging (csharp)
 - Automate installation process
 - improve git workflow (lazygit?)
+- Switch to bufferline as soon as it supports closing a singe buffer without picking
+    - as well as fixing its bugs
 
 ## Plugins to consider
 

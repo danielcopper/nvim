@@ -40,3 +40,8 @@ vim.g.mapleader = " "
 
 -- no ~ on gui
 vim.opt.fillchars = { eob = " " }
+
+vim.opt.showmode = false -- dont show mode since we have a statusline
+
+-- TODO: Check if this is doing something
+vim.notify = require("notify")

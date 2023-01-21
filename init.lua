@@ -1,1 +1,1 @@
-require("copper")
+require("copper.lazy")

@@ -1,5 +1,4 @@
 -- custom remaps
-
 -- This one is to open netrw faster
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 vim.keymap.set("n", "<leader>e", ":NvimTreeFocus<CR>")
@@ -86,7 +85,7 @@ vim.keymap.set('n', '<A-8>', '<Cmd>BufferGoto 8<CR>')
 vim.keymap.set('n', '<A-9>', '<Cmd>BufferGoto 9<CR>')
 vim.keymap.set('n', '<A-0>', '<Cmd>BufferLast<CR>')
 -- Pin/unpin buffer
-vim.keymap.set('n', '<A-p>', '<Cmd>BufferPin<CR>')
+vim.keymap.set('n', '<C-p>', '<Cmd>BufferPin<CR>')
 -- Close buffer
 vim.keymap.set('n', '<A-c>', '<Cmd>BufferClose<CR>')
 -- Wipeout buffer
@@ -98,9 +97,18 @@ vim.keymap.set('n', '<A-c>', '<Cmd>BufferClose<CR>')
 --                 :BufferCloseBuffersLeft
 --                 :BufferCloseBuffersRight
 -- Magic buffer-picking mode
-vim.keymap.set('n', '<C-p>', '<Cmd>BufferPick<CR>')
+vim.keymap.set('n', '<A-p>', '<Cmd>BufferPick<CR>')
 -- Sort automatically by...
 vim.keymap.set('n', '<Space>bb', '<Cmd>BufferOrderByBufferNumber<CR>')
 vim.keymap.set('n', '<Space>bd', '<Cmd>BufferOrderByDirectory<CR>')
 vim.keymap.set('n', '<Space>bl', '<Cmd>BufferOrderByLanguage<CR>')
 vim.keymap.set('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>')
+
+-- bufferline mappings
+-- vim.keymap.set('n', '<A-,>', '<Cmd>BufferLineCyclePrev<CR>')
+-- vim.keymap.set('n', '<A-.>', '<Cmd>BufferLineCycleNext<CR>')
+-- vim.keymap.set('n', '<A-<>', '<Cmd>BufferLineMovePrev<CR>')
+-- vim.keymap.set('n', '<A->>', '<Cmd>BufferLineMoveNext<CR>')
+-- vim.keymap.set('n', '<A-p>', '<Cmd>BufferLinePick<CR>')
+-- vim.keymap.set('n', '<A-c>', '<Cmd>BufferLinePickClose<CR>')
+-- vim.keymap.set('n', '<A-t>', '<Cmd>BufferLineTogglePin<CR>')
