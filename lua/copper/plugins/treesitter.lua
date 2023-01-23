@@ -1,10 +1,11 @@
 return {
     'nvim-treesitter/nvim-treesitter',
+    build = ":TSUpdate",
     config = function()
         -- TODO: hopefully this will be obsolete at some point
         require 'nvim-treesitter.install'.prefer_git = false
         require 'nvim-treesitter.install'.compilers = { 'gcc' }
-        require'nvim-treesitter.configs'.setup {
+        require 'nvim-treesitter.configs'.setup {
             -- A list of parser names, or "all"
             ensure_installed = { "c", "cpp", "vim", "help", "typescript", "c_sharp", "lua", "cmake", "html" },
 
@@ -45,6 +46,21 @@ return {
                 -- Instead of true it can also be a list of languages
                 additional_vim_regex_highlighting = false,
             },
+
+            -- TODO: This needs improvements:
+            -- - command to unfold all
+            -- - fold with motion
+            -- This autocommand helps to enable codefolding
+            -- zc folds the block under curser, zo unfolds, zm folds the complete file
+            -- unsure about the difference from zc to za
+            vim.api.nvim_create_autocmd({ 'BufEnter', 'BufAdd', 'BufNew', 'BufNewFile', 'BufWinEnter' }, {
+                group = vim.api.nvim_create_augroup('TS_FOLD_WORKAROUND', {}),
+                callback = function()
+                    vim.opt.foldmethod = 'expr'
+                    vim.opt.foldexpr   = 'nvim_treesitter#foldexpr()'
+                    vim.opt.foldenable = false -- disable folding when opening a buffer
+                end
+            })
         }
     end
 }

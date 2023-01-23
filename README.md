@@ -19,14 +19,12 @@ For convenience it could be helpful to have a separate environment variable for 
 
 Clone this repo and move the contents to folder that was specified for vim in the Path variable.
 
-Normally this should look like this: C:/Users/<username>/AppData/Local/neovim
+Normally this should look like this: C:/Users/<username>/AppData/Local/nvim
 
-Open Neovim, open lua/copper/packer.lua and execute ```:PackerSync```, also execute ```:checkhealth``` to test for any
-missing packages.
-
-Maybe you need to :so first.
+### Windows
 
 Chocolatey might be helpful to install MingW and other missing tools that throw errors in :checkhealth.
+Follow the steps in [Troubleshooting](#troubleshooting) to delete the unneeded libstdc++-6.dll.
 
 ### Needed Packages from Chocolatey
 
@@ -47,14 +45,16 @@ After that remove the nvim-data folder, restart the pc and let nvim initialize a
 
 ## TODO
 
-- Add GUI Dashboard
 - Fully enable and configure debugging (csharp)
 - Automate installation process
 - improve git workflow (lazygit?)
 - Switch to bufferline as soon as it supports closing a singe buffer without picking
     - as well as fixing its bugs
+- Checkout inline status ones its releases from nightly (curr avaivalable on 0.9)
 
 ## Plugins to consider
 
 - [dap configs](https://github.com/ldelossa/nvim-dap-projects)
+- [ALE]()
+- [folding]
 
