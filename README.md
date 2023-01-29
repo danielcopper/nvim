@@ -26,6 +26,8 @@ Chocolatey might be helpful to install MingW and other missing tools that throw 
 
 For needed compilers execute: ```choco install mingw```
 
+For Lazygits inclusion into toggleterm to work run: ```choco install lazygit```
+
 ### Troubleshooting
 
 On windows with some language parser errors in treesitter can occur, for example html and yaml.
@@ -49,6 +51,7 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 - Maybe Switch to bufferline as soon as it supports closing a singe buffer without picking
     - as well as fixing its bugs
 - Checkout inline status ones its releases from nightly (curr avaivalable on 0.9)
+- Organize Plugins into grouped files
 
 ## Plugins to consider
 
@@ -56,4 +59,6 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 - [ALE](https://github.com/dense-analysis/ale)
 - [Barbecue]()
 - [Markdown Preview]()
+- [Neodev](https://github.com/folke/neodev.nvim)
+
 

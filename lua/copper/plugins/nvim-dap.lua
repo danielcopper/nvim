@@ -16,6 +16,7 @@ return {
             dap.adapters.coreclr = {
                 type = 'executable',
                 -- TODO: Figure out why accessing the home directory with ~/ doesnt work
+                -- command = '~/AppData/Local/nvim-data/mason/packages/netcoredbg/netcoredbg/netcoredbg.exe'
                 command = 'C:/Users/danie/AppData/Local/nvim-data/mason/packages/netcoredbg/netcoredbg/netcoredbg.exe',
                 args = { '--interpreter=vscode' }
             }
@@ -29,6 +30,7 @@ return {
                 end
                 local path = vim.fn.input('Path to your *proj file: ', default_path, 'file')
                 vim.g['dotnet_last_proj_path'] = path
+                -- TODO: Test the rebuild functionality
                 local cmd = 'dotnet build -c Debug ' .. path .. ' > /dev/null'
                 print('')
                 print('Cmd to execute: ' .. cmd)
