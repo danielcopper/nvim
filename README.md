@@ -7,7 +7,9 @@ These are my config files for Neovim. Big thanks to the Primageon for the initia
 
 ## Install
 
-Install Neovim.
+Clone this repo and move the contents to ```OS:/Users/<your-user-name/AppData/Local/nvim```
+
+### Windows
 
 For Windows open pwsh and execute:
 ```pwsh
@@ -15,25 +17,14 @@ winget install Neovim.Neovim
 ```
 
 This should also add neovim to the Path environment, but make sure it is added.
-For convenience it could be helpful to have a separate environment variable for Neovim.
-
-Clone this repo and move the contents to folder that was specified for vim in the Path variable.
-
-Normally this should look like this: C:/Users/<username>/AppData/Local/nvim
-
-### Windows
+For convenience it could be helpful to have a separate environment variable for Neovim that points to the nvim folder
+to where the Repo was cloned.
 
 Chocolatey might be helpful to install MingW and other missing tools that throw errors in :checkhealth.
-Follow the steps in [Troubleshooting](#troubleshooting) to delete the unneeded libstdc++-6.dll.
 
 ### Needed Packages from Chocolatey
 
 For needed compilers execute: ```choco install mingw```
-
-If running into problems with uv_dlopen remove everything treesitter related from config. Run PackerSync, make sure there
-are no other Path environment variables for c other than mingw.
-
-Reenable treesitter and the plugins requiring it. Run PackerSync again.
 
 ### Troubleshooting
 
@@ -43,18 +34,26 @@ Check [this](https://github.com/nvim-treesitter/nvim-treesitter/issues/3587#issu
 What you have to do is to delete the libstdc++-6.dll that you can find in the install location from neovim.
 After that remove the nvim-data folder, restart the pc and let nvim initialize again.
 
+## Debugging
+
+### dotNET
+
+Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!!!
+
 ## TODO
 
-- Fully enable and configure debugging (csharp)
+- Fix all TODO tags
+- configure DAP icons
 - Automate installation process
 - improve git workflow (lazygit?)
-- Switch to bufferline as soon as it supports closing a singe buffer without picking
+- Maybe Switch to bufferline as soon as it supports closing a singe buffer without picking
     - as well as fixing its bugs
 - Checkout inline status ones its releases from nightly (curr avaivalable on 0.9)
 
 ## Plugins to consider
 
 - [dap configs](https://github.com/ldelossa/nvim-dap-projects)
-- [ALE]()
-- [folding]
+- [ALE](https://github.com/dense-analysis/ale)
+- [Barbecue]()
+- [Markdown Preview]()
 

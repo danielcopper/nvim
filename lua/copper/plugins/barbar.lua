@@ -39,7 +39,6 @@ return {
         vim.keymap.set('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>')
     end,
     config = function()
-
         local map = vim.api.nvim_set_keymap
         local opts = { noremap = true, silent = true }
         local nvim_tree_events = require('nvim-tree.events')

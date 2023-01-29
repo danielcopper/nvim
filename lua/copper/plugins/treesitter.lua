@@ -48,7 +48,7 @@ return {
             },
 
             -- TODO: This needs improvements:
-            -- - command to unfold all
+            -- - command to unfold all -> official command not working
             -- - fold with motion
             -- This autocommand helps to enable codefolding
             -- zc folds the block under curser, zo unfolds, zm folds the complete file

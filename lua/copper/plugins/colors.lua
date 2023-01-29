@@ -41,9 +41,9 @@ return {
             },
 
             -- Change specific vim highlight groups
-            highlight_groups = {
-                ColorColumn = { bg = 'highlight_low' }
-            }
+            -- highlight_groups = {
+            --     ColorColumn = { bg = 'highlight_low' }
+            -- }
         })
         vim.cmd('colorscheme rose-pine')
     end

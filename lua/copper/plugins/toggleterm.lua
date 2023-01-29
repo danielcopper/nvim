@@ -15,7 +15,6 @@ return {
         vim.keymap.set("n", "<leader>t2", ":2ToggleTerm<CR>")
         vim.keymap.set("n", "<leader>t2", ":2ToggleTerm<CR>")
         vim.keymap.set("n", "<leader>ta", ":ToggleTermToggleAll<CR>")
-
     end,
     config = function()
         local powershell_options = {
