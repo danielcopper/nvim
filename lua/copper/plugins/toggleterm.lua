@@ -9,7 +9,7 @@ return {
             shellquote = "",
             shellxquote = "",
         }
-        -- this maps the Esc key so that the terminal actually looses focus and the toggle works inside the terminal
+        -- this maps the leader Esc key so that the terminal actually looses focus and the toggle works inside the terminal
         vim.keymap.set('t', '<leader><esc>', [[<C-\><C-n>]])
 
         -- window movement wenn in terminal
@@ -50,16 +50,14 @@ return {
                 height = 40
             },
             -- function to run on opening the terminal
-            -- on_open = function(term)
-            --     vim.api.nvim_buf_set_keymap(term.bufnr, 'n', '<S-CR>', '<A-CR>',
-            --         { noremap = true, silent = true })
-            -- end
+            on_open = function(term)
+                -- vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>',
+                --     { noremap = true, silent = true })
+            end
         })
 
         function Lazygit_toggle()
             lazygit:toggle()
         end
-
-        vim.cmd [[ command Git lua Lazygit_toggle()<CR> ]]
     end
 }
