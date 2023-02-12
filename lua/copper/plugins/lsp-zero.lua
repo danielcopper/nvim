@@ -25,7 +25,7 @@ return {
 
         lsp.ensure_installed({
             'tsserver',
-            'lua_ls',
+            'lua-language-server',
             'omnisharp',
         })
 
