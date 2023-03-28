@@ -45,7 +45,7 @@ return {
         local bufferline_api = require('bufferline.api')
 
         -- Set barbar's options
-        require'bufferline'.setup {
+        require 'bufferline'.setup {
             -- Enable/disable animations
             animation = true,
 
@@ -66,16 +66,15 @@ return {
             -- Enables / disables diagnostic symbols
             diagnostics = {
                 -- you can use a list
-                {enabled = true, icon = 'ﬀ'}, -- ERROR
-                {enabled = false}, -- WARN
-                {enabled = false}, -- INFO
-                {enabled = false},  -- HINT
-
+                { enabled = true, icon = 'ﬀ' }, -- ERROR
+                { enabled = false },            -- WARN
+                { enabled = false },            -- INFO
+                { enabled = false },            -- HINT
                 -- OR `vim.diagnostic.severity`
-                [vim.diagnostic.severity.ERROR] = {enabled = true, icon = 'ﬀ'},
-                [vim.diagnostic.severity.WARN] = {enabled = false},
-                [vim.diagnostic.severity.INFO] = {enabled = false},
-                [vim.diagnostic.severity.HINT] = {enabled = false},
+                [vim.diagnostic.severity.ERROR] = { enabled = true, icon = 'ﬀ' },
+                [vim.diagnostic.severity.WARN] = { enabled = false },
+                [vim.diagnostic.severity.INFO] = { enabled = false },
+                [vim.diagnostic.severity.HINT] = { enabled = false },
             },
 
             -- Excludes buffers from the tabline
@@ -141,7 +140,7 @@ return {
 
         -- This is needed so that the tabs do start at the right from nvim tree and not on top
         local function get_tree_size()
-            return require'nvim-tree.view'.View.width
+            return require 'nvim-tree.view'.View.width
         end
 
         nvim_tree_events.subscribe('TreeOpen', function()

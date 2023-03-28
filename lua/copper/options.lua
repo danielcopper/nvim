@@ -39,7 +39,7 @@ vim.opt.colorcolumn = "123"
 vim.g.mapleader = " "
 
 -- no ~ on gui
-vim.opt.fillchars = { eob = " " }
+-- vim.opt.fillchars = { eob = " " }
 
 vim.opt.showmode = false -- dont show mode since we have a statusline
 
