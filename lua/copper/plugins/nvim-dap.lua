@@ -17,7 +17,7 @@ return {
                 type = 'executable',
                 -- TODO: Figure out why accessing the home directory with ~/ doesnt work
                 -- command = '~/AppData/Local/nvim-data/mason/packages/netcoredbg/netcoredbg/netcoredbg.exe'
-                command = 'C:/Users/danie/AppData/Local/nvim-data/mason/packages/netcoredbg/netcoredbg/netcoredbg.exe',
+                command = 'C:/Users/KueppermannD/AppData/Local/nvim-data/mason/packages/netcoredbg/netcoredbg/netcoredbg.exe',
                 args = { '--interpreter=vscode' }
             }
 

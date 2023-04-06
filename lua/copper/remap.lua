@@ -112,3 +112,20 @@ vim.keymap.set('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>')
 -- vim.keymap.set('n', '<A-p>', '<Cmd>BufferLinePick<CR>')
 -- vim.keymap.set('n', '<A-c>', '<Cmd>BufferLinePickClose<CR>')
 -- vim.keymap.set('n', '<A-t>', '<Cmd>BufferLineTogglePin<CR>')
+
+
+-- Telescope Maps
+-- search project files
+vim.keymap.set('n', '<leader>pf', '<Cmd>Telescope find_files<CR>', {})
+
+-- ctrl p should search git files (not working right now -> do some research)
+vim.keymap.set('n', 'C-p', '<Cmd>Telescope git_files<CR>', {})
+
+-- This searches files that contain a string -> research grep on windows
+-- FIXED -> install grep with choco
+-- vim.keymap.set('n', '<leader>ps', '<Cmd>Telescope grep_string({ search = vim.fn.input("Grep > ") })<CR>')
+
+vim.keymap.set('n', 'gr', '<Cmd>Telescope lsp_references<CR>', {})
+vim.keymap.set('n', 'gd', '<Cmd>Telescope lsp_definitions<CR>', {})
+vim.keymap.set('n', 'gi', '<Cmd>Telescope lsp_implementations<CR>', {})
+vim.keymap.set('n', 'gtd', '<Cmd>Telescope lsp_type_definitions<CR>', {})
