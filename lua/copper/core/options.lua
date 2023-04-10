@@ -1,5 +1,6 @@
 vim.g.python3_host_prog = '~/AppData/Local/Programs/Python/Python311/python.exe'
 
+vim.g.mapleader = ' '
 
 -- line numbers
 vim.opt.nu = true
@@ -32,17 +33,11 @@ vim.opt.termguicolors = true
 
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = 'yes'
--- no idea what this is doing
--- vim.opt.isfname:append("@-@")
 
 -- should improve response time
 vim.opt.updatetime = 50
 
 -- vim.opt.colorcolumn = "123"
 
-vim.g.mapleader = ' '
-
 -- no ~ on gui
 -- vim.opt.fillchars = { eob = " " }
-
--- vim.opt.showmode = false -- dont show mode since we have a statusline
