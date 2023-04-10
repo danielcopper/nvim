@@ -1,28 +1,26 @@
 return {
     'nvim-tree/nvim-tree.lua',
-    init = function()
-        -- disable netrw at the very start of your init.lua (strongly advised)
-        vim.g.loaded_netrw = 1
-        vim.g.loaded_netrwPlugin = 1
-
-        -- set termguicolors to enable highlight groups
-        vim.opt.termguicolors = true
-
-        vim.keymap.set("n", "<leader>e", ":NvimTreeFocus<CR>")
-        vim.keymap.set("n", "<leader>er", ":NvimTreeRefresh<CR>")
-    end,
-    config = function()
-        require("nvim-tree").setup({
-            git = {
-                ignore = false,
-            },
-            view = {
-                width = 35,
-            },
-            renderer = {
-                full_name = true,
-                root_folder_label = ':t'
-            }
-        })
-    end
+    opts = {
+        git = {
+            enable = true,
+            ignore = true,
+            show_on_dirs = true,
+            show_on_open_dirs = true,
+            timeout = 5000,
+        },
+        view = {
+            width = 36,
+        },
+        renderer = {
+            full_name = true,
+            highlight_opened_files = 'all',
+            highlight_modified = 'all',
+            root_folder_label = ':~:s?$?/..?',
+            indent_width = 2,
+        },
+    },
+    keys = {
+        vim.keymap.set('n', '<leader>e', '<Cmd>NvimTreeFocus<CR>'),
+        vim.keymap.set('n', '<leader>er', '<Cmd>NvimTreeRefresh<CR>'),
+    }
 }

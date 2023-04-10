@@ -3,7 +3,7 @@
 
 # CopperVim
 
-These are my config files for Neovim. Big thanks to the Primageon for the initial setup guide.
+These are my config files for Neovim.
 
 ## Install
 
@@ -22,11 +22,50 @@ to where the Repo was cloned.
 
 Chocolatey might be helpful to install MingW and other missing tools that throw errors in :checkhealth.
 
-### Needed Packages from Chocolatey
+### Dependencies and Helpful Tools
 
-For needed compilers execute: ```choco install mingw```
+#### MinGW
 
-For Lazygits inclusion into toggleterm to work run: ```choco install lazygit```
+MinGW is a compiler collection that includes the needed c compiler for windows. There are other options, but I had the most
+success with this one.
+
+To install MinGW you need chocolatey currently, execute: ```choco install mingw```
+
+#### Lazygit
+
+Intall with choco: ```choco install lazygit```
+
+#### Python
+
+MinGW comes bundled with Python. However it currently uses 3.9 and doesn't include pip.
+
+Run ```winget install Python.Python.3.11``` (Or whatever version you want).
+
+MinGw s installation has written some keys into the registry that leads to its version being picked up and used in the
+Terminal when running a python command. To [fix](https://superuser.com/questions/433897/python-in-command-line-runs-the-wrong-version) this
+we have to open the regedit and search for .py. The default key shows the reg key of where the default location for python.exe is picked up.
+
+Go to ```HKEY_CLASSES_ROOT/Python.File/shell/open/command/@default```, where 'Python.File' is to be replaced with the data of the default key
+from the previous step.
+Go into shell/open/command and modify the default key here to point to the correct python.exe.
+
+#### Pynvim
+
+Pynvim is needed if nvim wants to use python. Install it with this command:
+
+```'Path-to-python.exe' -m pip install pynvim```
+
+#### Msys2 (Optional)
+
+Needed for Ruby neovim.
+
+Install: ```winget install msys2.msys2```
+
+#### Ruby and Gem (Optional)
+
+Install: ```winget install RubyInstallerTeam.Ruby.3.1```
+
+Then run: ```gem install neovim```
 
 ### Troubleshooting
 
@@ -44,21 +83,12 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 
 ## TODO
 
-- Fix all TODO tags
-- configure DAP icons
+- Fix recording keys not working
+- configure DAP for c# and typescript
 - Automate installation process
-- improve git workflow (lazygit?)
-- Maybe Switch to bufferline as soon as it supports closing a singe buffer without picking
-    - as well as fixing its bugs
-- Checkout inline status ones its releases from nightly (curr avaivalable on 0.9)
-- Organize Plugins into grouped files
 
 ## Plugins to consider
 
 - [dap configs](https://github.com/ldelossa/nvim-dap-projects)
-- [ALE](https://github.com/dense-analysis/ale)
 - [Barbecue]()
-- [Markdown Preview]()
 - [Neodev](https://github.com/folke/neodev.nvim)
-
-

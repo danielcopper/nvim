@@ -6,7 +6,7 @@ return {
         lazy = false,
         priority = 1000,
         config = function()
-            require("rose-pine").setup({
+            require('rose-pine').setup({
                 --- @usage 'main' | 'moon'
                 dark_variant = 'main',
                 bold_vert_split = false,
@@ -51,12 +51,12 @@ return {
         'catppuccin/nvim',
         enabled = false,
         config = function()
-            require("catppuccin").setup({
+            require('catppuccin').setup({
                 transparent_background = true,
                 show_end_of_buffer = false,
                 styles = {
-                    comments = { "italic" },
-                    conditionals = { "italic" },
+                    comments = { 'italic' },
+                    conditionals = { 'italic' },
                     loops = {},
                     functions = {},
                     keywords = {},
@@ -78,11 +78,11 @@ return {
         'folke/tokyonight.nvim',
         enabled = false,
         config = function()
-            require("tokyonight").setup({
+            require('tokyonight').setup({
                 -- your configuration comes here
                 -- or leave it empty to use the default settings
-                style = "night",        -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
-                light_style = "day",    -- The theme is used when the background is set to light
+                style = 'night',        -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
+                light_style = 'day',    -- The theme is used when the background is set to light
                 transparent = true,     -- Enable this to disable setting the background color
                 terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
                 styles = {
@@ -93,10 +93,10 @@ return {
                     functions = {},
                     variables = {},
                     -- Background styles. Can be "dark", "transparent" or "normal"
-                    sidebars = "transparent",     -- style for sidebars, see below
-                    floats = "transparent",       -- style for floating windows
+                    sidebars = 'transparent',     -- style for sidebars, see below
+                    floats = 'transparent',       -- style for floating windows
                 },
-                sidebars = { "qf", "help" },      -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
+                sidebars = { 'qf', 'help' },      -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
                 day_brightness = 0.3,             -- Adjusts the brightness of the colors of the **Day** style. Number between 0 and 1, from dull to vibrant colors
                 hide_inactive_statusline = false, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
                 dim_inactive = false,             -- dims inactive windows
@@ -142,7 +142,7 @@ return {
                     theme = {
                         all = {
                             ui = {
-                                bg_gutter = "none"
+                                bg_gutter = 'none'
                             }
                         }
                     }
@@ -151,8 +151,8 @@ return {
                     local theme = colors.theme
                     return {
                         -- Transparent Floating Windows
-                        NormalFloat = { bg = "none" },
-                        FloatBorder = { bg = "none" },
+                        NormalFloat = { bg = 'none' },
+                        FloatBorder = { bg = 'none' },
                         -- Save an hlgroup with dark background and dimmed foreground
                         -- so that you can use it where your still want darker windows.
                         -- E.g.: autocmd TermOpen * setlocal winhighlight=Normal:NormalDark
@@ -171,12 +171,12 @@ return {
                         TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
                         -- Dark completion popup menu
                         Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
-                        PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
+                        PmenuSel = { fg = 'NONE', bg = theme.ui.bg_p2 },
                         PmenuSbar = { bg = theme.ui.bg_m1 },
                         PmenuThumb = { bg = theme.ui.bg_p2 },
                     }
                 end,
-                theme = "default" -- Load "default" theme or the experimental "light" theme
+                theme = 'default' -- Load "default" theme or the experimental "light" theme
             })
 
             -- setup must be called before loading
@@ -196,7 +196,7 @@ return {
             require('everforest').setup({
                 -- Controls the "hardness" of the background. Options are "soft", "medium" or "hard".
                 -- Default is "medium".
-                background = "medium",
+                background = 'medium',
                 -- How much of the background should be transparent. Options are 0, 1 or 2.
                 -- Default is 0.
                 --
