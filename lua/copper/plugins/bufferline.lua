@@ -36,7 +36,7 @@ return {
         }
     },
     keys = {
-        vim.keymap.set('n', '<A-,>', '<Cmd>BufferLineCyclePrevious<CR>'),
+        vim.keymap.set('n', '<A-,>', '<Cmd>BufferLineCyclePrev<CR>'),
         vim.keymap.set('n', '<A-.>', '<Cmd>BufferLineCycleNext<CR>'),
         vim.keymap.set('n', '<A-<>', '<Cmd>BufferLineMovePrevious<CR>'),
         vim.keymap.set('n', '<A->>', '<Cmd>BufferLineMoveNext<CR>'),

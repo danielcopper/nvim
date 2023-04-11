@@ -7,7 +7,8 @@ return {
         indent = { enable = true },
         context_commentstring = { enable = true, enable_autocmd = false },
         ensure_installed = { 'bash', 'c', 'html', 'javascript', 'json', 'lua', 'luadoc', 'luap', 'markdown',
-            'markdown_inline', 'python', 'query', 'regex', 'tsx', 'typescript', 'vim', 'yaml', },
+            'markdown_inline', 'python', 'query', 'regex', 'tsx', 'typescript', 'vim', 'vimdoc', 'yaml',
+            'latex', 'gitignore', 'dockerfile', 'css', 'scss', 'sql', 'c_sharp' },
         incremental_selection = {
             enable = true,
             keymaps = {

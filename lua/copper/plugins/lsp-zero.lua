@@ -61,9 +61,109 @@ return {
         -- for example gd on a buffer that has an lsp will use lsp's [g]oto[d]efinition. On a buffer
         -- that has no lsp associated gd will use vim instead to try to jump to definition.
         lsp.on_attach(function(client, bufnr)
+            -- NOTE: Temporary fix for semantic token of omnisharp/roslyn not being conform for lsp
+            if client.name == "omnisharp" then
+                client.server_capabilities.semanticTokensProvider = {
+                    full = vim.empty_dict(),
+                    legend = {
+                        tokenModifiers = { "static_symbol" },
+                        tokenTypes = {
+                            "comment",
+                            "excluded_code",
+                            "identifier",
+                            "keyword",
+                            "keyword_control",
+                            "number",
+                            "operator",
+                            "operator_overloaded",
+                            "preprocessor_keyword",
+                            "string",
+                            "whitespace",
+                            "text",
+                            "static_symbol",
+                            "preprocessor_text",
+                            "punctuation",
+                            "string_verbatim",
+                            "string_escape_character",
+                            "class_name",
+                            "delegate_name",
+                            "enum_name",
+                            "interface_name",
+                            "module_name",
+                            "struct_name",
+                            "type_parameter_name",
+                            "field_name",
+                            "enum_member_name",
+                            "constant_name",
+                            "local_name",
+                            "parameter_name",
+                            "method_name",
+                            "extension_method_name",
+                            "property_name",
+                            "event_name",
+                            "namespace_name",
+                            "label_name",
+                            "xml_doc_comment_attribute_name",
+                            "xml_doc_comment_attribute_quotes",
+                            "xml_doc_comment_attribute_value",
+                            "xml_doc_comment_cdata_section",
+                            "xml_doc_comment_comment",
+                            "xml_doc_comment_delimiter",
+                            "xml_doc_comment_entity_reference",
+                            "xml_doc_comment_name",
+                            "xml_doc_comment_processing_instruction",
+                            "xml_doc_comment_text",
+                            "xml_literal_attribute_name",
+                            "xml_literal_attribute_quotes",
+                            "xml_literal_attribute_value",
+                            "xml_literal_cdata_section",
+                            "xml_literal_comment",
+                            "xml_literal_delimiter",
+                            "xml_literal_embedded_expression",
+                            "xml_literal_entity_reference",
+                            "xml_literal_name",
+                            "xml_literal_processing_instruction",
+                            "xml_literal_text",
+                            "regex_comment",
+                            "regex_character_class",
+                            "regex_anchor",
+                            "regex_quantifier",
+                            "regex_grouping",
+                            "regex_alternation",
+                            "regex_text",
+                            "regex_self_escaped_character",
+                            "regex_other_escape",
+                        },
+                    },
+                    range = true,
+                }
+            end
+
+            -- NOTE: This shorter form stills results in some group name errors
+            -- if client.name == 'omnisharp' then
+            --     local tokenModifiers = client.server_capabilities.semanticTokensProvider.legend.tokenModifiers
+            --     for i, v in ipairs(tokenModifiers) do
+            --         tokenModifiers[i] = v:gsub(' ', '_')
+            --     end
+            --     local tokenTypes = client.server_capabilities.semanticTokensProvider.legend.tokenTypes
+            --     for i, v in ipairs(tokenTypes) do
+            --         tokenTypes[i] = v:gsub(' ', '_')
+            --     end
+            -- end
+
             local opts = { buffer = bufnr, remap = false }
+            -- TODO: Experiment with these
+            -- vim.keymap.set('n', 'gr', function() require('telescope.builtin').lsp_references() end,
+            --     { desc = 'Telescope goto References' }),
+            -- vim.keymap.set('n', 'gd', function() require('telescope.builtin').lsp_definitions() end,
+            --     { desc = 'Telescope goto Definitions' }),
+            -- vim.keymap.set('n', 'gtd', function() require('telescope.builtin').lsp_type_definitions() end,
+            --     { desc = 'Telescope goto Type Definition' }),
+            -- vim.keymap.set('n', 'gi', function() require('telescope.builtin').lsp_implementations() end,
+            --     { desc = 'Telescope goto Implementation' }),
 
             vim.keymap.set('n', 'gd', function() vim.lsp.buf.definiton() end, opts)
+            vim.keymap.set('n', 'gD', function() vim.lsp.buf.declaration() end, opts)
             vim.keymap.set('n', 'gr', '<Cmd>Telescope lsp_references<CR>', opts)
             vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, opts)
             vim.keymap.set('n', '<leader>vws', function() vim.lsp.buf.workspace_symbol() end, opts)
@@ -74,6 +174,7 @@ return {
             vim.keymap.set('n', '<leader>vrr', function() vim.lsp.buf.references() end, opts)
             vim.keymap.set('n', '<leader>vrn', function() vim.lsp.buf.rename() end, opts)
             vim.keymap.set('i', '<C-h>', function() vim.lsp.buf.signatue_help() end, opts)
+            vim.keymap.set('n', '<leader>cl', function() vim.lsp.codelens.run() end)
         end)
 
         lsp.set_sign_icons({
@@ -92,6 +193,38 @@ return {
                     }
                 }
             }
+        })
+
+        require('lspconfig').omnisharp.setup({
+            cmd = { 'dotnet', 'C:/Users/KueppermannD/AppData/Local/nvim-data/mason/packages/omnisharp/OmniSharp.dll' },
+            -- Enables support for reading code style, naming convention and analyzer
+            -- settings from .editorconfig.
+            enable_editorconfig_support = true,
+            -- If true, MSBuild project system will only load projects for files that
+            -- were opened in the editor. This setting is useful for big C# codebases
+            -- and allows for faster initialization of code navigation features only
+            -- for projects that are relevant to code that is being edited. With this
+            -- setting enabled OmniSharp may load fewer projects and may thus display
+            -- incomplete reference lists for symbols.
+            enable_ms_build_load_projects_on_demand = false,
+            -- Enables support for roslyn analyzers, code fixes and rulesets.
+            enable_roslyn_analyzers = true,
+            -- Specifies whether 'using' directives should be grouped and sorted during
+            -- document formatting.
+            organize_imports_on_format = true,
+            -- Enables support for showing unimported types and unimported extension
+            -- methods in completion lists. When committed, the appropriate using
+            -- directive will be added at the top of the current file. This option can
+            -- have a negative impact on initial completion responsiveness,
+            -- particularly for the first few completion sessions after opening a
+            -- solution.
+            enable_import_completion = false,
+            -- Specifies whether to include preview versions of the .NET SDK when
+            -- determining which version to use for project loading.
+            sdk_include_prereleases = true,
+            -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
+            -- true
+            analyze_open_documents_only = false,
         })
 
         lsp.setup()
