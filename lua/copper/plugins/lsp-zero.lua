@@ -195,8 +195,10 @@ return {
             }
         })
 
+        local datapath = vim.fn.expand("~") .. '\\AppData\\local\\nvim-data'
+
         require('lspconfig').omnisharp.setup({
-            cmd = { 'dotnet', 'C:/Users/KueppermannD/AppData/Local/nvim-data/mason/packages/omnisharp/OmniSharp.dll' },
+            cmd = { 'dotnet',  datapath .. '/mason/packages/omnisharp/OmniSharp.dll' },
             -- Enables support for reading code style, naming convention and analyzer
             -- settings from .editorconfig.
             enable_editorconfig_support = true,
