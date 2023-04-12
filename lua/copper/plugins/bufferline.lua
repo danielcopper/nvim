@@ -2,10 +2,6 @@ return {
     enabled = true,
     lazy = false,
     'akinsho/nvim-bufferline.lua',
-    -- init = function()
-    --     -- NOTE: Bufferline relies on termguicolors to be loaded before itself
-    --     vim.opt.termguicolors = true
-    -- end,
     opts = {
         options = {
             mode = 'buffers', -- set to "tabs" to only show tabpages instead
@@ -13,7 +9,8 @@ return {
                 {
                     filetype = 'NvimTree',
                     text = 'File Explorer',
-                    padding = 1
+                    padding = 1,
+                    separator = false
                 }
             },
             -- indicator = {
@@ -35,23 +32,45 @@ return {
             show_buffer_icons = true
         }
     },
+    dependencies = {
+        'ojroques/nvim-bufdel',
+    },
+    config = function(_, opts)
+        require('bufferline').setup(opts)
+        require('bufdel').setup({
+            quit = false -- quit Neovim when last buffer is closed
+        })
+    end,
     keys = {
-        vim.keymap.set('n', '<A-,>', '<Cmd>BufferLineCyclePrev<CR>'),
-        vim.keymap.set('n', '<A-.>', '<Cmd>BufferLineCycleNext<CR>'),
-        vim.keymap.set('n', '<A-<>', '<Cmd>BufferLineMovePrevious<CR>'),
-        vim.keymap.set('n', '<A->>', '<Cmd>BufferLineMoveNext<CR>'),
-        vim.keymap.set('n', '<A-1>', '<Cmd>BufferLineGoTo 1<CR>'),
-        vim.keymap.set('n', '<A-2>', '<Cmd>BufferLineGoTo 2<CR>'),
-        vim.keymap.set('n', '<A-3>', '<Cmd>BufferLineGoTo 3<CR>'),
-        vim.keymap.set('n', '<A-4>', '<Cmd>BufferLineGoTo 4<CR>'),
-        vim.keymap.set('n', '<A-5>', '<Cmd>BufferLineGoTo 5<CR>'),
-        vim.keymap.set('n', '<A-6>', '<Cmd>BufferLineGoTo 6<CR>'),
-        vim.keymap.set('n', '<A-7>', '<Cmd>BufferLineGoTo 7<CR>'),
-        vim.keymap.set('n', '<A-8>', '<Cmd>BufferLineGoTo 8<CR>'),
-        vim.keymap.set('n', '<A-9>', '<Cmd>BufferLineGoTo 9<CR>'),
-        vim.keymap.set('n', '<A-p>', '<Cmd>BufferLineTogglePin<CR>'),
+        vim.keymap.set('n', '<A-,>', '<Cmd>BufferLineCyclePrev<CR>', { desc = 'Select previous Buffer' }),
+        vim.keymap.set('n', '<A-.>', '<Cmd>BufferLineCycleNext<CR>', { desc = 'Select next Buffer' }),
+        vim.keymap.set('n', '<A-<>', '<Cmd>BufferLineMovePrevious<CR>', { desc = 'Move buffer to the left' }),
+        vim.keymap.set('n', '<A->>', '<Cmd>BufferLineMoveNext<CR>', { desc = 'Move Buffer to the right' }),
+        vim.keymap.set('n', '<A-1>', '<Cmd>BufferLineGoTo 1<CR>', { desc = 'Goto Buffer number 9' }),
+        vim.keymap.set('n', '<A-2>', '<Cmd>BufferLineGoTo 2<CR>', { desc = 'Goto Buffer number 9' }),
+        vim.keymap.set('n', '<A-3>', '<Cmd>BufferLineGoTo 3<CR>', { desc = 'Goto Buffer number 9' }),
+        vim.keymap.set('n', '<A-4>', '<Cmd>BufferLineGoTo 4<CR>', { desc = 'Goto Buffer number 9' }),
+        vim.keymap.set('n', '<A-5>', '<Cmd>BufferLineGoTo 5<CR>', { desc = 'Goto Buffer number 9' }),
+        vim.keymap.set('n', '<A-6>', '<Cmd>BufferLineGoTo 6<CR>', { desc = 'Goto Buffer number 9' }),
+        vim.keymap.set('n', '<A-7>', '<Cmd>BufferLineGoTo 7<CR>', { desc = 'Goto Buffer number 9' }),
+        vim.keymap.set('n', '<A-8>', '<Cmd>BufferLineGoTo 8<CR>', { desc = 'Goto Buffer number 9' }),
+        vim.keymap.set('n', '<A-9>', '<Cmd>BufferLineGoTo 9<CR>', { desc = 'Goto Buffer number 9' }),
+        vim.keymap.set('n', '<A-p>', '<Cmd>BufferLineTogglePin<CR>', { desc = 'Pin current Buffer' }),
+        vim.keymap.set('n', '<C-p>', '<Cmd>BufferLineGoToBuffer<CR>', { desc = 'Pick Buffer to jump to' }),
         -- NOTE: Closes the current Buffer and opens the previous one
-        vim.keymap.set('n', '<A-c>', '<Cmd>:b#|bd#<CR>'),
-        vim.keymap.set('n', '<C-p>', '<Cmd>BufferLineGoToBuffer<CR>'),
+        -- vim.keymap.set('n', '<A-c>', '<Cmd>:b#|bd#<CR>', { desc = 'Close current Buffer' }),
+        vim.keymap.set('n', '<A-c>', '<Cmd>BufDel<CR>', { desc = 'Close current Buffer' }),
+        vim.keymap.set('n', '<leader>ca', '<Cmd>BufDelAll<CR>', { desc = 'Close all Buffers' }),
+        vim.keymap.set('n', '<leader>co', '<Cmd>BufDelOthers<CR>', { desc = 'Close all but current Buffer' }),
+        -- vim.keymap.set('n', '<leader>co', '<Cmd>BufferLineGroupClose ungrouped<CR>', { desc = 'Close unpinned Buffers' }),
+        -- vim.keymap.set('n', '<leader>ca',
+        --     function()
+        --         for _, e in ipairs(bufferline.get_elements().elements) do
+        --             vim.schedule(function()
+        --                 vim.cmd("bd " ..
+        --                     e.id)
+        --             end)
+        --         end
+        --     end, { desc = 'Close all Buffers' }),
     },
 }

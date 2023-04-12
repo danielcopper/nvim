@@ -14,10 +14,10 @@ return {
         renderer = {
             full_name = true,
             highlight_opened_files = 'all',
-            highlight_modified = 'all',
             root_folder_label = ':~:s?$?/..?',
             indent_width = 2,
         },
+        hijack_unnamed_buffer_when_opening = true,
     },
     keys = {
         vim.keymap.set('n', '<leader>e', '<Cmd>NvimTreeFocus<CR>'),

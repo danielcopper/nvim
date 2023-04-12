@@ -83,8 +83,9 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 
 ## TODO
 
-- Fix recording keys not working
-- configure DAP for c# and typescript
+- Fix empty buffer showing when opening a file with telescope after deleting all buffers
+- Fix recording keys not working (it works just doesn't prompt that its recording)
+- configure DAP for c# and typescript (partly finished)
 - Automate installation process
 
 ## Plugins to consider

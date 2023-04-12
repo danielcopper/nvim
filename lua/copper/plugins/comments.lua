@@ -5,7 +5,7 @@ return {
     },
     {
         'folke/todo-comments.nvim',
-        -- cmd = { "TodoTrouble", "TodoTelescope" },
+        cmd = { "TodoTrouble", "TodoTelescope" },
         event = 'BufReadPost',
         opts = {
             signs = true,      -- show icons in the signs column
@@ -18,9 +18,9 @@ return {
                     alt = { 'FIXME', 'BUG', 'FIXIT', 'ISSUE' }, -- a set of other keywords that all map to this FIX keywords
                     -- signs = false, -- configure signs for some keywords individually
                 },
-                TODO = { icon = ' ', color = 'info' },
-                HACK = { icon = ' ', color = 'warning' },
-                WARN = { icon = ' ', color = 'warning', alt = { 'WARNING', 'XXX' } },
+                TODO = { icon = ' ', color = 'info', alt = { 'todo', 'ToDo', 'Todo', 'toDo' } },
+                HACK = { icon = ' ', color = 'warning', alt = { 'hack', 'Hack' } },
+                WARN = { icon = ' ', color = 'warning', alt = { 'WARNING', 'XXX', 'warn', 'warning' } },
                 PERF = { icon = ' ', alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
                 NOTE = { icon = ' ', color = 'hint', alt = { 'INFO' } },
                 TEST = { icon = '⏲ ', color = 'test', alt = { 'TESTING', 'PASSED', 'FAILED' } },
