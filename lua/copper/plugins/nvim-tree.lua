@@ -2,6 +2,12 @@ return {
     'nvim-tree/nvim-tree.lua',
     lazy = false, -- opens the tree on nvim startup without a autocmd
     opts = {
+        hijack_unnamed_buffer_when_opening = true,
+        disable_netrw = true,
+        hijack_cursor = false,
+        hijack_netrw = true,
+        sync_root_with_cwd = false,
+        reload_on_bufenter = true,
         git = {
             enable = true,
             ignore = true,
@@ -12,6 +18,7 @@ return {
         view = {
             adaptive_size = false,
             width = 36,
+            preserve_window_proportions = true,
         },
         renderer = {
             full_name = true,
@@ -36,8 +43,11 @@ return {
             update_root = true,
             ignore_list = { "help" },
         },
-        hijack_unnamed_buffer_when_opening = true,
-        sync_root_with_cwd = true,
+        actions = {
+            change_dir = {
+                restrict_above_cwd = false,
+            }
+        }
     },
     keys = {
         vim.keymap.set('n', '<leader>e', '<Cmd>NvimTreeFocus<CR>'),
