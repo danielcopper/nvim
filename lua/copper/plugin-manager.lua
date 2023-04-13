@@ -11,13 +11,4 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
---vim.g.mapleader = ' ' -- Leader key has to be set before lazy setup is started
-local opts = {
-    rtp = {
-        disabled_plugins = {
-            'netrwPlugin',
-        }
-    }
-}
-
-require('lazy').setup('copper.plugins', opts)
+require('lazy').setup('copper.plugins')

@@ -9,7 +9,7 @@ return {
                 {
                     filetype = 'NvimTree',
                     text = 'File Explorer',
-                    padding = 1,
+                    padding = 0,
                     separator = false
                 }
             },
@@ -57,7 +57,6 @@ return {
         vim.keymap.set('n', '<A-9>', '<Cmd>BufferLineGoTo 9<CR>', { desc = 'Goto Buffer number 9' }),
         vim.keymap.set('n', '<A-p>', '<Cmd>BufferLineTogglePin<CR>', { desc = 'Pin current Buffer' }),
         vim.keymap.set('n', '<C-p>', '<Cmd>BufferLineGoToBuffer<CR>', { desc = 'Pick Buffer to jump to' }),
-        -- NOTE: Closes the current Buffer and opens the previous one
         -- vim.keymap.set('n', '<A-c>', '<Cmd>:b#|bd#<CR>', { desc = 'Close current Buffer' }),
         vim.keymap.set('n', '<A-c>', '<Cmd>BufDel<CR>', { desc = 'Close current Buffer' }),
         vim.keymap.set('n', '<leader>ca', '<Cmd>BufDelAll<CR>', { desc = 'Close all Buffers' }),

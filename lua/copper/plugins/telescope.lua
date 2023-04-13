@@ -1,5 +1,10 @@
 return {
     'nvim-telescope/telescope.nvim',
+    opts = {
+        defaults = {
+            dynamic_preview_title = true, -- Shows the whole filepath above the preview
+        }
+    },
     keys = {
         vim.keymap.set('n', '<leader>pf', function() require('telescope.builtin').find_files() end,
             { desc = 'Open Telescope find files' }),
