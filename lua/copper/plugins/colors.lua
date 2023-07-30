@@ -49,7 +49,7 @@ return {
 
     {
         'catppuccin/nvim',
-        enabled = false,
+        enabled = true,
         config = function()
             require('catppuccin').setup({
                 transparent_background = true,
@@ -120,7 +120,7 @@ return {
 
     {
         'rebelot/kanagawa.nvim',
-        enabled = true,
+        enabled = false,
         config = function()
             -- Default options:
             require('kanagawa').setup({

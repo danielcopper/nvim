@@ -1,3 +1,4 @@
+local set = vim.keymap.set
 return {
     enabled = true,
     lazy = false,
@@ -9,14 +10,14 @@ return {
                 {
                     filetype = 'NvimTree',
                     text = 'File Explorer',
-                    padding = 0,
+                    padding = 1,
                     separator = false
                 }
             },
             -- indicator = {
             --     style = 'underline'
             -- },
-            separator_style = "thin", -- "slant" | "thick" | "thin" | { 'any', 'any' },
+            separator_style = 'thin', -- "slant" | "thick" | "thin" | { 'any', 'any' },
             show_tab_indicators = true,
             diagnostics = 'nvim_lsp',
             --- count is an integer representing total count of errors

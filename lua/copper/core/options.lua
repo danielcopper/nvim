@@ -1,4 +1,8 @@
-vim.g.python3_host_prog = '~/AppData/Local/Programs/Python/Python311/python.exe'
+vim.opt.clipboard = 'unnamedplus' -- allows neovim to access the system clipboard
+vim.opt.conceallevel = 0 -- so that `` is visible in markdown files
+vim.opt.fileencoding = 'utf-8'
+
+-- vim.g.python3_host_prog = '~/AppData/Local/Programs/Python/Python311/python.exe'
 
 vim.g.mapleader = ' '
 
@@ -23,7 +27,7 @@ vim.opt.wrap = false
 -- no vim backups but undo tree has a long history
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = os.getenv('TEMP') .. '/.vim/undodir'
+vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir'
 vim.opt.undofile = true
 
 vim.opt.hlsearch = false
