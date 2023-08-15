@@ -1,5 +1,5 @@
 return {
-    enabled = false,
+    enabled = true,
     'nvim-zh/colorful-winsep.nvim',
     -- opts = {
     --     highlight = {

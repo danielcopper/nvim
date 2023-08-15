@@ -23,7 +23,8 @@ return {
         renderer = {
             full_name = true,
             highlight_opened_files = 'all',
-            root_folder_label = ':~:s?$?/..?',
+            -- root_folder_label = ':~:s?$?/..?',
+            root_folder_label = ':t',
             indent_width = 2,
             indent_markers = {
                 enable = true,
