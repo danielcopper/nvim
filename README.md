@@ -24,7 +24,7 @@ Chocolatey might be helpful to install MingW and other missing tools that throw 
 
 ### Dependencies and Helpful Tools
 
-#### MinGW
+#### MinGW (for windows)
 
 MinGW is a compiler collection that includes the needed c compiler for windows. There are other options, but I had the most
 success with this one.
@@ -34,38 +34,6 @@ To install MinGW you need chocolatey currently, execute: ```choco install mingw`
 #### Lazygit
 
 Intall with choco: ```choco install lazygit```
-
-#### Python
-
-MinGW comes bundled with Python. However it currently uses 3.9 and doesn't include pip.
-
-Run ```winget install Python.Python.3.11``` (Or whatever version you want).
-
-MinGw s installation has written some keys into the registry that leads to its version being picked up and used in the
-Terminal when running a python command. To [fix](https://superuser.com/questions/433897/python-in-command-line-runs-the-wrong-version) this
-we have to open the regedit and search for .py. The default key shows the reg key of where the default location for python.exe is picked up.
-
-Go to ```HKEY_CLASSES_ROOT/Python.File/shell/open/command/@default```, where 'Python.File' is to be replaced with the data of the default key
-from the previous step.
-Go into shell/open/command and modify the default key here to point to the correct python.exe.
-
-#### Pynvim
-
-Pynvim is needed if nvim wants to use python. Install it with this command:
-
-```'Path-to-python.exe' -m pip install pynvim```
-
-#### Msys2 (Optional)
-
-Needed for Ruby neovim.
-
-Install: ```winget install msys2.msys2```
-
-#### Ruby and Gem (Optional)
-
-Install: ```winget install RubyInstallerTeam.Ruby.3.1```
-
-Then run: ```gem install neovim```
 
 ### Troubleshooting
 
@@ -83,13 +51,15 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 
 ## TODO
 
-- Fix empty buffer showing when opening a file with telescope after deleting all buffers
 - Fix recording keys not working (it works just doesn't prompt that its recording)
 - configure DAP for c# and typescript (partly finished)
 - Automate installation process
+- Clear TODOs
+- Adjust Readme to Linux
 
 ## Plugins to consider
 
 - [dap configs](https://github.com/ldelossa/nvim-dap-projects)
 - [Barbecue]()
 - [Neodev](https://github.com/folke/neodev.nvim)
+
