@@ -27,7 +27,7 @@ vim.opt.wrap = false
 -- no vim backups but undo tree has a long history
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = os.getenv('HOME') .. '/.vim/undodir'
+vim.opt.undodir = os.getenv('TEMP') .. '/.vim/undodir'
 vim.opt.undofile = true
 
 vim.opt.hlsearch = false
