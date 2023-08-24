@@ -1,126 +1,246 @@
 return {
-    -- NOTE: This is currently disabled until LSP-Zero will be replaced with it
-    -- {
-    --     'williamboman/mason.nvim',
-    --     build = ':MasonUpdate', -- :MasonUpdate updates registry contents
-    --     config = function()
-    --         require('mason').setup({})
-    --     end
-    -- },
-    -- {
-    --     'williamboman/mason-lspconfig.nvim',
-    --     config = function()
-    --         require('mason-lspconfig').setup({
-    --             -- A list of servers to automatically install if they're not already installed. Example: { "rust_analyzer@nightly", "lua_ls" }
-    --             -- This setting has no relation with the `automatic_installation` setting.
-    --             ensure_installed = { 'lua_ls', 'omnisharp', 'html', 'angularls', 'lemminx' },
-    --             -- Whether servers that are set up (via lspconfig) should be automatically installed if they're not already installed.
-    --             -- This setting has no relation with the `ensure_installed` setting.
-    --             -- Can either be:
-    --             --   - false: Servers are not automatically installed.
-    --             --   - true: All servers set up via lspconfig are automatically installed.
-    --             --   - { exclude: string[] }: All servers set up via lspconfig, except the ones provided in the list, are automatically installed.
-    --             --       Example: automatic_installation = { exclude = { "rust_analyzer", "solargraph" } }
-    --             automatic_installation = false,
-    --         })
-    --     end
-    -- },
-    -- {
-    --     'neovim/nvim-lspconfig',
-    --     config = function()
-    --         require('lspconfig').lua_ls.setup({})
-    --         require('lspconfig').omnisharp.setup({})
-    --         require('lspconfig').angularls.setup({})
-    --
-    --         -- Global mappings.
-    --         -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-    --         vim.keymap.set('n', '<leader>vd', vim.diagnostic.open_float)
-    --         vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-    --         vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-    --         vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
-    --
-    --         -- Use LspAttach autocommand to only map the following keys
-    --         -- after the language server attaches to the current buffer
-    --         vim.api.nvim_create_autocmd('LspAttach', {
-    --             group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-    --             callback = function(ev)
-    --                 -- Enable completion triggered by <c-x><c-o>
-    --                 vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-    --
-    --                 -- Buffer local mappings.
-    --                 -- See `:help vim.lsp.*` for documentation on any of the below functions
-    --                 local opts = { buffer = ev.buf }
-    --                 vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-    --                 vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-    --                 vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-    --                 vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
-    --                 vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
-    --                 vim.keymap.set('n', '<leader>wl', function()
-    --                     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    --                 end, opts)
-    --                 vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
-    --                 vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-    --                 vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
-    --
-    --                 -- NOTE: This is disabled because for this telescope is used
-    --                 -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-    --                 -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-    --                 -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-    --
-    --                 vim.keymap.set('n', '<leader>f', function()
-    --                     vim.lsp.buf.format { async = true }
-    --                 end, opts)
-    --             end,
-    --         })
-    --     end,
-    -- },
-    -- {
-    --     'hrsh7th/nvim-cmp',
-    --     dependencies = {
-    --         'L3MON4D3/LuaSnip',
-    --         'saadparwaiz1/cmp_luasnip',
-    --         'hrsh7th/cmp-nvim-lsp'
-    --     },
-    --     config = function()
-    --         local cmp = require('cmp')
-    --         cmp.setup({
-    --             snippet = {
-    --                 -- REQUIRED - you must specify a snippet engine
-    --                 expand = function(args)
-    --                     -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-    --                     require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-    --                     -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-    --                     -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-    --                 end,
-    --             },
-    --             window = {
-    --                 -- completion = cmp.config.window.bordered(),
-    --                 -- documentation = cmp.config.window.bordered(),
-    --             },
-    --             mapping = cmp.mapping.preset.insert({
-    --                 ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-    --                 ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    --                 ['<C-Space>'] = cmp.mapping.complete(),
-    --                 ['<C-e>'] = cmp.mapping.abort(),
-    --                 ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-    --             }),
-    --             sources = cmp.config.sources({
-    --                 { name = 'nvim_lsp' },
-    --                 -- { name = 'vsnip' }, -- For vsnip users.
-    --                 { name = 'luasnip' }, -- For luasnip users.
-    --                 -- { name = 'ultisnips' }, -- For ultisnips users.
-    --                 -- { name = 'snippy' }, -- For snippy users.
-    --             }, {
-    --                 { name = 'buffer' },
-    --             })
-    --         })
-    --
-    --         -- Set up lspconfig.
-    --         local capabilities = require('cmp_nvim_lsp').default_capabilities()
-    --         -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-    --         require('lspconfig')['luals'].setup {
-    --             capabilities = capabilities
-    --         }
-    --     end
-    -- }
+    'VonHeikemen/lsp-zero.nvim',
+    enabled = true,
+    dependencies = {
+        -- LSP Support
+        { 'neovim/nvim-lspconfig' },             -- Required
+        { 'williamboman/mason.nvim' },           -- Optional
+        { 'williamboman/mason-lspconfig.nvim' }, -- Optional
+
+        -- Autocompletion
+        { 'hrsh7th/nvim-cmp' },         -- Required
+        { 'hrsh7th/cmp-nvim-lsp' },     -- Required
+        { 'hrsh7th/cmp-buffer' },       -- Optional
+        { 'hrsh7th/cmp-path' },         -- Optional
+        { 'saadparwaiz1/cmp_luasnip' }, -- Optional
+        { 'hrsh7th/cmp-nvim-lua' },     -- Optional
+
+        -- Snippets
+        { 'L3MON4D3/LuaSnip' },             -- Required
+        { 'rafamadriz/friendly-snippets' }, -- Optional
+    },
+    config = function()
+        local lsp = require("lsp-zero")
+
+        lsp.preset("recommended")
+
+        lsp.ensure_installed({
+            'angularls',
+            'html',
+            'jsonls',
+            'lua_ls',
+            'marksman',
+            'omnisharp',
+            'tsserver',
+        })
+
+        local cmp = require('cmp')
+        local cmp_select = { behavior = cmp.SelectBehavior.Select }
+
+        -- custom keybindings
+        local cmp_mappings = lsp.defaults.cmp_mappings({
+            -- navigating code suggestions
+            ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
+            ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
+            ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+            ['<CR>'] = cmp.mapping.confirm({ select = true }),
+            ["<C-Space>"] = cmp.mapping.complete(),
+        })
+
+        -- disable completion with tab
+        cmp_mappings['<Tab>'] = nil
+        cmp_mappings['<S-Tab>'] = nil
+
+        lsp.setup_nvim_cmp({
+            mapping = cmp_mappings
+        })
+
+        -- on_attach happens on every single buffer that has an lsp that's associated with it
+        -- that means, that all the following remaps only exist for the current buffer you are on
+        -- for example gd on a buffer that has an lsp will use lsp's [g]oto[d]efinition. On a buffer
+        -- that has no lsp associated gd will use vim instead to try to jump to definition.
+        lsp.on_attach(function(client, bufnr)
+            -- NOTE: Temporary fix for semantic token of omnisharp/roslyn not being conform for lsp
+            if client.name == "omnisharp" then
+                client.server_capabilities.semanticTokensProvider = {
+                    full = vim.empty_dict(),
+                    legend = {
+                        tokenModifiers = { "static_symbol" },
+                        tokenTypes = {
+                            "comment",
+                            "excluded_code",
+                            "identifier",
+                            "keyword",
+                            "keyword_control",
+                            "number",
+                            "operator",
+                            "operator_overloaded",
+                            "preprocessor_keyword",
+                            "string",
+                            "whitespace",
+                            "text",
+                            "static_symbol",
+                            "preprocessor_text",
+                            "punctuation",
+                            "string_verbatim",
+                            "string_escape_character",
+                            "class_name",
+                            "delegate_name",
+                            "enum_name",
+                            "interface_name",
+                            "module_name",
+                            "struct_name",
+                            "type_parameter_name",
+                            "field_name",
+                            "enum_member_name",
+                            "constant_name",
+                            "local_name",
+                            "parameter_name",
+                            "method_name",
+                            "extension_method_name",
+                            "property_name",
+                            "event_name",
+                            "namespace_name",
+                            "label_name",
+                            "xml_doc_comment_attribute_name",
+                            "xml_doc_comment_attribute_quotes",
+                            "xml_doc_comment_attribute_value",
+                            "xml_doc_comment_cdata_section",
+                            "xml_doc_comment_comment",
+                            "xml_doc_comment_delimiter",
+                            "xml_doc_comment_entity_reference",
+                            "xml_doc_comment_name",
+                            "xml_doc_comment_processing_instruction",
+                            "xml_doc_comment_text",
+                            "xml_literal_attribute_name",
+                            "xml_literal_attribute_quotes",
+                            "xml_literal_attribute_value",
+                            "xml_literal_cdata_section",
+                            "xml_literal_comment",
+                            "xml_literal_delimiter",
+                            "xml_literal_embedded_expression",
+                            "xml_literal_entity_reference",
+                            "xml_literal_name",
+                            "xml_literal_processing_instruction",
+                            "xml_literal_text",
+                            "regex_comment",
+                            "regex_character_class",
+                            "regex_anchor",
+                            "regex_quantifier",
+                            "regex_grouping",
+                            "regex_alternation",
+                            "regex_text",
+                            "regex_self_escaped_character",
+                            "regex_other_escape",
+                        },
+                    },
+                    range = true,
+                }
+            end
+
+            -- NOTE: This shorter form stills results in some group name errors
+            -- if client.name == 'omnisharp' then
+            --     local tokenModifiers = client.server_capabilities.semanticTokensProvider.legend.tokenModifiers
+            --     for i, v in ipairs(tokenModifiers) do
+            --         tokenModifiers[i] = v:gsub(' ', '_')
+            --     end
+            --     local tokenTypes = client.server_capabilities.semanticTokensProvider.legend.tokenTypes
+            --     for i, v in ipairs(tokenTypes) do
+            --         tokenTypes[i] = v:gsub(' ', '_')
+            --     end
+            -- end
+
+            local opts = { buffer = bufnr, remap = false }
+
+            vim.keymap.set('n', 'gd', function() require('telescope.builtin').lsp_definitions() end, { desc = 'Telescope goto Definitions' })
+            vim.keymap.set('n', 'gD', function() vim.lsp.buf.declaration() end, opts)
+            vim.keymap.set('n', 'gtd', function() require('telescope.builtin').lsp_type_definitions() end, { desc = 'Telescope goto Type Definition' })
+            vim.keymap.set('n', 'gi', function() require('telescope.builtin').lsp_implementations() end, { desc = 'Telescope goto Implementation' })
+            vim.keymap.set('n', 'gr', function() require('telescope.builtin').lsp_references() end, { desc = 'Telescope goto References' })
+            vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, opts)
+            vim.keymap.set('n', '<leader>vws', function() vim.lsp.buf.workspace_symbol() end, opts)
+            vim.keymap.set('n', '<leader>vd', function() vim.diagnostic.open_float() end, opts)
+            vim.keymap.set('n', '[d', function() vim.diagnostic.goto_next() end, opts)
+            vim.keymap.set('n', ']d', function() vim.diagnostic.goto_prev() end, opts)
+            vim.keymap.set('n', '<leader>vca', function() vim.lsp.buf.code_action() end, opts)
+            vim.keymap.set('n', '<leader>vrn', function() vim.lsp.buf.rename() end, opts)
+            vim.keymap.set('i', '<C-h>', function() vim.lsp.buf.signatue_help() end, opts)
+            -- TODO: Fix codelens
+            vim.keymap.set('n', '<leader>cl', function() vim.lsp.codelens.run() end)
+
+            -- NOTE: currently unused or defined elsewhere
+            -- vim.keymap.set('n', '<leader>vrr', function() vim.lsp.buf.references() end, opts)
+            -- vim.keymap.set('n', 'gd', function() vim.lsp.buf.definiton() end, opts)
+            -- vim.keymap.set('n', 'gi', function () vim.lsp.buf.implementation() end, opts)
+        end)
+
+        lsp.set_sign_icons({
+            error = '✘',
+            warn = '▲',
+            hint = '⚑',
+            info = '»'
+        })
+
+        -- Language servers custom or additional configurations
+        require('lspconfig').lua_ls.setup({
+            settings = {
+                Lua = {
+                    diagnostics = {
+                        globals = { 'vim' }
+                    }
+                }
+            }
+        })
+
+        -- local datapath = vim.fn.expand("~") .. '\\AppData\\local\\nvim-data'
+        --
+        -- require('lspconfig').omnisharp.setup({
+        --     cmd = { 'dotnet', datapath .. '/mason/packages/omnisharp/OmniSharp.dll' },
+        --     -- Enables support for reading code style, naming convention and analyzer
+        --     -- settings from .editorconfig.
+        --     enable_editorconfig_support = true,
+        --     -- If true, MSBuild project system will only load projects for files that
+        --     -- were opened in the editor. This setting is useful for big C# codebases
+        --     -- and allows for faster initialization of code navigation features only
+        --     -- for projects that are relevant to code that is being edited. With this
+        --     -- setting enabled OmniSharp may load fewer projects and may thus display
+        --     -- incomplete reference lists for symbols.
+        --     enable_ms_build_load_projects_on_demand = false,
+        --     -- Enables support for roslyn analyzers, code fixes and rulesets.
+        --     enable_roslyn_analyzers = true,
+        --     -- Specifies whether 'using' directives should be grouped and sorted during
+        --     -- document formatting.
+        --     organize_imports_on_format = true,
+        --     -- Enables support for showing unimported types and unimported extension
+        --     -- methods in completion lists. When committed, the appropriate using
+        --     -- directive will be added at the top of the current file. This option can
+        --     -- have a negative impact on initial completion responsiveness,
+        --     -- particularly for the first few completion sessions after opening a
+        --     -- solution.
+        --     enable_import_completion = false,
+        --     -- Specifies whether to include preview versions of the .NET SDK when
+        --     -- determining which version to use for project loading.
+        --     sdk_include_prereleases = true,
+        --     -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
+        --     -- true
+        --     analyze_open_documents_only = false,
+        -- })
+
+        lsp.setup()
+
+        -- Additional completion configuration
+        local cmp_action = require('lsp-zero').cmp_action()
+        require('luasnip.loaders.from_vscode').lazy_load()
+
+        cmp.setup({
+            sources = {
+                {name = 'nvim_lsp'},
+                {name = 'luasnip'},
+            },
+            mapping = {
+                ['<C-n'] = cmp_action.luasnip_jump_forward(),
+                ['<C-p'] = cmp_action.luasnip_jump_backward(),
+            }
+        })
+    end
 }
