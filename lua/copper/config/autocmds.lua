@@ -38,10 +38,10 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- TODO: Fix this, this should open neotree in fullscreen
 -- open neotree on startup
-vim.api.nvim_create_autocmd("VimEnter", {
-    callback = function()
-        vim.cmd("Neotree")
-        --vim.cmd("BufDelAll")
-    end
-})
+--vim.api.nvim_create_autocmd("VimEnter", {
+--    callback = function()
+--        vim.cmd("Neotree")
+--        --vim.cmd("BufDelAll")
+--    end
+--})
 
