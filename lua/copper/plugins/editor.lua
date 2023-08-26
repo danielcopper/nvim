@@ -2,24 +2,122 @@ local set = vim.keymap.set
 
 return {
     -- File explorer
+    -- TODO: Fix nvim-web-devicons usage
     {
         "nvim-neo-tree/neo-tree.nvim",
         branch = "v3.x",
         cmd = "Neotree",
-        config = function()
-            require("neo-tree").setup()
+        keys = {
+            { "<leader>fe", "<Cmd>Neotree focus<CR>",  { desc = "Focus on Neotree" } },
+            { "<leader>te", "<Cmd>Neotree toggle<CR>", { desc = "Toggle Neotree" } },
+            -- NOTE: Needed if the other commented options are enabled
+            -- {
+            --     "<leader>fe",
+            --     function()
+            --         require("neo-tree.command").execute({
+            --             position = "left",
+            --             toggle = true,
+            --         })
+            --     end,
+            --     desc = "Open Neotree in sidebar",
+            -- },
+        },
+        init = function()
+            -- NOTE: To open neotree on startup without specifying it in autocmd file
+            -- autocmd would require neotree to be installed
+            vim.api.nvim_create_autocmd("VimEnter", {
+                command = "Neotree"
+            })
+        end,
+        opts = {
+            -- NOTE: This would open neotree in the current window by default
+            -- helpful if you want to open neotree fullscreen on startup,
+            -- comes with some drawback though like the no name buffer and closing
+            -- after selecting a file to open.
+            -- window = { position = "current" }
+        },
+        config = function(_, opts)
+            require("neo-tree").setup(opts)
         end,
     },
-    --	{
-    --		"nvim-tree/nvim-tree.lua",
-    --  version = "*",
-    --  lazy = false,
-    --  dependencies = {
-    --   "nvim-tree/nvim-web-devicons",
-    -- },
-    -- config = function()
-    --   require("nvim-tree").setup {}
-    -- end,
-    --	},
 
+    -- Fuzzy Finder
+    {
+        'nvim-telescope/telescope.nvim',
+        cmd = "Telescope",
+        opts = {
+            defaults = {
+                dynamic_preview_title = true, -- Shows the whole filepath above the preview
+            }
+        },
+        keys = {
+            vim.keymap.set('n', '<leader>pf', function() require('telescope.builtin').find_files() end,
+                { desc = 'Open Telescope find files' }),
+            vim.keymap.set('n', '<leader>td', function() require('telescope.builtin').diagnostics() end,
+                { desc = 'Lists diagnostics for currently open buffers in Telescope' }),
+            vim.keymap.set('n', '<leader>ps', function() require('telescope.builtin').live_grep() end,
+                { desc = 'Telescope Grep String Search' }),
+            vim.keymap.set('n', '<leader>km', function() require('telescope.builtin').keymaps() end,
+                { desc = 'Lists normal mode keymappings in Telescope' }),
+        }
+    },
+
+    -- Whichkey to find keybindings
+    {
+        "folke/which-key.nvim",
+        event = "VeryLazy",
+        opts = {
+            plugins = { spelling = true },
+            defaults = {
+                mode = { "n", "v" },
+                ["g"] = { name = "+goto" },
+                ["gz"] = { name = "+surround" },
+                ["]"] = { name = "+next" },
+                ["["] = { name = "+prev" },
+                ["<leader><tab>"] = { name = "+tabs" },
+                ["<leader>b"] = { name = "+buffer" },
+                ["<leader>c"] = { name = "+code" },
+                ["<leader>f"] = { name = "+file/find" },
+                ["<leader>g"] = { name = "+git" },
+                ["<leader>gh"] = { name = "+hunks" },
+                ["<leader>q"] = { name = "+quit/session" },
+                ["<leader>s"] = { name = "+search" },
+                ["<leader>u"] = { name = "+ui" },
+                ["<leader>w"] = { name = "+windows" },
+                ["<leader>x"] = { name = "+diagnostics/quickfix" },
+            },
+        },
+        config = function(_, opts)
+            local wk = require("which-key")
+            wk.setup(opts)
+            wk.register(opts.defaults)
+        end,
+    },
+
+    -- Gitsigns make git status visible on the side
+    {
+        'lewis6991/gitsigns.nvim',
+        event = { "BufReadPre", "BufNewFile" },
+        config = true
+    },
+
+    -- NOTE: Maybe move this to coding.lua
+    -- Helps with code troubles
+    {
+        'folke/trouble.nvim',
+        cmd = { 'TroubleToggle', 'Trouble' },
+        opts = {
+            position = 'right',
+            icons = true,
+            use_diagnostic_signs = true,
+        },
+        keys = {
+            vim.keymap.set('n', '<leader>to', '<cmd>Trouble<cr>',
+                { desc = 'Open Workspace Diagnostics (Trouble)' }),
+            vim.keymap.set('n', '<leader>tf', '<cmd>TroubleToggle document_diagnostics<cr>',
+                { desc = 'Toggle Document Diagnostics (Trouble)' }),
+            vim.keymap.set('n', '<leader>tw', '<cmd>TroubleToggle workspace_diagnostics<cr>',
+                { desc = 'Toggle Workspace Diagnostics (Trouble)' }),
+        }
+    },
 }

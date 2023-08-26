@@ -25,7 +25,9 @@ return {
         },
     },
 
+    { 'ojroques/nvim-bufdel', lazy = false },
+
     -- libraries used by other plugins
     { "nvim-lua/plenary.nvim", lazy = true },
-    --	{ "nvim-tree/nvim-web-devicons", lazy = true },
+    { "nvim-tree/nvim-web-devicons", lazy = true },
 }

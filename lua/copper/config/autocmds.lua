@@ -14,7 +14,8 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.api.nvim_create_autocmd({ "VimResized" }, {
     callback = function()
         vim.cmd("tabdo wincmd =")
-    end, })
+    end,
+})
 
 -- remember last cursor location of files
 vim.api.nvim_create_autocmd('BufReadPost', {
@@ -37,11 +38,13 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- TODO: Fix this, this should open neotree in fullscreen
+-- autocmd is currently set directly in neotree config
 -- open neotree on startup
---vim.api.nvim_create_autocmd("VimEnter", {
---    callback = function()
---        vim.cmd("Neotree")
---        --vim.cmd("BufDelAll")
---    end
---})
-
+-- vim.api.nvim_create_autocmd("VimEnter", {
+--     command = "Neotree"
+-- })
+-- vim.api.nvim_create_autocmd("VimEnter", {
+--     callback = function()
+--         vim.cmd("BufDelOthers")
+--     end
+-- })

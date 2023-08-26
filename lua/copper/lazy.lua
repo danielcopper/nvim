@@ -16,6 +16,9 @@ vim.opt.rtp:prepend(lazypath)
 require("copper.config")
 
 require("lazy").setup({
+    defaults = {
+        lazy = true,
+    },
     spec = {
         { import = "copper.plugins" },
     },

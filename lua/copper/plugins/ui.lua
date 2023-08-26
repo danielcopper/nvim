@@ -41,7 +41,7 @@ return {
         end,
     },
 
-    -- Bufferline
+    -- Bufferline (the tabs on top)
     {
         enabled = true,
         event = "VeryLazy",
@@ -78,9 +78,6 @@ return {
                 show_buffer_icons = true
             }
         },
-        dependencies = {
-            'ojroques/nvim-bufdel',
-        },
         config = function(_, opts)
             require('bufferline').setup(opts)
             require('bufdel').setup({
@@ -106,8 +103,8 @@ return {
             -- set('n', '<A-c>', '<Cmd>:b#|bd#<CR>', { desc = 'Close current Buffer' }),
             set('n', '<A-c>', '<Cmd>BufDel<CR>', { desc = 'Close current Buffer' }),
             -- set('n', '<leader>ca', '<Cmd>BufDelAll<CR>', { desc = 'Close all Buffer' }),
-            set('n', '<leader>ca', '<Cmd>Neotree show<CR><Cmd>BufDelOthers<CR>', { desc = 'Close all Buffers' }),
-            set('n', '<leader>co', '<Cmd>BufDelOthers<CR>', { desc = 'Close all but current Buffer' }),
+            set('n', '<leader>bca', '<Cmd>Neotree focus<CR><Cmd>BufDelOthers<CR>', { desc = 'Close all Buffers' }),
+            set('n', '<leader>bco', '<Cmd>BufDelOthers<CR>', { desc = 'Close all but current Buffer' }),
             -- set('n', '<leader>co', '<Cmd>BufferLineGroupClose ungrouped<CR>', { desc = 'Close unpinned Buffers' }),
             -- set('n', '<leader>ca',
             --     function()
@@ -121,12 +118,47 @@ return {
         },
     },
 
+    -- Statusline
+    {
+        'nvim-lualine/lualine.nvim',
+        event = 'VeryLazy',
+        opts = {
+            options = {
+                theme = 'catppuccin',
+                globalstatus = true,
+                disabled_filetypes = { statusline = { 'lazy', 'alpha' } },
+            },
+            sections = {
+                lualine_a = { 'mode' },
+                lualine_b = { 'branch' },
+                lualine_c = {
+                    {
+                        'diagnostics',
+                        symbols = {
+                            Error = ' ',
+                            Warn = ' ',
+                            Hint = ' ',
+                            Info = ' ',
+                        },
+                    },
+                    {
+                        'filetype',
+                        icon_only = true,
+                        separator = '',
+                        padding = {
+                            left = 1, right = 0 }
+                    },
+                    { 'filename', path = 1, symbols = { modified = '  ', readonly = '', unnamed = '' } },
+                }
+            }
+        }
+    },
+
     -- Indentation guides
     {
         "lukas-reineke/indent-blankline.nvim",
         event = { "BufReadPost", "BufNewFile" },
         opts = {
-            -- char = "▏",
             char = "│",
             filetype_exclude = {
                 "help",
@@ -149,7 +181,6 @@ return {
         version = false, -- wait till new 0.7.0 release to put it back on semver
         event = { "BufReadPre", "BufNewFile" },
         opts = {
-            -- symbol = "▏",
             symbol = "│",
             options = { try_as_border = true },
         },
@@ -263,6 +294,7 @@ return {
         },
     },
 
+    -- TODO: They are not applied everywhere (e.g. Neotree)
     -- devicons used by many plugins
     { "nvim-tree/nvim-web-devicons", lazy = true },
 
