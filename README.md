@@ -57,6 +57,7 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 - Clear TODOs
 - Adjust Readme to Linux
 - Make Neotree work full screen on startup
+- autocomand to replace :q to bufdel or checkout mini bufremove
 
 ## Plugins to consider
 

@@ -1,4 +1,5 @@
 return {
+    -- LSP Zero simplifies the setup of LSP related plugins
     {
         'VonHeikemen/lsp-zero.nvim',
         enabled = true,
@@ -20,8 +21,13 @@ return {
             -- Snippets
             { 'L3MON4D3/LuaSnip' },             -- Required
             { 'rafamadriz/friendly-snippets' }, -- Optional
+
+            -- Neovim Config specific
+            { "folke/neodev.nvim",                opts = {} },
         },
         config = function()
+            -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
+            require("neodev").setup({})
             local lsp = require("lsp-zero")
 
             lsp.preset("recommended")
@@ -192,6 +198,9 @@ return {
             require('lspconfig').lua_ls.setup({
                 settings = {
                     Lua = {
+                        completion = {
+                            callSnippet = "Replace"
+                        },
                         diagnostics = {
                             globals = { 'vim' }
                         }

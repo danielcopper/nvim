@@ -25,9 +25,13 @@ return {
         init = function()
             -- NOTE: To open neotree on startup without specifying it in autocmd file
             -- autocmd would require neotree to be installed
-            vim.api.nvim_create_autocmd("VimEnter", {
-                command = "Neotree"
-            })
+            -- vim.api.nvim_create_autocmd("VimEnter", {
+            --     command = "Neotree"
+            -- })
+
+            -- NOTE: Somehow this doesn't break the design currently
+            -- TODO: check if update fixed it
+            require("neo-tree")
         end,
         opts = {
             -- NOTE: This would open neotree in the current window by default
@@ -35,6 +39,15 @@ return {
             -- comes with some drawback though like the no name buffer and closing
             -- after selecting a file to open.
             -- window = { position = "current" }
+            filesystem = {
+                filtered_items = {
+                    visible = true -- when true, they will just be displayed differently than normal items
+                },
+                follow_current_file = {
+                    enabled = true,          -- This will find and focus the file in the active buffer every time the current file is changed while the tree is open.
+                    leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
+                },
+            },
         },
         config = function(_, opts)
             require("neo-tree").setup(opts)

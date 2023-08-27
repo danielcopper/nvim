@@ -1,10 +1,10 @@
 local opt = vim.opt
 
-opt.clipboard = 'unnamedplus' -- allows neovim to access the system clipboard
+vim.g.mapleader = " "
+
+opt.clipboard = "unnamedplus" -- allows neovim to access the system clipboard
 opt.conceallevel = 0 -- so that `` is visible in markdown files
 opt.fileencoding = 'utf-8'
-
-vim.g.mapleader = ' '
 
 opt.number = true -- Print line number
 opt.relativenumber = true -- Relative line numbers
@@ -25,7 +25,8 @@ opt.wrap = false -- no line wrapping when text flows over screen
 -- no vim backups but undo tree has a long history
 opt.swapfile = false
 opt.backup = false
-opt.undodir = os.getenv('HOME') .. '/.vim/undodir'
+-- TODO: Check how lazyvim does this platform agnostic
+opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 opt.undofile = true
 
 opt.hlsearch = false
@@ -35,7 +36,7 @@ opt.termguicolors = true -- True color support
 
 opt.scrolloff = 8 -- minimum visible lines at the bottom or top
 opt.sidescrolloff = 8 -- Columns of context
-opt.signcolumn = 'yes' -- Always show the signcolumn, otherwise it would shift the text each time
+opt.signcolumn = "yes" -- Always show the signcolumn, otherwise it would shift the text each time
 
 opt.cursorline = true -- Enable highlighting of the current line
 opt.ignorecase = true -- Ignore case
@@ -51,4 +52,4 @@ opt.updatetime = 50 -- should improve response time
 
 -- vim.opt.colorcolumn = "123"
 -- no ~ on gui
--- vim.opt.fillchars = { eob = " " }
+vim.opt.fillchars = { eob = " " }

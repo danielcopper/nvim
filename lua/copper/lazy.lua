@@ -11,16 +11,13 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Set up defaults and load core options and settings first
--- TODO: Turn this into a spec
-require("copper.config")
-
 require("lazy").setup({
     defaults = {
         lazy = true,
     },
     spec = {
         { import = "copper.plugins" },
+        { import = "copper.plugins.lsp.core"}
     },
     install = {
         -- try to load one of these colorschemes when starting an installation during startup

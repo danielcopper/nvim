@@ -85,8 +85,12 @@ return {
             })
         end,
         keys = {
-            set('n', '<A-,>', '<Cmd>BufferLineCyclePrev<CR>', { desc = 'Select previous Buffer' }),
-            set('n', '<A-.>', '<Cmd>BufferLineCycleNext<CR>', { desc = 'Select next Buffer' }),
+            -- cycle between buffers
+            set("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Move to Prev buffer" }),
+            set("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Move to Next buffer" }),
+            set('n', '<A-,>', '<Cmd>BufferLineCyclePrev<CR>', { desc = "Move to Prev buffer", remap = true }),
+            set('n', '<A-.>', '<Cmd>BufferLineCycleNext<CR>', { desc = "Move to Next buffer", remap = true }),
+
             set('n', '<A-<>', '<Cmd>BufferLineMovePrevious<CR>', { desc = 'Move buffer to the left' }),
             set('n', '<A->>', '<Cmd>BufferLineMoveNext<CR>', { desc = 'Move Buffer to the right' }),
             set('n', '<A-1>', '<Cmd>BufferLineGoTo 1<CR>', { desc = 'Goto Buffer number 9' }),
@@ -105,6 +109,7 @@ return {
             -- set('n', '<leader>ca', '<Cmd>BufDelAll<CR>', { desc = 'Close all Buffer' }),
             set('n', '<leader>bca', '<Cmd>Neotree focus<CR><Cmd>BufDelOthers<CR>', { desc = 'Close all Buffers' }),
             set('n', '<leader>bco', '<Cmd>BufDelOthers<CR>', { desc = 'Close all but current Buffer' }),
+
             -- set('n', '<leader>co', '<Cmd>BufferLineGroupClose ungrouped<CR>', { desc = 'Close unpinned Buffers' }),
             -- set('n', '<leader>ca',
             --     function()
@@ -124,7 +129,7 @@ return {
         event = 'VeryLazy',
         opts = {
             options = {
-                theme = 'catppuccin',
+                theme = 'auto',
                 globalstatus = true,
                 disabled_filetypes = { statusline = { 'lazy', 'alpha' } },
             },

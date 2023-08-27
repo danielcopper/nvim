@@ -1,5 +1,4 @@
 return {
-
     -- measure startuptime
     {
         "dstein64/vim-startuptime",
@@ -20,14 +19,19 @@ return {
         keys = {
             { "<leader>qs", function() require("persistence").load() end,                desc = "Restore Session" },
             { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
-            { "<leader>qd", function() require("persistence").stop() end,                desc =
-            "Don't Save Current Session" },
+            {
+                "<leader>qd",
+                function() require("persistence").stop() end,
+                desc =
+                "Don't Save Current Session"
+            },
         },
     },
 
-    { 'ojroques/nvim-bufdel', lazy = false },
+
+    { 'ojroques/nvim-bufdel',        lazy = false },
 
     -- libraries used by other plugins
-    { "nvim-lua/plenary.nvim", lazy = true },
+    { "nvim-lua/plenary.nvim",       lazy = true },
     { "nvim-tree/nvim-web-devicons", lazy = true },
 }
