@@ -1,6 +1,7 @@
 local set = vim.keymap.set
 
 return {
+    -- Notifications
     {
         "rcarriga/nvim-notify",
         keys = {
@@ -55,7 +56,7 @@ return {
                         filetype = 'neo-tree',
                         text = 'File Explorer',
                         --highlight = "Directory",
-                        separator = false
+                        separator = true
                         --text_align = "left"
                     }
                 },
@@ -90,7 +91,6 @@ return {
             set("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Move to Next buffer" }),
             set('n', '<A-,>', '<Cmd>BufferLineCyclePrev<CR>', { desc = "Move to Prev buffer", remap = true }),
             set('n', '<A-.>', '<Cmd>BufferLineCycleNext<CR>', { desc = "Move to Next buffer", remap = true }),
-
             set('n', '<A-<>', '<Cmd>BufferLineMovePrevious<CR>', { desc = 'Move buffer to the left' }),
             set('n', '<A->>', '<Cmd>BufferLineMoveNext<CR>', { desc = 'Move Buffer to the right' }),
             set('n', '<A-1>', '<Cmd>BufferLineGoTo 1<CR>', { desc = 'Goto Buffer number 9' }),
@@ -107,10 +107,9 @@ return {
             -- set('n', '<A-c>', '<Cmd>:b#|bd#<CR>', { desc = 'Close current Buffer' }),
             set('n', '<A-c>', '<Cmd>BufDel<CR>', { desc = 'Close current Buffer' }),
             -- set('n', '<leader>ca', '<Cmd>BufDelAll<CR>', { desc = 'Close all Buffer' }),
-            set('n', '<leader>bca', '<Cmd>Neotree focus<CR><Cmd>BufDelOthers<CR>', { desc = 'Close all Buffers' }),
+            set('n', '<leader>bca', '<Cmd>BufDelOthers<CR>', { desc = 'Close all Buffers' }),
             set('n', '<leader>bco', '<Cmd>BufDelOthers<CR>', { desc = 'Close all but current Buffer' }),
-
-            -- set('n', '<leader>co', '<Cmd>BufferLineGroupClose ungrouped<CR>', { desc = 'Close unpinned Buffers' }),
+            set('n', '<leader>bcu', '<Cmd>BufferLineGroupClose ungrouped<CR>', { desc = 'Close unpinned Buffers' }),
             -- set('n', '<leader>ca',
             --     function()
             --         for _, e in ipairs(bufferline.get_elements().elements) do
@@ -249,52 +248,43 @@ return {
                 "<S-Enter>",
                 function() require("noice").redirect(vim.fn.getcmdline()) end,
                 mode = "c",
-                desc =
-                "Redirect Cmdline"
+                desc = "Redirect Cmdline"
             },
             {
                 "<leader>snl",
                 function() require("noice").cmd("last") end,
-                desc =
-                "Noice Last Message"
+                desc = "Noice Last Message"
             },
             {
                 "<leader>snh",
                 function() require("noice").cmd("history") end,
-                desc =
-                "Noice History"
+                desc = "Noice History"
             },
             {
                 "<leader>sna",
                 function() require("noice").cmd("all") end,
-                desc =
-                "Noice All"
+                desc = "Noice All"
             },
             {
                 "<leader>snd",
                 function() require("noice").cmd("dismiss") end,
-                desc =
-                "Dismiss All"
+                desc = "Dismiss All"
             },
             {
                 "<c-f>",
                 function() if not require("noice.lsp").scroll(4) then return "<c-f>" end end,
                 silent = true,
                 expr = true,
-                desc =
-                "Scroll forward",
-                mode = {
-                    "i", "n", "s" }
+                desc = "Scroll forward",
+                mode = { "i", "n", "s" }
             },
             {
                 "<c-b>",
                 function() if not require("noice.lsp").scroll(-4) then return "<c-b>" end end,
                 silent = true,
                 expr = true,
-                desc =
-                "Scroll backward",
-                mode = {
-                    "i", "n", "s" }
+                desc = "Scroll backward",
+                mode = { "i", "n", "s" }
             },
         },
     },
