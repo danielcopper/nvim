@@ -43,110 +43,11 @@ return {
                 'tsserver',
             })
 
-            local cmp = require('cmp')
-            local cmp_select = { behavior = cmp.SelectBehavior.Select }
-
-            -- custom keybindings
-            local cmp_mappings = lsp.defaults.cmp_mappings({
-                -- navigating code suggestions
-                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-                ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-                ['<CR>'] = cmp.mapping.confirm({ select = true }),
-                ["<C-Space>"] = cmp.mapping.complete(),
-            })
-
-            -- disable completion with tab
-            cmp_mappings['<Tab>'] = nil
-            cmp_mappings['<S-Tab>'] = nil
-
-            lsp.setup_nvim_cmp({
-                mapping = cmp_mappings
-            })
-
             -- on_attach happens on every single buffer that has an lsp that's associated with it
             -- that means, that all the following remaps only exist for the current buffer you are on
             -- for example gd on a buffer that has an lsp will use lsp's [g]oto[d]efinition. On a buffer
             -- that has no lsp associated gd will use vim instead to try to jump to definition.
             lsp.on_attach(function(client, bufnr)
-                -- NOTE: Temporary fix for semantic token of omnisharp/roslyn not being conform for lsp
-                if client.name == "omnisharp" then
-                    client.server_capabilities.semanticTokensProvider = {
-                        full = vim.empty_dict(),
-                        legend = {
-                            tokenModifiers = { "static_symbol" },
-                            tokenTypes = {
-                                "comment",
-                                "excluded_code",
-                                "identifier",
-                                "keyword",
-                                "keyword_control",
-                                "number",
-                                "operator",
-                                "operator_overloaded",
-                                "preprocessor_keyword",
-                                "string",
-                                "whitespace",
-                                "text",
-                                "static_symbol",
-                                "preprocessor_text",
-                                "punctuation",
-                                "string_verbatim",
-                                "string_escape_character",
-                                "class_name",
-                                "delegate_name",
-                                "enum_name",
-                                "interface_name",
-                                "module_name",
-                                "struct_name",
-                                "type_parameter_name",
-                                "field_name",
-                                "enum_member_name",
-                                "constant_name",
-                                "local_name",
-                                "parameter_name",
-                                "method_name",
-                                "extension_method_name",
-                                "property_name",
-                                "event_name",
-                                "namespace_name",
-                                "label_name",
-                                "xml_doc_comment_attribute_name",
-                                "xml_doc_comment_attribute_quotes",
-                                "xml_doc_comment_attribute_value",
-                                "xml_doc_comment_cdata_section",
-                                "xml_doc_comment_comment",
-                                "xml_doc_comment_delimiter",
-                                "xml_doc_comment_entity_reference",
-                                "xml_doc_comment_name",
-                                "xml_doc_comment_processing_instruction",
-                                "xml_doc_comment_text",
-                                "xml_literal_attribute_name",
-                                "xml_literal_attribute_quotes",
-                                "xml_literal_attribute_value",
-                                "xml_literal_cdata_section",
-                                "xml_literal_comment",
-                                "xml_literal_delimiter",
-                                "xml_literal_embedded_expression",
-                                "xml_literal_entity_reference",
-                                "xml_literal_name",
-                                "xml_literal_processing_instruction",
-                                "xml_literal_text",
-                                "regex_comment",
-                                "regex_character_class",
-                                "regex_anchor",
-                                "regex_quantifier",
-                                "regex_grouping",
-                                "regex_alternation",
-                                "regex_text",
-                                "regex_self_escaped_character",
-                                "regex_other_escape",
-                            },
-                        },
-                        range = true,
-                    }
-                end
-
                 local opts = { buffer = bufnr, remap = false }
                 -- TODO: Rethink theses mappings
                 vim.keymap.set('n', 'gd', function() require('telescope.builtin').lsp_definitions() end,
@@ -198,9 +99,11 @@ return {
             })
 
             -- C# / OmniSharp
-            local datapath = vim.fn.expand("~") .. '\\AppData\\local\\nvim-data'
+            local windowsDatapath = vim.fn.expand("~") .. '\\AppData\\local\\nvim-data'
+            local linuxDatapath = vim.fn.expand("~") .. '/.local/share/nvim'
+
             require('lspconfig').omnisharp.setup({
-                cmd = { 'dotnet', datapath .. '/mason/packages/omnisharp/OmniSharp.dll' },
+                cmd = { 'dotnet', linuxDatapath .. '/mason/packages/omnisharp/libexec/OmniSharp.dll' },
                 -- Enables support for reading code style, naming convention and analyzer
                 -- settings from .editorconfig.
                 enable_editorconfig_support = true,
@@ -225,7 +128,7 @@ return {
                 enable_import_completion = false,
                 -- Specifies whether to include preview versions of the .NET SDK when
                 -- determining which version to use for project loading.
-                sdk_include_prereleases = true,
+                sdk_include_prereleases = false,
                 -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
                 -- true
                 analyze_open_documents_only = false,
@@ -256,20 +159,68 @@ return {
 
             lsp.setup()
 
+            -- CMP stup
+            local cmp = require('cmp')
+            local cmp_select = { behavior = cmp.SelectBehavior.Select }
+
+            -- custom keybindings
+            local cmp_mappings = lsp.defaults.cmp_mappings({
+                -- navigating code suggestions
+                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
+                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
+                ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+                ['<CR>'] = cmp.mapping.confirm({ select = true }),
+                ["<C-Space>"] = cmp.mapping.complete(),
+            })
+
+            -- disable completion with tab
+            cmp_mappings['<Tab>'] = nil
+            cmp_mappings['<S-Tab>'] = nil
+
+            lsp.setup_nvim_cmp({
+                mapping = cmp_mappings
+            })
+
             -- Additional completion configuration
             local cmp_action = require('lsp-zero').cmp_action()
-            require('luasnip.loaders.from_vscode').lazy_load()
 
             cmp.setup({
+                -- TODO: Add function that sets keyword length based on filetype
+                -- Refer to this for inspiration: https://github.com/hrsh7th/nvim-cmp/issues/519
                 sources = {
                     { name = 'nvim_lsp' },
                     { name = 'luasnip' },
+                    { name = 'buffer' },
+                    { name = 'path' }
                 },
                 mapping = {
                     ['<C-f'] = cmp_action.luasnip_jump_forward(),
                     ['<C-b'] = cmp_action.luasnip_jump_backward(),
-                }
+                },
+                -- Disabling completions in comments
+                enabled = function()
+                    -- disable completion in comments
+                    local context = require 'cmp.config.context'
+                    -- keep command mode completion enabled when cursor is in a comment
+                    if vim.api.nvim_get_mode().mode == 'c' then
+                        return true
+                    else
+                        return not context.in_treesitter_capture("comment")
+                            and not context.in_syntax_group("Comment")
+                    end
+                end,
             })
+
+            -- Add parantheses after selecting function or method item
+            -- If you want insert `(` after select function or method item
+            local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+            cmp.event:on(
+                'confirm_done',
+                cmp_autopairs.on_confirm_done()
+            )
+
+            -- TODO: find out why
+            require('luasnip.loaders.from_vscode').lazy_load()
         end
     },
 

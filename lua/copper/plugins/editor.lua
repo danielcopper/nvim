@@ -61,7 +61,7 @@ return {
         'nvim-tree/nvim-tree.lua',
         enabled = true,
         -- lazy = false, -- opens the tree on nvim startup without a autocmd
-        init = function ()
+        init = function()
             require("nvim-tree")
         end,
         opts = {
@@ -123,21 +123,40 @@ return {
     -- Fuzzy Finder
     {
         'nvim-telescope/telescope.nvim',
-        cmd = "Telescope",
-        opts = {
-            defaults = {
-                dynamic_preview_title = true, -- Shows the whole filepath above the preview
-            }
+        branch = "0.1.x",
+        dependencies = {
+            { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }, -- for better sorting performance
         },
+        cmd = "Telescope",
+        config = function()
+            local telescope = require("telescope")
+            local actions = require("telescope.actions")
+
+            telescope.setup({
+                defaults = {
+                    mappings = {
+                        i = {
+                            ["<C-j>"] = actions.move_selection_next,                  -- move to next result in list
+                            ["<C-k>"] = actions.move_selection_previous,              -- move to previous result in list
+                            ["<C-q>"] = actions.send_to_qflist + actions.open_qflist, -- send all entries to quickfist list an open it
+                        }
+                    }
+                }
+            })
+
+            telescope.load_extension("fzf"); -- don't forget to load the performance improvements
+        end,
         keys = {
-            set('n', '<leader>pf', function() require('telescope.builtin').find_files() end,
-                { desc = 'Open Telescope find files' }),
-            set('n', '<leader>td', function() require('telescope.builtin').diagnostics() end,
-                { desc = 'Lists diagnostics for currently open buffers in Telescope' }),
-            set('n', '<leader>ps', function() require('telescope.builtin').live_grep() end,
-                { desc = 'Telescope Grep String Search' }),
-            set('n', '<leader>km', function() require('telescope.builtin').keymaps() end,
-                { desc = 'Lists normal mode keymappings in Telescope' }),
+            set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" }),
+            set("n", "<leader>fr", "<cmd>Telescope oldfiles", { desc = "Fuzzy find recent files" }),
+            set("n", "<leader>fs", "<cmd>Telescope live_grep<cr>", { desc = "Fuzzy find string in cwd" }),
+            set("n", "<leader>td", function() require("telescope.builtin").diagnostics() end,
+                { desc = "Lists diagnostics for currently open buffers in Telescope" }),
+            set("n", "<leader>km", function() require("telescope.builtin").keymaps() end,
+                { desc = "Lists normal mode keymappings in Telescope" }),
+            set("n", "<leader>tn", function() require("telescope").extensions.notify.notify() end,
+                { desc = "Show all Notifications in Telescope" }),
+            set("n", "<leader>tt", "<Cmd>TodoTelescope<CR>", { desc = "Open Todos in Telescope" }),
         }
     },
 

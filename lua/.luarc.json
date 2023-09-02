@@ -90,6 +90,7 @@
         "/home/daniel/.local/share/nvim/lazy/neovim/lua",
         "/home/daniel/.config/nvim/lua",
         "/home/daniel/.config/nvim/lua",
-        "${3rd}/luv/library"
+        "${3rd}/luv/library",
+        "${3rd}/luassert/library"
     ]
 }

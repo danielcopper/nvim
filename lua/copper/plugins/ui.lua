@@ -14,13 +14,6 @@ return {
                 end,
                 desc = "Dismiss all Notifications",
             },
-            {
-                "<leader>tn",
-                function()
-                    require("telescope").extensions.notify.notify()
-                end,
-                desc = "Show all Notifications in Telescope",
-            }
         },
         opts = {
             timeout = 3000,
@@ -33,10 +26,11 @@ return {
         },
     },
 
-    -- better vim.ui
+    -- Improves the UI for input and select options
+    -- for example for code actions
+    -- NOTE: Try to simplify this setup
     {
         "stevearc/dressing.nvim",
-        lazy = true,
         init = function()
             ---@diagnostic disable-next-line: duplicate-set-field
             vim.ui.select = function(...)
@@ -240,6 +234,7 @@ return {
     },
 
     -- noicer ui
+    -- TODO: Only seems to work in lua workspaces.
     {
         "folke/which-key.nvim",
     },
