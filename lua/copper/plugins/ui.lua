@@ -1,3 +1,5 @@
+-- UI related plugins for Neovim
+
 local set = vim.keymap.set
 
 return {
@@ -12,6 +14,13 @@ return {
                 end,
                 desc = "Dismiss all Notifications",
             },
+            {
+                "<leader>tn",
+                function()
+                    require("telescope").extensions.notify.notify()
+                end,
+                desc = "Show all Notifications in Telescope",
+            }
         },
         opts = {
             timeout = 3000,
@@ -53,7 +62,9 @@ return {
                 mode = 'buffers', -- set to "tabs" to only show tabpages instead
                 offsets = {
                     {
-                        filetype = 'neo-tree',
+                        -- NOTE: Pick one
+                        -- filetype = 'neo-tree',
+                        filetype = 'NvimTree',
                         text = 'File Explorer',
                         --highlight = "Directory",
                         separator = true
@@ -126,36 +137,57 @@ return {
     {
         'nvim-lualine/lualine.nvim',
         event = 'VeryLazy',
-        opts = {
-            options = {
-                theme = 'auto',
-                globalstatus = true,
-                disabled_filetypes = { statusline = { 'lazy', 'alpha' } },
-            },
-            sections = {
-                lualine_a = { 'mode' },
-                lualine_b = { 'branch' },
-                lualine_c = {
-                    {
-                        'diagnostics',
-                        symbols = {
-                            Error = ' ',
-                            Warn = ' ',
-                            Hint = ' ',
-                            Info = ' ',
+        config = function()
+            local lazy_status = require("lazy.status")
+            require("lualine").setup({
+                options = {
+                    theme = 'auto',
+                    globalstatus = true,
+                    disabled_filetypes = { statusline = { 'lazy', 'alpha' } },
+                },
+                sections = {
+                    lualine_a = { 'mode' },
+                    lualine_b = { 'branch' },
+                    lualine_c = {
+                        {
+                            'diagnostics',
+                            symbols = {
+                                Error = ' ',
+                                Warn = ' ',
+                                Hint = ' ',
+                                Info = ' ',
+                            },
+                        },
+                        {
+                            'filetype',
+                            icon_only = true,
+                            separator = '',
+                            padding = {
+                                left = 1, right = 0 }
+                        },
+                        { 'filename', path = 1, symbols = { modified = '  ', readonly = '', unnamed = '' } },
+                        {
+                            -- Breadcrumbs in the statusline
+                            function() return require("nvim-navic").get_location() end,
+                            cond = function()
+                                return package.loaded["nvim-navic"] and
+                                    require("nvim-navic").is_available()
+                            end,
                         },
                     },
-                    {
-                        'filetype',
-                        icon_only = true,
-                        separator = '',
-                        padding = {
-                            left = 1, right = 0 }
-                    },
-                    { 'filename', path = 1, symbols = { modified = '  ', readonly = '', unnamed = '' } },
+                    lualine_x = {
+                        {
+                            lazy_status.updates,
+                            cond = lazy_status.has_updates,
+                            color = { fg = "#ff9e64" },
+                        },
+                        { "encoding" },
+                        { "fileformat" },
+                        { "filetype" }
+                    }
                 }
-            }
-        }
+            })
+        end
     },
 
     -- Indentation guides
@@ -289,7 +321,106 @@ return {
         },
     },
 
-    -- TODO: They are not applied everywhere (e.g. Neotree)
+    {
+        -- animations
+        {
+            "echasnovski/mini.animate",
+            event = "VeryLazy",
+            opts = function()
+                -- don't use animate when scrolling with the mouse
+                local mouse_scrolled = false
+                for _, scroll in ipairs({ "Up", "Down" }) do
+                    local key = "<ScrollWheel" .. scroll .. ">"
+                    vim.keymap.set({ "", "i" }, key, function()
+                        mouse_scrolled = true
+                        return key
+                    end, { expr = true })
+                end
+
+                local animate = require("mini.animate")
+                return {
+                    resize = {
+                        timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
+                    },
+                    scroll = {
+                        timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
+                        subscroll = animate.gen_subscroll.equal({
+                            predicate = function(total_scroll)
+                                if mouse_scrolled then
+                                    mouse_scrolled = false
+                                    return false
+                                end
+                                return total_scroll > 1
+                            end,
+                        }),
+                    },
+                }
+            end,
+        },
+    },
+
+    -- lsp symbol navigation for lualine. This shows where
+    -- in the code structure you are - within functions, classes,
+    -- etc - in the statusline.
+    {
+        "SmiteshP/nvim-navic",
+        lazy = true,
+        init = function()
+            vim.g.navic_silence = true
+            vim.api.nvim_create_autocmd("LspAttach", {
+                callback = function(args)
+                    local buffer = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    require("nvim-navic").attach(client, buffer)
+                end,
+            })
+        end,
+        opts = function()
+            return {
+                separator = " ",
+                highlight = true,
+                depth_limit = 5,
+                icons = {
+                    Array = " ",
+                    Boolean = " ",
+                    Class = " ",
+                    Color = " ",
+                    Constant = " ",
+                    Constructor = " ",
+                    Copilot = " ",
+                    Enum = " ",
+                    EnumMember = " ",
+                    Event = " ",
+                    Field = " ",
+                    File = " ",
+                    Folder = " ",
+                    Function = " ",
+                    Interface = " ",
+                    Key = " ",
+                    Keyword = " ",
+                    Method = " ",
+                    Module = " ",
+                    Namespace = " ",
+                    Null = " ",
+                    Number = " ",
+                    Object = " ",
+                    Operator = " ",
+                    Package = " ",
+                    Property = " ",
+                    Reference = " ",
+                    Snippet = " ",
+                    String = " ",
+                    Struct = " ",
+                    Text = " ",
+                    TypeParameter = " ",
+                    Unit = " ",
+                    Value = " ",
+                    Variable = " ",
+                },
+            }
+        end,
+    },
+
     -- devicons used by many plugins
     { "nvim-tree/nvim-web-devicons", lazy = true },
 

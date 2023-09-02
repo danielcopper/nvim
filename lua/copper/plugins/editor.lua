@@ -1,10 +1,13 @@
+-- Plugins that enable basic Editor features like file explorer, git plugins etc.
+
 local set = vim.keymap.set
 
 return {
     -- File explorer
-    -- TODO: Fix nvim-web-devicons usage
+    -- Neotree or NvimTree below
     {
         "nvim-neo-tree/neo-tree.nvim",
+        enabled = false,
         branch = "v3.x",
         cmd = "Neotree",
         keys = {
@@ -54,6 +57,69 @@ return {
         end,
     },
 
+    {
+        'nvim-tree/nvim-tree.lua',
+        enabled = true,
+        -- lazy = false, -- opens the tree on nvim startup without a autocmd
+        init = function ()
+            require("nvim-tree")
+        end,
+        opts = {
+            hijack_unnamed_buffer_when_opening = true,
+            disable_netrw = true,
+            hijack_cursor = false,
+            hijack_netrw = true,
+            sync_root_with_cwd = false,
+            reload_on_bufenter = true,
+            git = {
+                enable = true,
+                ignore = true,
+                show_on_dirs = true,
+                show_on_open_dirs = true,
+                timeout = 5000,
+            },
+            view = {
+                adaptive_size = false,
+                width = 36,
+                preserve_window_proportions = true,
+            },
+            renderer = {
+                full_name = true,
+                highlight_opened_files = 'all',
+                -- root_folder_label = ':~:s?$?/..?',
+                root_folder_label = ':t',
+                indent_width = 2,
+                indent_markers = {
+                    enable = true,
+                },
+                icons = {
+                    -- git_placement = "signcolumn",
+                    show = {
+                        file = true,
+                        folder = true,
+                        folder_arrow = false,
+                        git = true,
+                    }
+                }
+            },
+            update_focused_file = {
+                enable = true,
+                update_root = true,
+                ignore_list = { "help" },
+            },
+            actions = {
+                change_dir = {
+                    restrict_above_cwd = false,
+                }
+            }
+        },
+        keys = {
+            set('n', '<leader>fe', '<Cmd>NvimTreeFocus<CR>'),
+            set('n', '<leader>te', '<Cmd>NvimTreeToggle<CR>'),
+            set('n', '<leader>re', '<Cmd>NvimTreeRefresh<CR>'),
+        }
+    },
+
     -- Fuzzy Finder
     {
         'nvim-telescope/telescope.nvim',
@@ -64,13 +130,13 @@ return {
             }
         },
         keys = {
-            vim.keymap.set('n', '<leader>pf', function() require('telescope.builtin').find_files() end,
+            set('n', '<leader>pf', function() require('telescope.builtin').find_files() end,
                 { desc = 'Open Telescope find files' }),
-            vim.keymap.set('n', '<leader>td', function() require('telescope.builtin').diagnostics() end,
+            set('n', '<leader>td', function() require('telescope.builtin').diagnostics() end,
                 { desc = 'Lists diagnostics for currently open buffers in Telescope' }),
-            vim.keymap.set('n', '<leader>ps', function() require('telescope.builtin').live_grep() end,
+            set('n', '<leader>ps', function() require('telescope.builtin').live_grep() end,
                 { desc = 'Telescope Grep String Search' }),
-            vim.keymap.set('n', '<leader>km', function() require('telescope.builtin').keymaps() end,
+            set('n', '<leader>km', function() require('telescope.builtin').keymaps() end,
                 { desc = 'Lists normal mode keymappings in Telescope' }),
         }
     },
@@ -125,11 +191,11 @@ return {
             use_diagnostic_signs = true,
         },
         keys = {
-            vim.keymap.set('n', '<leader>to', '<cmd>Trouble<cr>',
+            set('n', '<leader>to', '<cmd>Trouble<cr>',
                 { desc = 'Open Workspace Diagnostics (Trouble)' }),
-            vim.keymap.set('n', '<leader>tf', '<cmd>TroubleToggle document_diagnostics<cr>',
+            set('n', '<leader>tf', '<cmd>TroubleToggle document_diagnostics<cr>',
                 { desc = 'Toggle Document Diagnostics (Trouble)' }),
-            vim.keymap.set('n', '<leader>tw', '<cmd>TroubleToggle workspace_diagnostics<cr>',
+            set('n', '<leader>tw', '<cmd>TroubleToggle workspace_diagnostics<cr>',
                 { desc = 'Toggle Workspace Diagnostics (Trouble)' }),
         }
     },

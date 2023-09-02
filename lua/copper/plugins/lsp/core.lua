@@ -35,6 +35,7 @@ return {
             lsp.ensure_installed({
                 'angularls',
                 'html',
+                'cssls',
                 'jsonls',
                 'lua_ls',
                 'marksman',
@@ -146,20 +147,7 @@ return {
                     }
                 end
 
-                -- NOTE: This shorter form stills results in some group name errors
-                -- if client.name == 'omnisharp' then
-                --     local tokenModifiers = client.server_capabilities.semanticTokensProvider.legend.tokenModifiers
-                --     for i, v in ipairs(tokenModifiers) do
-                --         tokenModifiers[i] = v:gsub(' ', '_')
-                --     end
-                --     local tokenTypes = client.server_capabilities.semanticTokensProvider.legend.tokenTypes
-                --     for i, v in ipairs(tokenTypes) do
-                --         tokenTypes[i] = v:gsub(' ', '_')
-                --     end
-                -- end
-
                 local opts = { buffer = bufnr, remap = false }
-
                 -- TODO: Rethink theses mappings
                 vim.keymap.set('n', 'gd', function() require('telescope.builtin').lsp_definitions() end,
                     { desc = 'Telescope goto Definitions' })
@@ -195,6 +183,7 @@ return {
             })
 
             -- Language servers custom or additional configurations
+            -- Lua Language Server
             require('lspconfig').lua_ls.setup({
                 settings = {
                     Lua = {
@@ -208,39 +197,62 @@ return {
                 }
             })
 
-            -- local datapath = vim.fn.expand("~") .. '\\AppData\\local\\nvim-data'
-            --
-            -- require('lspconfig').omnisharp.setup({
-            --     cmd = { 'dotnet', datapath .. '/mason/packages/omnisharp/OmniSharp.dll' },
-            --     -- Enables support for reading code style, naming convention and analyzer
-            --     -- settings from .editorconfig.
-            --     enable_editorconfig_support = true,
-            --     -- If true, MSBuild project system will only load projects for files that
-            --     -- were opened in the editor. This setting is useful for big C# codebases
-            --     -- and allows for faster initialization of code navigation features only
-            --     -- for projects that are relevant to code that is being edited. With this
-            --     -- setting enabled OmniSharp may load fewer projects and may thus display
-            --     -- incomplete reference lists for symbols.
-            --     enable_ms_build_load_projects_on_demand = false,
-            --     -- Enables support for roslyn analyzers, code fixes and rulesets.
-            --     enable_roslyn_analyzers = true,
-            --     -- Specifies whether 'using' directives should be grouped and sorted during
-            --     -- document formatting.
-            --     organize_imports_on_format = true,
-            --     -- Enables support for showing unimported types and unimported extension
-            --     -- methods in completion lists. When committed, the appropriate using
-            --     -- directive will be added at the top of the current file. This option can
-            --     -- have a negative impact on initial completion responsiveness,
-            --     -- particularly for the first few completion sessions after opening a
-            --     -- solution.
-            --     enable_import_completion = false,
-            --     -- Specifies whether to include preview versions of the .NET SDK when
-            --     -- determining which version to use for project loading.
-            --     sdk_include_prereleases = true,
-            --     -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
-            --     -- true
-            --     analyze_open_documents_only = false,
-            -- })
+            -- C# / OmniSharp
+            local datapath = vim.fn.expand("~") .. '\\AppData\\local\\nvim-data'
+            require('lspconfig').omnisharp.setup({
+                cmd = { 'dotnet', datapath .. '/mason/packages/omnisharp/OmniSharp.dll' },
+                -- Enables support for reading code style, naming convention and analyzer
+                -- settings from .editorconfig.
+                enable_editorconfig_support = true,
+                -- If true, MSBuild project system will only load projects for files that
+                -- were opened in the editor. This setting is useful for big C# codebases
+                -- and allows for faster initialization of code navigation features only
+                -- for projects that are relevant to code that is being edited. With this
+                -- setting enabled OmniSharp may load fewer projects and may thus display
+                -- incomplete reference lists for symbols.
+                enable_ms_build_load_projects_on_demand = false,
+                -- Enables support for roslyn analyzers, code fixes and rulesets.
+                enable_roslyn_analyzers = true,
+                -- Specifies whether 'using' directives should be grouped and sorted during
+                -- document formatting.
+                organize_imports_on_format = true,
+                -- Enables support for showing unimported types and unimported extension
+                -- methods in completion lists. When committed, the appropriate using
+                -- directive will be added at the top of the current file. This option can
+                -- have a negative impact on initial completion responsiveness,
+                -- particularly for the first few completion sessions after opening a
+                -- solution.
+                enable_import_completion = false,
+                -- Specifies whether to include preview versions of the .NET SDK when
+                -- determining which version to use for project loading.
+                sdk_include_prereleases = true,
+                -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
+                -- true
+                analyze_open_documents_only = false,
+            })
+
+            ---Enable (broadcasting) snippet capability for completion
+            -- used for css and json ls
+            local capabilities = vim.lsp.protocol.make_client_capabilities()
+            capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+            -- CSS Config
+            require 'lspconfig'.cssls.setup {
+                capabilities = capabilities,
+            }
+
+            require 'lspconfig'.jsonls.setup {
+                capabilities = capabilities,
+            }
+
+            -- Angular Language Server
+            require 'lspconfig'.angularls.setup {}
+
+            -- ES Lint
+            require 'lspconfig'.eslint.setup {}
+
+            -- Typescript Language Server
+            require 'lspconfig'.tsserver.setup {}
 
             lsp.setup()
 
@@ -254,8 +266,8 @@ return {
                     { name = 'luasnip' },
                 },
                 mapping = {
-                    ['<C-n'] = cmp_action.luasnip_jump_forward(),
-                    ['<C-p'] = cmp_action.luasnip_jump_backward(),
+                    ['<C-f'] = cmp_action.luasnip_jump_forward(),
+                    ['<C-b'] = cmp_action.luasnip_jump_backward(),
                 }
             })
         end
@@ -291,7 +303,7 @@ return {
                     end
 
                     if client.supports_method("textDocument/rangeFormatting") then
-                        vim.keymap.set("x", "<Leader>cf", function()
+                        vim.keymap.set("n", "<Leader>cf", function()
                             vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
                         end, { buffer = bufnr, desc = "[lsp] format" })
                     end

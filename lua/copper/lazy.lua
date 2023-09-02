@@ -17,15 +17,17 @@ require("lazy").setup({
     },
     spec = {
         { import = "copper.plugins" },
-        { import = "copper.plugins.lsp.core"}
+        { import = "copper.plugins.lsp"}
     },
     install = {
         -- try to load one of these colorschemes when starting an installation during startup
         colorscheme = { "catppuccin", "tokyonight", "habamax" },
     },
     checker = {
-        -- automatically check for plugin updates
-        enabled = true,
+        enabled = true, -- automatically check for plugin updates
+    },
+    change_detection = {
+        notify = false, -- don't notify about config changes
     },
     performance = {
         rtp = {
