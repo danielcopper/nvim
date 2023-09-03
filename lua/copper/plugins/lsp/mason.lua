@@ -30,7 +30,7 @@ return {
                 "html",
                 "cssls",
                 "lua_ls",
-                "emmet_ls",
+                "emmet_language_server",
                 "omnisharp"
             },
             -- also auto-install servers that are configured with lspconfig

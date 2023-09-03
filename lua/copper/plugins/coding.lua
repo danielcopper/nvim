@@ -5,16 +5,19 @@ return {
         "hrsh7th/nvim-cmp",
         event = "InsertEnter",
         dependencies = {
-            "L3MON4D3/LuaSnip",             -- the actual snippet engine
-            "hrsh7th/cmp-nvim-lsp",         -- completion source for lsp related stuff
-            "hrsh7th/cmp-buffer",           -- source for words in buffer
-            "hrsh7th/cmp-path",             -- source for path completion
-            "saadparwaiz1/cmp_luasnip",     -- for autocompletion
+            "L3MON4D3/LuaSnip",    -- the actual snippet engine
+            "hrsh7th/cmp-nvim-lsp", -- completion source for lsp related stuff
+            "hrsh7th/cmp-buffer",  -- source for words in buffer
+            "hrsh7th/cmp-path",    -- source for path completion
+            "saadparwaiz1/cmp_luasnip", -- for autocompletion
             "rafamadriz/friendly-snippets", -- collection of useful snippets for different languages
+            "onsails/lspkind-nvim", -- change the appearance of the popup
         },
         config = function()
             local cmp = require("cmp")
+            local defaults = require("cmp.config.default")
             local luasnip = require("luasnip")
+            local lspkind = require("lspkind")
 
             -- load vscode style snippets from installed plugins (e.g. friendly-snippets)
             require("luasnip.loaders.from_vscode").lazy_load()
@@ -23,69 +26,91 @@ return {
                 completion = {
                     completeopt = "menu,menuone,preview,noselect",
                 },
+
                 snippet = {
                     -- configure how nvim-cmp interacts with the snippet engine
                     expand = function(args)
                         luasnip.lsp_expand(args.body)
                     end,
                 },
+
                 window = {
+                    completion = {
+                        winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+                        col_offset = -3,
+                        side_padding = 0,
+                    },
                     -- completion = cmp.config.window.bordered(),
                     -- documentation = cmp.config.window.bordered(),
                 },
+
+                formatting = {
+                    fields = { "kind", "abbr", "menu" },
+                    -- TODO: Maybe extend this to also use own icons like shown here: https://github.com/hrsh7th/nvim-cmp/wiki/Menu-Appearance
+                    -- and add min_width
+                    -- adds vscode like indicators in the suggestion list
+                    format = function(entry, vim_item)
+                        local kind =
+                            require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
+                        local strings = vim.split(kind.kind, "%s", { trimempty = true })
+                        kind.kind = " " .. (strings[1] or "") .. " "
+                        kind.menu = "    (" .. (strings[2] or "") .. ")"
+
+                        return kind
+                    end,
+                },
+
                 mapping = cmp.mapping.preset.insert({
-                    ["<C-j>"] = cmp.mapping.select_next_item(),        -- jump to next suggestion
-                    ["<C-k>"] = cmp.mapping.select_prev_item(),        -- jump to previous suggestion
-                    ["<C-f>"] = cmp.mapping.scroll_docs(4),            -- scroll through the hover documentation down
-                    ["<C-b>"] = cmp.mapping.scroll_docs(-4),           -- scroll through the hover documentation up
-                    ["<C-Space>"] = cmp.mapping.complete(),            -- show completion suggestions
-                    ["<C-e>"] = cmp.mapping.abort(),                   -- close completion suggestions
+                    ["<C-j>"] = cmp.mapping.select_next_item(), -- jump to next suggestion
+                    ["<C-k>"] = cmp.mapping.select_prev_item(), -- jump to previous suggestion
+                    ["<C-f>"] = cmp.mapping.scroll_docs(4), -- scroll through the hover documentation down
+                    ["<C-b>"] = cmp.mapping.scroll_docs(-4), -- scroll through the hover documentation up
+                    ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
+                    ["<C-e>"] = cmp.mapping.abort(),    -- close completion suggestions
                     ["<CR>"] = cmp.mapping.confirm({ select = true }), -- apply suggestion (autoselect top suggestion)
                 }),
 
                 -- the sources for autocompletion, the order is represented in the suggestions
                 sources = cmp.config.sources({
-                    { name = "nvim_lsp" }, -- LSP related snippets
-                    { name = "luasnip" },  -- snippets
-                    { name = "buffer" },   -- text withing current buffer
-                    { name = "path" },     -- file system paths
+                    -- NOTE: To add priority here do this:
+                    -- { name = "nvim_lsp", priority = 75 }
+                    { name = "nvim_lsp" },       -- LSP related snippets
+                    { name = "luasnip" },        -- snippets
+                    { name = "buffer",  max_view_entries = 10 }, -- NOTE: if this doesn't work try max_item_count instead
+                    { name = "path" },           -- file system paths
                 }),
 
                 -- disable the completion in comment sections
                 enabled = function()
                     -- disable completion in comments
-                    local context = require 'cmp.config.context'
+                    local context = require("cmp.config.context")
                     -- keep command mode completion enabled when cursor is in a comment
-                    if vim.api.nvim_get_mode().mode == 'c' then
+                    if vim.api.nvim_get_mode().mode == "c" then
                         return true
                     else
-                        return not context.in_treesitter_capture("comment")
-                            and not context.in_syntax_group("Comment")
+                        return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
                     end
-                end
-            })
+                end,
 
-            -- If you want to insert `(` after select function or method item automatically
-            local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-            cmp.event:on(
-                'confirm_done',
-                cmp_autopairs.on_confirm_done()
-            )
+                performance = {
+                    max_view_entries = 20,
+                },
+            })
         end,
     },
 
     -- Auto insert close pairs
     {
-        'windwp/nvim-autopairs',
+        "windwp/nvim-autopairs",
         event = "InsertEnter",
         opts = {},
     },
     -- NOTE: Currently broken and crashes nvim in certain situations, wait for a fix
     -- {
-    --     'altermo/ultimate-autopair.nvim',
-    --     event = { 'InsertEnter', 'CmdlineEnter' },
+    --     "altermo/ultimate-autopair.nvim",
+    --     event = { "InsertEnter", "CmdlineEnter" },
     --     config = function()
-    --         require('ultimate-autopair').setup({
+    --         require("ultimate-autopair").setup({
     --             --Config goes here
     --         })
     --     end,
@@ -114,12 +139,12 @@ return {
         end,
         opts = {
             mappings = {
-                add = "gza",            -- Add surrounding in Normal and Visual modes
-                delete = "gzd",         -- Delete surrounding
-                find = "gzf",           -- Find surrounding (to the right)
-                find_left = "gzF",      -- Find surrounding (to the left)
-                highlight = "gzh",      -- Highlight surrounding
-                replace = "gzr",        -- Replace surrounding
+                add = "gza", -- Add surrounding in Normal and Visual modes
+                delete = "gzd", -- Delete surrounding
+                find = "gzf", -- Find surrounding (to the right)
+                find_left = "gzF", -- Find surrounding (to the left)
+                highlight = "gzh", -- Highlight surrounding
+                replace = "gzr", -- Replace surrounding
                 update_n_lines = "gzn", -- Update `n_lines`
             },
         },
@@ -138,7 +163,7 @@ return {
         cmd = { "TodoTrouble", "TodoTelescope" },
         event = "BufReadPost",
         opts = {
-            signs = true,      -- show icons in the signs column
+            signs = true, -- show icons in the signs column
             sign_priority = 8, -- sign priority
             -- keywords recognized as todo comments
             keywords = {
@@ -156,8 +181,8 @@ return {
                 TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
             },
             gui_style = {
-                fg = "NONE",       -- The gui style to use for the fg highlight group.
-                bg = "BOLD",       -- The gui style to use for the bg highlight group.
+                fg = "NONE", -- The gui style to use for the fg highlight group.
+                bg = "BOLD", -- The gui style to use for the bg highlight group.
             },
             merge_keywords = true, -- when true, custom keywords will be merged with the defaults
             -- highlighting of the line containing the todo comment
@@ -165,16 +190,16 @@ return {
             -- * keyword: highlights of the keyword
             -- * after: highlights after the keyword (todo text)
             highlight = {
-                multiline = true,                -- enable multine todo comments
-                multiline_pattern = "^.",        -- lua pattern to match the next multiline from the start of the matched keyword
-                multiline_context = 10,          -- extra lines that will be re-evaluated when changing a line
-                before = "",                     -- "fg" or "bg" or empty
-                keyword = "wide",                -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
-                after = "fg",                    -- "fg" or "bg" or empty
+                multiline = true,    -- enable multine todo comments
+                multiline_pattern = "^.", -- lua pattern to match the next multiline from the start of the matched keyword
+                multiline_context = 10, -- extra lines that will be re-evaluated when changing a line
+                before = "",         -- "fg" or "bg" or empty
+                keyword = "wide",    -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
+                after = "fg",        -- "fg" or "bg" or empty
                 pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlighting (vim regex)
-                comments_only = true,            -- uses treesitter to match keywords in comments only
-                max_line_len = 400,              -- ignore lines longer than this
-                exclude = {},                    -- list of file types to exclude highlighting
+                comments_only = true, -- uses treesitter to match keywords in comments only
+                max_line_len = 400,  -- ignore lines longer than this
+                exclude = {},        -- list of file types to exclude highlighting
             },
             -- list of named colors where we try to extract the guifg from the
             -- list of highlight groups or use the hex color if hl not found as a fallback
@@ -219,14 +244,14 @@ return {
         event = "BufEnter",
         config = function()
             require("tabout").setup({
-                tabkey = "<Tab>",             -- key to trigger tabout, set to an empty string to disable
+                tabkey = "<Tab>", -- key to trigger tabout, set to an empty string to disable
                 backwards_tabkey = "<S-Tab>", -- key to trigger backwards tabout, set to an empty string to disable
-                act_as_tab = true,            -- shift content if tab out is not possible
-                act_as_shift_tab = false,     -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
-                default_tab = "<C-t>",        -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
-                default_shift_tab = "<C-d>",  -- reverse shift default action,
-                enable_backwards = true,      -- well ...
-                completion = false,           -- if the tabkey is used in a completion pum
+                act_as_tab = true, -- shift content if tab out is not possible
+                act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
+                default_tab = "<C-t>", -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
+                default_shift_tab = "<C-d>", -- reverse shift default action,
+                enable_backwards = true, -- well ...
+                completion = false, -- if the tabkey is used in a completion pum
                 tabouts = {
                     { open = "'", close = "'" },
                     { open = '"', close = '"' },

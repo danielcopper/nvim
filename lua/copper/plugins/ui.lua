@@ -16,6 +16,7 @@ return {
             },
         },
         opts = {
+            background_colour = "#000000",
             timeout = 3000,
             max_height = function()
                 return math.floor(vim.o.lines * 0.75)
@@ -50,27 +51,27 @@ return {
         enabled = true,
         event = "VeryLazy",
         --lazy = false,
-        'akinsho/nvim-bufferline.lua',
+        "akinsho/nvim-bufferline.lua",
         opts = {
             options = {
-                mode = 'buffers', -- set to "tabs" to only show tabpages instead
+                mode = "buffers", -- set to "tabs" to only show tabpages instead
                 offsets = {
                     {
                         -- NOTE: Pick one
                         -- filetype = 'neo-tree',
-                        filetype = 'NvimTree',
-                        text = 'File Explorer',
+                        filetype = "NvimTree",
+                        text = "File Explorer",
                         --highlight = "Directory",
-                        separator = true
+                        separator = true,
                         --text_align = "left"
-                    }
+                    },
                 },
                 -- indicator = {
                 --     style = 'underline'
                 -- },
-                separator_style = 'thin', -- "slant" | "thick" | "thin" | { 'any', 'any' },
+                separator_style = "thin", -- "slant" | "thick" | "thin" | { 'any', 'any' },
                 show_tab_indicators = true,
-                diagnostics = 'nvim_lsp',
+                diagnostics = "nvim_lsp",
                 --- count is an integer representing total count of errors
                 --- level is a string "error" | "warning"
                 --- diagnostics_dict ij a dictionary from error level ("error", "warning" or "info")to number of errors for each level.
@@ -81,40 +82,40 @@ return {
                     return " " .. icon .. count
                 end,
                 color_icons = true,
-                show_buffer_icons = true
-            }
+                show_buffer_icons = true,
+            },
         },
         config = function(_, opts)
-            require('bufferline').setup(opts)
-            require('bufdel').setup({
-                quit = false -- quit Neovim when last buffer is closed
+            require("bufferline").setup(opts)
+            require("bufdel").setup({
+                quit = false, -- quit Neovim when last buffer is closed
             })
         end,
         keys = {
             -- cycle between buffers
             set("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Move to Prev buffer" }),
             set("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Move to Next buffer" }),
-            set('n', '<A-,>', '<Cmd>BufferLineCyclePrev<CR>', { desc = "Move to Prev buffer", remap = true }),
-            set('n', '<A-.>', '<Cmd>BufferLineCycleNext<CR>', { desc = "Move to Next buffer", remap = true }),
-            set('n', '<A-<>', '<Cmd>BufferLineMovePrevious<CR>', { desc = 'Move buffer to the left' }),
-            set('n', '<A->>', '<Cmd>BufferLineMoveNext<CR>', { desc = 'Move Buffer to the right' }),
-            set('n', '<A-1>', '<Cmd>BufferLineGoTo 1<CR>', { desc = 'Goto Buffer number 9' }),
-            set('n', '<A-2>', '<Cmd>BufferLineGoTo 2<CR>', { desc = 'Goto Buffer number 9' }),
-            set('n', '<A-3>', '<Cmd>BufferLineGoTo 3<CR>', { desc = 'Goto Buffer number 9' }),
-            set('n', '<A-4>', '<Cmd>BufferLineGoTo 4<CR>', { desc = 'Goto Buffer number 9' }),
-            set('n', '<A-5>', '<Cmd>BufferLineGoTo 5<CR>', { desc = 'Goto Buffer number 9' }),
-            set('n', '<A-6>', '<Cmd>BufferLineGoTo 6<CR>', { desc = 'Goto Buffer number 9' }),
-            set('n', '<A-7>', '<Cmd>BufferLineGoTo 7<CR>', { desc = 'Goto Buffer number 9' }),
-            set('n', '<A-8>', '<Cmd>BufferLineGoTo 8<CR>', { desc = 'Goto Buffer number 9' }),
-            set('n', '<A-9>', '<Cmd>BufferLineGoTo 9<CR>', { desc = 'Goto Buffer number 9' }),
-            set('n', '<A-p>', '<Cmd>BufferLineTogglePin<CR>', { desc = 'Pin current Buffer' }),
-            set('n', '<C-p>', '<Cmd>BufferLineGoToBuffer<CR>', { desc = 'Pick Buffer to jump to' }),
+            set("n", "<A-,>", "<Cmd>BufferLineCyclePrev<CR>", { desc = "Move to Prev buffer", remap = true }),
+            set("n", "<A-.>", "<Cmd>BufferLineCycleNext<CR>", { desc = "Move to Next buffer", remap = true }),
+            set("n", "<A-<>", "<Cmd>BufferLineMovePrevious<CR>", { desc = "Move buffer to the left" }),
+            set("n", "<A->>", "<Cmd>BufferLineMoveNext<CR>", { desc = "Move Buffer to the right" }),
+            set("n", "<A-1>", "<Cmd>BufferLineGoTo 1<CR>", { desc = "Goto Buffer number 9" }),
+            set("n", "<A-2>", "<Cmd>BufferLineGoTo 2<CR>", { desc = "Goto Buffer number 9" }),
+            set("n", "<A-3>", "<Cmd>BufferLineGoTo 3<CR>", { desc = "Goto Buffer number 9" }),
+            set("n", "<A-4>", "<Cmd>BufferLineGoTo 4<CR>", { desc = "Goto Buffer number 9" }),
+            set("n", "<A-5>", "<Cmd>BufferLineGoTo 5<CR>", { desc = "Goto Buffer number 9" }),
+            set("n", "<A-6>", "<Cmd>BufferLineGoTo 6<CR>", { desc = "Goto Buffer number 9" }),
+            set("n", "<A-7>", "<Cmd>BufferLineGoTo 7<CR>", { desc = "Goto Buffer number 9" }),
+            set("n", "<A-8>", "<Cmd>BufferLineGoTo 8<CR>", { desc = "Goto Buffer number 9" }),
+            set("n", "<A-9>", "<Cmd>BufferLineGoTo 9<CR>", { desc = "Goto Buffer number 9" }),
+            set("n", "<A-p>", "<Cmd>BufferLineTogglePin<CR>", { desc = "Pin current Buffer" }),
+            set("n", "<C-p>", "<Cmd>BufferLineGoToBuffer<CR>", { desc = "Pick Buffer to jump to" }),
             -- set('n', '<A-c>', '<Cmd>:b#|bd#<CR>', { desc = 'Close current Buffer' }),
-            set('n', '<A-c>', '<Cmd>BufDel<CR>', { desc = 'Close current Buffer' }),
+            set("n", "<A-c>", "<Cmd>BufDel<CR>", { desc = "Close current Buffer" }),
             -- set('n', '<leader>ca', '<Cmd>BufDelAll<CR>', { desc = 'Close all Buffer' }),
-            set('n', '<leader>bca', '<Cmd>BufDelOthers<CR>', { desc = 'Close all Buffers' }),
-            set('n', '<leader>bco', '<Cmd>BufDelOthers<CR>', { desc = 'Close all but current Buffer' }),
-            set('n', '<leader>bcu', '<Cmd>BufferLineGroupClose ungrouped<CR>', { desc = 'Close unpinned Buffers' }),
+            set("n", "<leader>bca", "<Cmd>BufDelOthers<CR>", { desc = "Close all Buffers" }),
+            set("n", "<leader>bco", "<Cmd>BufDelOthers<CR>", { desc = "Close all but current Buffer" }),
+            set("n", "<leader>bcu", "<Cmd>BufferLineGroupClose ungrouped<CR>", { desc = "Close unpinned Buffers" }),
             -- set('n', '<leader>ca',
             --     function()
             --         for _, e in ipairs(bufferline.get_elements().elements) do
@@ -129,43 +130,46 @@ return {
 
     -- Statusline
     {
-        'nvim-lualine/lualine.nvim',
-        event = 'VeryLazy',
+        "nvim-lualine/lualine.nvim",
+        event = "VeryLazy",
         config = function()
             local lazy_status = require("lazy.status")
             require("lualine").setup({
                 options = {
-                    theme = 'auto',
+                    theme = "auto",
                     globalstatus = true,
-                    disabled_filetypes = { statusline = { 'lazy', 'alpha' } },
+                    disabled_filetypes = { statusline = { "lazy", "alpha" } },
                 },
                 sections = {
-                    lualine_a = { 'mode' },
-                    lualine_b = { 'branch' },
+                    lualine_a = { "mode" },
+                    lualine_b = { "branch" },
                     lualine_c = {
                         {
-                            'diagnostics',
+                            "diagnostics",
                             symbols = {
-                                Error = ' ',
-                                Warn = ' ',
-                                Hint = ' ',
-                                Info = ' ',
+                                Error = " ",
+                                Warn = " ",
+                                Hint = " ",
+                                Info = " ",
                             },
                         },
                         {
-                            'filetype',
+                            "filetype",
                             icon_only = true,
-                            separator = '',
+                            separator = "",
                             padding = {
-                                left = 1, right = 0 }
+                                left = 1,
+                                right = 0,
+                            },
                         },
-                        { 'filename', path = 1, symbols = { modified = '  ', readonly = '', unnamed = '' } },
+                        { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
                         {
                             -- Breadcrumbs in the statusline
-                            function() return require("nvim-navic").get_location() end,
+                            function()
+                                return require("nvim-navic").get_location()
+                            end,
                             cond = function()
-                                return package.loaded["nvim-navic"] and
-                                    require("nvim-navic").is_available()
+                                return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
                             end,
                         },
                     },
@@ -177,11 +181,11 @@ return {
                         },
                         { "encoding" },
                         { "fileformat" },
-                        { "filetype" }
-                    }
-                }
+                        { "filetype" },
+                    },
+                },
             })
-        end
+        end,
     },
 
     -- Indentation guides
@@ -316,41 +320,53 @@ return {
         },
     },
 
+    -- animations
     {
-        -- animations
-        {
-            "echasnovski/mini.animate",
-            event = "VeryLazy",
-            opts = function()
-                -- don't use animate when scrolling with the mouse
-                local mouse_scrolled = false
-                for _, scroll in ipairs({ "Up", "Down" }) do
-                    local key = "<ScrollWheel" .. scroll .. ">"
-                    vim.keymap.set({ "", "i" }, key, function()
-                        mouse_scrolled = true
-                        return key
-                    end, { expr = true })
-                end
+        "echasnovski/mini.animate",
+        -- NOTE: Causes problems with <Cd>zz and the official fix is not yet working for me
+        enabled = false,
+        event = "VeryLazy",
+        config = function()
+            -- don't use animate when scrolling with the mouse
+            local mouse_scrolled = false
+            for _, scroll in ipairs({ "Up", "Down" }) do
+                local key = "<ScrollWheel" .. scroll .. ">"
+                vim.keymap.set({ "", "i" }, key, function()
+                    mouse_scrolled = true
+                    return key
+                end, { expr = true })
+            end
 
-                local animate = require("mini.animate")
-                return {
-                    resize = {
-                        timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
-                    },
-                    scroll = {
-                        timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
-                        subscroll = animate.gen_subscroll.equal({
-                            predicate = function(total_scroll)
-                                if mouse_scrolled then
-                                    mouse_scrolled = false
-                                    return false
-                                end
-                                return total_scroll > 1
-                            end,
-                        }),
-                    },
-                }
-            end,
+            local animate = require("mini.animate")
+            return {
+                resize = {
+                    timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
+                },
+                scroll = {
+                    timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
+                    subscroll = animate.gen_subscroll.equal({
+                        predicate = function(total_scroll)
+                            if mouse_scrolled then
+                                mouse_scrolled = false
+                                return false
+                            end
+                            return total_scroll > 1
+                        end,
+                    }),
+                },
+            }
+        end,
+        keys = {
+            vim.keymap.set(
+                "n",
+                "<C-d>",
+                [[<Cmd>lua vim.cmd('normal! <C-d>'); MiniAnimate.execute_after('scroll', 'normal! zvzz')<CR>]]
+            ),
+            vim.keymap.set(
+                "n",
+                "<C-u>",
+                [[<Cmd>lua vim.cmd('normal! <C-u>'); MiniAnimate.execute_after('scroll', 'normal! zvzz')<CR>]]
+            ),
         },
     },
 
