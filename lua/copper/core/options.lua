@@ -13,6 +13,7 @@ opt.cursorline = true -- Enable highlighting of the current line
 vim.lsp.codelens = true
 opt.hidden = true -- required to keep open hidden buffers
 
+-- TODO: They don't apply anymore??
 opt.tabstop = 4 -- Number of spaces tabs count for
 opt.softtabstop = 4
 opt.shiftwidth = 4 -- indent size

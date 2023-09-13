@@ -149,7 +149,9 @@ return {
             }
 
             -- Angular Language Server
-            require 'lspconfig'.angularls.setup {}
+            require 'lspconfig'.angularls.setup {
+                capabilities = capabilities,
+            }
 
             -- ES Lint
             require 'lspconfig'.eslint.setup {}

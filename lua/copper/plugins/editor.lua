@@ -7,7 +7,7 @@ return {
     -- Neotree or NvimTree below
     {
         "nvim-neo-tree/neo-tree.nvim",
-        enabled = false,
+        enabled = true,
         branch = "v3.x",
         cmd = "Neotree",
         keys = {
@@ -59,7 +59,7 @@ return {
 
     {
         'nvim-tree/nvim-tree.lua',
-        enabled = true,
+        enabled = false,
         -- lazy = false, -- opens the tree on nvim startup without a autocmd
         init = function()
             require("nvim-tree")
@@ -73,7 +73,7 @@ return {
             reload_on_bufenter = true,
             git = {
                 enable = true,
-                ignore = true,
+                ignore = false,
                 show_on_dirs = true,
                 show_on_open_dirs = true,
                 timeout = 5000,
@@ -148,7 +148,7 @@ return {
         end,
         keys = {
             set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" }),
-            set("n", "<leader>fr", "<cmd>Telescope oldfiles", { desc = "Fuzzy find recent files" }),
+            set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy find recent files" }),
             set("n", "<leader>fs", "<cmd>Telescope live_grep<cr>", { desc = "Fuzzy find string in cwd" }),
             set("n", "<leader>td", function() require("telescope.builtin").diagnostics() end,
                 { desc = "Lists diagnostics for currently open buffers in Telescope" }),

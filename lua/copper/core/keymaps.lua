@@ -2,7 +2,6 @@ vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = "Open netrw" })
 vim.keymap.set("n", "<leader>u", ":UndotreeShow<CR>", { desc = "Show Undotree" })
 vim.keymap.set("n", "Y", "yg$", { desc = "Yank till the end of the line" })
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Keep the cursor in line when appending the line below" })
--- NOTE: These collide with mini.animate. Only enable these if mini.animate is disabled
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Scrolling down keeps the cursor in the middle of the screen" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Scrolling up keeps the cursor in the middle of the screen" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "Jumping to the next result keeps the cursor in the middle of the screen" })
@@ -28,10 +27,10 @@ vim.keymap.set(
 
 -- TODO: - need testing. probably not working
 -- related to the quick fix list -> do some research
-vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
-vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
-vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
-vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
+-- vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
+-- vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
+-- vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
+-- vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
 vim.keymap.set("v", "J", ":m '<+1<CR>gv=gv", { desc = "Move selected text bulk down and indent" })
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected text bulk up and indent" })

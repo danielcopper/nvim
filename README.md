@@ -43,6 +43,13 @@ Check [this](https://github.com/nvim-treesitter/nvim-treesitter/issues/3587#issu
 What you have to do is to delete the libstdc++-6.dll that you can find in the install location from neovim.
 After that remove the nvim-data folder, restart the pc and let nvim initialize again.
 
+## LSP
+
+### Angular
+
+For Angular Language Service to work you either have to be sure to install typescript and angular/language-service as a dev dependency on the project or TODO: find a solution for the
+LSP setup to set the correct parameters automatically (LSP Zero seems to do that correctly).
+
 ## Debugging
 
 ### dotNET
@@ -56,10 +63,13 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 - Automate installation process
 - Clear TODOs
 - Adjust Readme to Linux
-- Make Neotree work full screen on startup
 - autocomand to replace :q to bufdel or checkout mini bufremove
 - Fix bottom right info for other then lua
 - Adjust omnisharp options
+- textobjects ???
+- Fix icons
+- Share clipboard with system
+- opacity of nvim tree hidden files
 
 ## Plugins to consider
 

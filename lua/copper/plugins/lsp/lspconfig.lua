@@ -15,50 +15,44 @@ return {
             local cmp_nvim_lsp = require("cmp_nvim_lsp")
             local set = vim.keymap.set
 
-            local opts = { noremap = true, silent = true }
-            local on_attach = function(client, bufnr)
-                opts.desc = "Show LSP references"
-                set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
+            local on_attach = function(_, bufnr)
+                -- function to simplify kemapping setup
+                local keybind = function(keys, func, desc)
+                    vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
+                end
 
-                opts.desc = "Go to declaration"
-                set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
+                keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions") -- show lsp definitions
+                keybind("gD", vim.lsp.buf.declaration, "Go to declaration")                       -- go to declaration
+                keybind("gr", require("telescope.builtin").lsp_references, "Show LSP references") -- show definition, references
+                keybind("gi", require("telescope.builtin").lsp_implementations, "Show LSP implementations") -- show lsp implementations
+                keybind("gt", require("telescope.builtin").lsp_type_definitions, "Show LSP type definitions") -- show lsp type definitions
+                keybind("<leader>rn", vim.lsp.buf.rename, "Smart rename")                         -- smart rename
+                keybind("<leader>vd", vim.diagnostic.open_float, "Show line diagnostics")         -- show diagnostics for line
+                keybind("[d", vim.diagnostic.goto_prev, "Go to previous diagnostic")              -- jump to previous diagnostic in buffer
+                keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")                  -- jump to next diagnostic in buffer
+                keybind("K", vim.lsp.buf.hover, "Show documentation for what is under the cursor") -- show documentation for what is under cursor
+                keybind("<leader>rs", ":LspRestart<CR>", "Restart LSP")                           -- mapping to restart lsp if necessary
 
-                opts.desc = "Show LSP definitions"
-                set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
-
-                opts.desc = "Show LSP implementations"
-                set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
-
-                opts.desc = "Show LSP type definitions"
-                set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
-
-                opts.desc = "See available code actions"
-                set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
-
-                opts.desc = "Smart rename"
-                set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
-
-                opts.desc = "Show buffer diagnostics"
-                set("n", "<leader>vD", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
-
-                opts.desc = "Show line diagnostics"
-                set("n", "<leader>vd", vim.diagnostic.open_float, opts) -- show diagnostics for line
-
-                opts.desc = "Go to previous diagnostic"
-                set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
-
-                opts.desc = "Go to next diagnostic"
-                set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
-
-                opts.desc = "Show documentation for what is under cursor"
-                set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
-
-                opts.desc = "Restart LSP"
-                set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
+                set(
+                    { "n", "v" },
+                    "<leader>ca",
+                    vim.lsp.buf.code_action,
+                    { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" }
+                ) -- see available code actions, in visual mode will apply to selection
+                set(
+                    "n",
+                    "<leader>vD",
+                    "<cmd>Telescope diagnostics bufnr=0<CR>",
+                    { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" }
+                ) -- show  diagnostics for file
             end
 
             -- used to enable autocompletion (assign to every lsp server config)
             local capabilities = cmp_nvim_lsp.default_capabilities()
+            -- TODO: Maybe this is the correct way -> Check: https://github.com/hrsh7th/cmp-nvim-lsp
+            -- lspconfig.util.default_config = vim.tbl_deep_extend("force", lsp.util.default_config, {
+            --     capabilities = require("cmp_nvim_lsp").default_capabilities(),
+            -- })
 
             -- Change the Diagnostic symbols in the sign column (gutter)
             -- TODO: Again put these symbols in own file
@@ -91,6 +85,11 @@ return {
                 capabilities = capabilities,
                 on_attach = on_attach,
                 filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
+            })
+
+            lspconfig["angularls"].setup({
+                capabilities = capabilities,
+                on_attach = on_attach,
             })
 
             -- configure lua server (with special settings)
@@ -157,9 +156,18 @@ return {
     -- Show a lightbulb where codeactions are available
     {
         "kosayoda/nvim-lightbulb",
+        event = { "BufEnter", "BufNewFile" },
         config = function()
             require("nvim-lightbulb").setup({
                 autocmd = { enabled = true },
+                sign = {
+                    enabled = true,
+                    -- Text to show in the sign column.
+                    -- Must be between 1-2 characters.
+                    text = "󰌵",
+                    -- Highlight group to highlight the sign column text.
+                    hl = "LightBulbSign",
+                },
             })
         end,
     },

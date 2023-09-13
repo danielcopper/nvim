@@ -15,9 +15,18 @@ return {
         },
         config = function()
             local cmp = require("cmp")
-            local defaults = require("cmp.config.default")
             local luasnip = require("luasnip")
             local lspkind = require("lspkind")
+
+            local set = vim.keymap.set
+            -- keymaps for luasnip
+            -- NOTE: Maybe reconsider
+            set({ "i", "s" }, "<C-f>", function()
+                luasnip.jump(1)
+            end, { silent = true })
+            set({ "i", "s" }, "<C-b>", function()
+                luasnip.jump(-1)
+            end, { silent = true })
 
             -- load vscode style snippets from installed plugins (e.g. friendly-snippets)
             require("luasnip.loaders.from_vscode").lazy_load()
@@ -50,8 +59,7 @@ return {
                     -- and add min_width
                     -- adds vscode like indicators in the suggestion list
                     format = function(entry, vim_item)
-                        local kind =
-                            require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
+                        local kind = lspkind.cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
                         local strings = vim.split(kind.kind, "%s", { trimempty = true })
                         kind.kind = " " .. (strings[1] or "") .. " "
                         kind.menu = "    (" .. (strings[2] or "") .. ")"
@@ -62,7 +70,7 @@ return {
 
                 mapping = cmp.mapping.preset.insert({
                     ["<C-j>"] = cmp.mapping.select_next_item(), -- jump to next suggestion
-                    ["<C-k>"] = cmp.mapping.select_prev_item(), -- jump to previous suggestion
+                    ["<C-k>"] = cmp.mapping.select_prev_item(),-- jump to previous suggestion
                     ["<C-f>"] = cmp.mapping.scroll_docs(4), -- scroll through the hover documentation down
                     ["<C-b>"] = cmp.mapping.scroll_docs(-4), -- scroll through the hover documentation up
                     ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
@@ -100,21 +108,21 @@ return {
     },
 
     -- Auto insert close pairs
-    {
-        "windwp/nvim-autopairs",
-        event = "InsertEnter",
-        opts = {},
-    },
-    -- NOTE: Currently broken and crashes nvim in certain situations, wait for a fix
     -- {
-    --     "altermo/ultimate-autopair.nvim",
-    --     event = { "InsertEnter", "CmdlineEnter" },
-    --     config = function()
-    --         require("ultimate-autopair").setup({
-    --             --Config goes here
-    --         })
-    --     end,
+    --     "windwp/nvim-autopairs",
+    --     event = "InsertEnter",
+    --     opts = {},
     -- },
+    -- NOTE: Currently broken and crashes nvim in certain situations, wait for a fix
+    {
+        "altermo/ultimate-autopair.nvim",
+        event = { "InsertEnter", "CmdlineEnter" },
+        config = function()
+            require("ultimate-autopair").setup({
+                --Config goes here
+            })
+        end,
+    },
 
     -- Surround options
     {
@@ -251,7 +259,8 @@ return {
                 default_tab = "<C-t>", -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
                 default_shift_tab = "<C-d>", -- reverse shift default action,
                 enable_backwards = true, -- well ...
-                completion = false, -- if the tabkey is used in a completion pum
+                -- NOTE: so far this didn't cause issues
+                completion = true, -- if the tabkey is used in a completion pum
                 tabouts = {
                     { open = "'", close = "'" },
                     { open = '"', close = '"' },

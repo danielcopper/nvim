@@ -11,6 +11,18 @@ return {
         local mason_lspconfig = require("mason-lspconfig")
         local mason_null_ls = require("mason-null-ls")
 
+        -- This function creates default configurations for lsps
+        -- This would require mason setup and lsp to be in the same file
+        -- TODO: Figure out how to go forward with this or if it is unnecessary
+        -- mason-lspconfig.setup_handlers({
+        --     function (server_name)
+        --         require("lspconfig")[server_name].setup {
+        --             on_attach = on_attach,
+        --             capabilites = capabilites
+        --         }
+        --     end
+        -- })
+
         mason.setup({
             ui = {
                 -- TODO: Move icons into global spec table

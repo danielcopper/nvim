@@ -58,8 +58,8 @@ return {
                 offsets = {
                     {
                         -- NOTE: Pick one
-                        -- filetype = 'neo-tree',
-                        filetype = "NvimTree",
+                        filetype = "neo-tree",
+                        -- filetype = "NvimTree",
                         text = "File Explorer",
                         --highlight = "Directory",
                         separator = true,
@@ -92,7 +92,6 @@ return {
             })
         end,
         keys = {
-            -- cycle between buffers
             set("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Move to Prev buffer" }),
             set("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Move to Next buffer" }),
             set("n", "<A-,>", "<Cmd>BufferLineCyclePrev<CR>", { desc = "Move to Prev buffer", remap = true }),
@@ -112,19 +111,15 @@ return {
             set("n", "<C-p>", "<Cmd>BufferLineGoToBuffer<CR>", { desc = "Pick Buffer to jump to" }),
             -- set('n', '<A-c>', '<Cmd>:b#|bd#<CR>', { desc = 'Close current Buffer' }),
             set("n", "<A-c>", "<Cmd>BufDel<CR>", { desc = "Close current Buffer" }),
-            -- set('n', '<leader>ca', '<Cmd>BufDelAll<CR>', { desc = 'Close all Buffer' }),
-            set("n", "<leader>bca", "<Cmd>BufDelOthers<CR>", { desc = "Close all Buffers" }),
+            set(
+                "n",
+                "<leader>bca",
+                "<C-w>h <bar> <Cmd>BufDelOthers<CR>",
+                { desc = "Close all Buffers but File Explorer" }
+            ),
+            set("n", "<leader>bcA", "<Cmd>BufDelAll<CR>", { desc = "Close all Buffers" }),
             set("n", "<leader>bco", "<Cmd>BufDelOthers<CR>", { desc = "Close all but current Buffer" }),
             set("n", "<leader>bcu", "<Cmd>BufferLineGroupClose ungrouped<CR>", { desc = "Close unpinned Buffers" }),
-            -- set('n', '<leader>ca',
-            --     function()
-            --         for _, e in ipairs(bufferline.get_elements().elements) do
-            --             vim.schedule(function()
-            --                 vim.cmd("bd " ..
-            --                     e.id)
-            --             end)
-            --         end
-            --     end, { desc = 'Close all Buffers' }),
         },
     },
 
@@ -173,17 +168,65 @@ return {
                             end,
                         },
                     },
+                    -- TODO: Set colors and check what x to z actually display
                     lualine_x = {
+                        -- {
+                        --     function()
+                        --         return require("noice").api.status.command.get()
+                        --     end,
+                        --     cond = function()
+                        --         return package.loaded["noice"] and require("noice").api.status.command.has()
+                        --     end,
+                        --     -- color = Util.fg("Statement"),
+                        -- },
+                        -- {
+                        --     function()
+                        --         return require("noice").api.status.mode.get()
+                        --     end,
+                        --     cond = function()
+                        --         return package.loaded["noice"] and require("noice").api.status.mode.has()
+                        --     end,
+                        --     -- color = Util.fg("Constant"),
+                        -- },
+                        {
+                            function()
+                                return "  " .. require("dap").status()
+                            end,
+                            cond = function()
+                                return package.loaded["dap"] and require("dap").status() ~= ""
+                            end,
+                            -- color = Util.fg("Debug"),
+                        },
                         {
                             lazy_status.updates,
                             cond = lazy_status.has_updates,
                             color = { fg = "#ff9e64" },
                         },
+                        {
+                            "diff",
+                            symbols = {
+                                added = " ",
+                                modified = " ",
+                                removed = " ",
+                            },
+                        },
+                        -- OLD stuff
                         { "encoding" },
                         { "fileformat" },
                         { "filetype" },
                     },
+                    lualine_y = {
+                        { "progress", separator = " ",                  padding = { left = 1, right = 0 } },
+                        { "location", padding = { left = 0, right = 1 } },
+                    },
+                    lualine_z = {
+                        function()
+                            return " " .. os.date("%R")
+                        end,
+                    },
                 },
+                -- show a simplified lualine for these
+                extensions = { "neo-tree", "nvim-tree", "lazy" },
             })
         end,
     },
@@ -320,54 +363,32 @@ return {
         },
     },
 
-    -- animations
+    -- animate scrolling and cursor movements
+    -- TODO: C-f and C-b are overwritten by this! Disable that -> it interferes with cmp => !!!
     {
-        "echasnovski/mini.animate",
-        -- NOTE: Causes problems with <Cd>zz and the official fix is not yet working for me
-        enabled = false,
-        event = "VeryLazy",
+        "declancm/cinnamon.nvim",
+        event = { "BufReadPre", "BufNewFile" },
         config = function()
-            -- don't use animate when scrolling with the mouse
-            local mouse_scrolled = false
-            for _, scroll in ipairs({ "Up", "Down" }) do
-                local key = "<ScrollWheel" .. scroll .. ">"
-                vim.keymap.set({ "", "i" }, key, function()
-                    mouse_scrolled = true
-                    return key
-                end, { expr = true })
-            end
+            require("cinnamon").setup({
+                -- KEYMAPS:
+                default_keymaps = true, -- Create default keymaps.
+                extra_keymaps = true, -- Create extra keymaps.
+                extended_keymaps = false, -- Create extended keymaps.
+                override_keymaps = true, -- The plugin keymaps will override any existing keymaps.
 
-            local animate = require("mini.animate")
-            return {
-                resize = {
-                    timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
-                },
-                scroll = {
-                    timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
-                    subscroll = animate.gen_subscroll.equal({
-                        predicate = function(total_scroll)
-                            if mouse_scrolled then
-                                mouse_scrolled = false
-                                return false
-                            end
-                            return total_scroll > 1
-                        end,
-                    }),
-                },
-            }
+                -- OPTIONS:
+                always_scroll = false, -- Scroll the cursor even when the window hasn't scrolled.
+                centered = true, -- Keep cursor centered in window when using window scrolling.
+                disabled = false, -- Disables the plugin.
+                default_delay = 4, -- The default delay (in ms) between each line when scrolling.
+                hide_cursor = false, -- Hide the cursor while scrolling. Requires enabling termguicolors!
+                horizontal_scroll = true, -- Enable smooth horizontal scrolling when view shifts left or right.
+                max_length = -1, -- Maximum length (in ms) of a command. The line delay will be
+                -- re-calculated. Setting to -1 will disable this option.
+                scroll_limit = 150, -- Max number of lines moved before scrolling is skipped. Setting
+                -- to -1 will disable this option.
+            })
         end,
-        keys = {
-            vim.keymap.set(
-                "n",
-                "<C-d>",
-                [[<Cmd>lua vim.cmd('normal! <C-d>'); MiniAnimate.execute_after('scroll', 'normal! zvzz')<CR>]]
-            ),
-            vim.keymap.set(
-                "n",
-                "<C-u>",
-                [[<Cmd>lua vim.cmd('normal! <C-u>'); MiniAnimate.execute_after('scroll', 'normal! zvzz')<CR>]]
-            ),
-        },
     },
 
     -- lsp symbol navigation for lualine. This shows where
@@ -430,6 +451,38 @@ return {
                 },
             }
         end,
+    },
+
+    {
+        "NvChad/nvim-colorizer.lua",
+        event = { "BufEnter" },
+        opts = {
+            filetypes = { "*" },
+            user_default_options = {
+                RGB = true, -- #RGB hex codes
+                RRGGBB = true, -- #RRGGBB hex codes
+                names = true, -- "Name" codes like Blue or blue
+                RRGGBBAA = false, -- #RRGGBBAA hex codes
+                AARRGGBB = false, -- 0xAARRGGBB hex codes
+                rgb_fn = true, -- CSS rgb() and rgba() functions
+                hsl_fn = false, -- CSS hsl() and hsla() functions
+                css = false, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+                css_fn = false, -- Enable all CSS *functions*: rgb_fn, hsl_fn
+                -- Available modes for `mode`: foreground, background,  virtualtext
+                mode = "virtualtext", -- Set the display mode.
+                -- Available methods are false / true / "normal" / "lsp" / "both"
+                -- True is same as normal
+                tailwind = false,                  -- Enable tailwind colors
+                -- parsers can contain values used in |user_default_options|
+                sass = { enable = true, parsers = { "css" } }, -- Enable sass colors
+                virtualtext = "■",
+                -- update color values even if buffer is not focused
+                -- example use: cmp_menu, cmp_docs
+                always_update = false,
+            },
+            -- all the sub-options of filetypes apply to buftypes
+            buftypes = {},
+        },
     },
 
     -- devicons used by many plugins
