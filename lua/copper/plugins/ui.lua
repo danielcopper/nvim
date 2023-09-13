@@ -453,6 +453,7 @@ return {
         end,
     },
 
+    -- Provides color previews in css
     {
         "NvChad/nvim-colorizer.lua",
         event = { "BufEnter" },
@@ -483,6 +484,18 @@ return {
             -- all the sub-options of filetypes apply to buftypes
             buftypes = {},
         },
+    },
+
+    -- More detailed lsp diagnostics info
+    {
+        url = "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+        event = { "BufEnter" },
+        config = function ()
+            vim.diagnostic.config({
+                virtual_text = false,
+            })
+            require("lsp_lines").setup()
+        end
     },
 
     -- devicons used by many plugins
