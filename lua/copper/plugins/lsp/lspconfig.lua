@@ -54,6 +54,21 @@ return {
             --     capabilities = require("cmp_nvim_lsp").default_capabilities(),
             -- })
 
+            -- adding ufo folding capabilities
+            capabilities.textDocument.foldingRange = {
+                dynamicRegistration = false,
+                lineFoldingOnly = true,
+            }
+
+            -- Auto apply defaults to not specifically setup servers
+            local language_servers = require("lspconfig").util.available_servers() -- or list servers manually like {'gopls', 'clangd'}
+            for _, ls in ipairs(language_servers) do
+                require("lspconfig")[ls].setup({
+                    capabilities = capabilities,
+                    on_attach = on_attach,
+                })
+            end
+
             -- Change the Diagnostic symbols in the sign column (gutter)
             -- TODO: Again put these symbols in own file
             local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }

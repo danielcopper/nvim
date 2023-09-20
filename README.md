@@ -60,8 +60,6 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 
 - Fix recording keys not working (it works just doesn't prompt that its recording)
 - configure DAP for c# and typescript (partly finished)
-- Automate installation process
-- Clear TODOs
 - Adjust Readme to Linux
 - autocomand to replace :q to bufdel or checkout mini bufremove
 - Fix bottom right info for other then lua
@@ -69,7 +67,7 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 - textobjects ???
 - Fix icons
 - Share clipboard with system
-- opacity of nvim tree hidden files
+- deactivate lsp lines on lazy ui (possibly also mason)
 
 ## Plugins to consider
 
