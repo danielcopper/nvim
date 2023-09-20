@@ -14,10 +14,18 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     defaults = {
         lazy = true,
+        cond = function()
+            if vim.g.vscode then
+                return false
+            else
+                return true
+            end
+        end,
     },
     spec = {
         { import = "copper.plugins" },
-        { import = "copper.plugins.lsp"}
+        { import = "copper.plugins.lsp" },
+        -- { import = "copper.plugins.extras.vscode" }, -- Loads vscode specific configurations for plugins
     },
     install = {
         -- try to load one of these colorschemes when starting an installation during startup
