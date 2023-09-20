@@ -27,7 +27,8 @@ opt.wrap = false -- no line wrapping when text flows over screen
 opt.swapfile = false
 opt.backup = false
 -- TODO: Check how lazyvim does this platform agnostic
-opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+-- opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+-- opt.undodir = os.getenv("appdata") .. "/Local/nvim-data/undodir"
 opt.undofile = true
 
 opt.hlsearch = false
