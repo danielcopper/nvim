@@ -47,10 +47,28 @@ return {
                     visible = true, -- when true, they will just be displayed differently than normal items
                 },
                 follow_current_file = {
+                    -- TODO: Not working
                     enabled = true, -- This will find and focus the file in the active buffer every time the current file is changed while the tree is open.
                     leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
                 },
+                use_libuv_file_watcher = true,
             },
+            enable_diagnostics = false,
+            git_status = {
+            symbols = {
+              -- Change type
+              added     = "✚", -- or "✚", but this is redundant info if you use git_status_colors on the name
+              modified  = "", -- or "", but this is redundant info if you use git_status_colors on the name
+              deleted   = "✖",-- this can only be used in the git_status source
+              renamed   = "󰁕",-- this can only be used in the git_status source
+              -- Status type
+              untracked = "",
+              ignored   = "",
+              unstaged  = "󰄱",
+              staged    = "",
+              conflict  = "",
+            }
+          },
         },
         config = function(_, opts)
             require("neo-tree").setup(opts)
