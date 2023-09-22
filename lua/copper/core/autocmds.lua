@@ -37,15 +37,6 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
--- Disable UFO on certain filetypes
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "neo-tree" },
-    callback = function()
-        require("ufo").detach()
-        vim.opt_local.foldenable = false
-    end
-})
-
 -- TODO: Fix this, this should open neotree in fullscreen
 -- autocmd is currently set directly in neotree config
 -- open neotree on startup
