@@ -29,6 +29,8 @@ opt.backup = false
 -- TODO: Check how lazyvim does this platform agnostic
 -- opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 -- opt.undodir = os.getenv("appdata") .. "/Local/nvim-data/undodir"
+---@diagnostic disable-next-line: assign-type-mismatch
+opt.undodir = vim.fn.stdpath("data") .. "/undodir"
 opt.undofile = true
 
 opt.hlsearch = false

@@ -17,7 +17,7 @@
 return {
     {
         "rose-pine/neovim",
-        enabled = true,
+        enabled = false,
         lazy = false,
         priority = 1000,
         opts = {
@@ -83,7 +83,7 @@ return {
 
     {
         "catppuccin/nvim",
-        enabled = false,
+        enabled = true,
         lazy = false,
         priority = 1000,
         opts = {

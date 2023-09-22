@@ -111,22 +111,21 @@ return {
 
             -- Angular
             -- TODO: These make the ls attach properly on windows
-            -- Find a way to dynamically get the nvim-data path to make this work on linux as well
-            -- local ng_cwd = vim.fn.getcwd()
-            -- local ng_project_library_path = ng_cwd .. "/node_modules"
-            -- local ng_cmd = {
-            --     "ngserver",
-            --     "--stdio",
-            --     "--tsProbeLocations",
-            --     ng_project_library_path,
-            --     "--ngProbeLocations",
-            --     ng_project_library_path,
-            -- }
+            local ng_cwd = vim.fn.getcwd()
+            local ng_project_library_path = ng_cwd .. "/node_modules"
+            local ng_cmd = {
+                "ngserver",
+                "--stdio",
+                "--tsProbeLocations",
+                ng_project_library_path,
+                "--ngProbeLocations",
+                ng_project_library_path,
+            }
             lspconfig["angularls"].setup({
-                -- cmd = ng_cmd,
-                -- on_new_config = function(new_config, new_root_dir)
-                --     new_config.cmd = ng_cmd
-                -- end,
+                cmd = ng_cmd,
+                on_new_config = function(new_config, new_root_dir)
+                    new_config.cmd = ng_cmd
+                end,
                 capabilities = capabilities,
                 on_attach = on_attach,
             })
@@ -205,7 +204,7 @@ return {
 
             -- Powershell
             require("lspconfig").powershell_es.setup({
-                bundle_path = "C:/Users/KueppermannD/AppData/Local/nvim-data/mason/packages/powershell-editor-services",
+                bundle_path = vim.fn.stdpath("data") .. "/mason/packages/powershell-editor-services",
                 capabilities = capabilities,
                 on_attach = on_attach,
             })
