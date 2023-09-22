@@ -18,7 +18,7 @@ return {
             local on_attach = function(_, bufnr)
                 -- function to simplify kemapping setup
                 local keybind = function(keys, func, desc)
-                    vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
+                    set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
                 end
 
                 keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions") -- show lsp definitions
@@ -32,7 +32,6 @@ return {
                 keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")                  -- jump to next diagnostic in buffer
                 keybind("K", vim.lsp.buf.hover, "Show documentation for what is under the cursor") -- show documentation for what is under cursor
                 keybind("<leader>rs", ":LspRestart<CR>", "Restart LSP")                           -- mapping to restart lsp if necessary
-
                 set(
                     { "n", "v" },
                     "<leader>ca",
@@ -47,34 +46,20 @@ return {
                 ) -- show  diagnostics for file
             end
 
+            -- LSP capabilites
+            local capabilities = vim.lsp.protocol.make_client_capabilities()
             -- used to enable autocompletion (assign to every lsp server config)
-            local capabilities = cmp_nvim_lsp.default_capabilities()
-            -- TODO: Maybe this is the correct way -> Check: https://github.com/hrsh7th/cmp-nvim-lsp
-            -- lspconfig.util.default_config = vim.tbl_deep_extend("force", lsp.util.default_config, {
-            --     capabilities = require("cmp_nvim_lsp").default_capabilities(),
-            -- })
-            -- local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-            -- local capabilities = vim.tbl_deep_extend(
-            --     "force",
-            --     {},
-            --     vim.lsp.protocol.make_client_capabilities(),
-            --     has_cmp and cmp_nvim_lsp.default_capabilities() or {}
-            -- )
-
+            capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
             -- adding ufo folding capabilities
             capabilities.textDocument.foldingRange = {
                 dynamicRegistration = false,
                 lineFoldingOnly = true,
             }
 
-            -- Auto apply defaults to not specifically setup servers
-            local language_servers = require("lspconfig").util.available_servers() -- or list servers manually like {'gopls', 'clangd'}
-            for _, ls in ipairs(language_servers) do
-                require("lspconfig")[ls].setup({
-                    capabilities = capabilities,
-                    on_attach = on_attach,
-                })
-            end
+            local _snippet_capabilities = vim.lsp.protocol.make_client_capabilities()
+            ---@diagnostic disable-next-line: inject-field
+            _snippet_capabilities.textDocument.completion.completionItem.snippetSupport = true
+            local snippet_capabilities = vim.tbl_extend("keep", capabilities, _snippet_capabilities)
 
             -- Change the Diagnostic symbols in the sign column (gutter)
             -- TODO: Again put these symbols in own file
@@ -84,33 +69,8 @@ return {
                 vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
             end
 
-            -- configure html server
-            lspconfig["html"].setup({
-                capabilities = capabilities,
-                on_attach = on_attach,
-            })
-
-            -- configure typescript server with plugin
-            lspconfig["tsserver"].setup({
-                capabilities = capabilities,
-                on_attach = on_attach,
-            })
-
-            -- configure css server
-            lspconfig["cssls"].setup({
-                capabilities = capabilities,
-                on_attach = on_attach,
-            })
-
-            -- configure emmet language server
-            lspconfig["emmet_language_server"].setup({
-                capabilities = capabilities,
-                on_attach = on_attach,
-                filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
-            })
-
             -- Angular
-            -- TODO: These make the ls attach properly on windows
+            -- NOTE: These are necessary to make the ls attach properly on windows
             local ng_cwd = vim.fn.getcwd()
             local ng_project_library_path = ng_cwd .. "/node_modules"
             local ng_cmd = {
@@ -130,13 +90,7 @@ return {
                 on_attach = on_attach,
             })
 
-            -- ESLint
-            lspconfig["eslint"].setup({
-                capabilities = capabilities,
-                on_attach = on_attach,
-            })
-
-            -- configure lua server (with special settings)
+            -- Lua
             lspconfig["lua_ls"].setup({
                 capabilities = capabilities,
                 on_attach = on_attach,
@@ -153,6 +107,8 @@ return {
                                 [vim.fn.stdpath("config") .. "/lua"] = true,
                             },
                         },
+                        telemetry = { enable = false },
+                        hint = { enable = true },
                     },
                 },
             })
@@ -160,7 +116,6 @@ return {
             -- C# / OmniSharp
             local windowsDatapath = vim.fn.expand("~") .. "\\AppData\\local\\nvim-data"
             local linuxDatapath = vim.fn.expand("~") .. "/.local/share/nvim"
-
             require("lspconfig").omnisharp.setup({
                 capabilities = capabilities,
                 on_attach = on_attach,
@@ -195,19 +150,48 @@ return {
                 analyze_open_documents_only = false,
             })
 
-            -- Json
-            capabilities.textDocument.completion.completionItem.snippetSupport = true
-            require("lspconfig").jsonls.setup({
-                capabilities = capabilities,
-                on_attach = on_attach,
-            })
-
             -- Powershell
             require("lspconfig").powershell_es.setup({
                 bundle_path = vim.fn.stdpath("data") .. "/mason/packages/powershell-editor-services",
                 capabilities = capabilities,
                 on_attach = on_attach,
             })
+
+            -- Auto apply defaults to not specifically setup servers
+            -- without snippet support
+            local lsp_servers = {
+                "bashls",
+                "cssls",
+                "docker_compose_language_service",
+                "dockerls",
+                "emmet_language_server",
+                "eslint",
+                "html",
+                "marksman",
+                "sqlls",
+                "tsserver",
+                "yamlls",
+            }
+            for _, srv in pairs(lsp_servers) do
+                lspconfig[srv].setup({
+                    capabilities = capabilities,
+                    on_attach = on_attach,
+                })
+            end
+
+            -- Auto apply defaults to not specifically setup servers
+            -- with snippet support
+            local lsp_servers_snippet_support = {
+                "cssls",
+                "html",
+                "jsonls",
+            }
+            for _, srv in pairs(lsp_servers_snippet_support) do
+                lspconfig[srv].setup({
+                    capabilities = snippet_capabilities,
+                    on_attach = on_attach,
+                })
+            end
         end,
     },
 

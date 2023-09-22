@@ -32,6 +32,7 @@ return {
             require("luasnip.loaders.from_vscode").lazy_load()
 
             cmp.setup({
+                keyword_length = 2,
                 completion = {
                     completeopt = "menu,menuone,preview,noselect",
                 },
@@ -70,7 +71,7 @@ return {
 
                 mapping = cmp.mapping.preset.insert({
                     ["<C-j>"] = cmp.mapping.select_next_item(), -- jump to next suggestion
-                    ["<C-k>"] = cmp.mapping.select_prev_item(),-- jump to previous suggestion
+                    ["<C-k>"] = cmp.mapping.select_prev_item(), -- jump to previous suggestion
                     ["<C-f>"] = cmp.mapping.scroll_docs(4), -- scroll through the hover documentation down
                     ["<C-b>"] = cmp.mapping.scroll_docs(-4), -- scroll through the hover documentation up
                     ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
@@ -107,13 +108,6 @@ return {
         end,
     },
 
-    -- Auto insert close pairs
-    -- {
-    --     "windwp/nvim-autopairs",
-    --     event = "InsertEnter",
-    --     opts = {},
-    -- },
-    -- NOTE: Currently broken and crashes nvim in certain situations, wait for a fix
     {
         "altermo/ultimate-autopair.nvim",
         event = { "InsertEnter", "CmdlineEnter" },

@@ -280,7 +280,7 @@ return {
                 end,
             },
         },
-        opts = function(_, opts)
+        config = function()
             vim.o.foldcolumn = "0"
             vim.o.foldlevel = 99
             vim.o.foldlevelstart = 99
@@ -313,14 +313,16 @@ return {
                 table.insert(newVirtText, { suffix, "MoreMsg" })
                 return newVirtText
             end
-            opts.fold_virt_text_handler = handler
-        end,
-        config = function()
+
+            require("ufo").setup({
+                fold_virt_text_handler = handler,
+            })
+
             -- Disable UFO on certain filetypes
             vim.api.nvim_create_autocmd("FileType", {
                 pattern = { "neo-tree" },
                 callback = function()
-                    -- require("ufo").detach()
+                    require("ufo").detach()
                     vim.opt_local.foldenable = false
                 end,
             })
