@@ -43,7 +43,9 @@ return {
                 "cssls",
                 "lua_ls",
                 "emmet_language_server",
-                "omnisharp"
+                "omnisharp",
+                "jsonls",
+                "powershell_es"
             },
             -- also auto-install servers that are configured with lspconfig
             automatic_installation = true,
@@ -52,9 +54,9 @@ return {
         mason_null_ls.setup({
             -- list of formatters & linters for mason to install
             ensure_installed = {
-                "prettierd", -- ts/js formatter
-                "stylua", -- lua formatter
-                "eslint_d", -- ts/js linter
+                -- "prettierd", -- ts/js formatter
+                -- "stylua", -- lua formatter
+                -- "eslint_d", -- ts/js linter
             },
             -- auto-install configured servers (with lspconfig)
             automatic_installation = true,
