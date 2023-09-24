@@ -66,9 +66,9 @@ return {
             -- Change the Diagnostic symbols in the sign column (gutter)
             local signs = {
                 Error = icons.diagnostics.Error,
-                Warn = icons.diagnostics.Warn,
-                Hint = icons.diagnostics.hint,
-                Info = icons.diagnostics.Info,
+                Warn = icons.diagnostics.Warning,
+                Hint = icons.diagnostics.Hint,
+                Info = icons.diagnostics.Information,
             }
             for type, icon in pairs(signs) do
                 local hl = "DiagnosticSign" .. type

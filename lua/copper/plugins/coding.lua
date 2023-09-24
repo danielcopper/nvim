@@ -169,14 +169,18 @@ return {
             -- keywords recognized as todo comments
             keywords = {
                 FIX = {
-                    icon = icons.ui.Bug, -- icon used for the sign, and in search results
-                    color = "error", -- can be a hex color, or a named color (see below)
+                    icon = icons.ui.Bug,                        -- icon used for the sign, and in search results
+                    color = "error",                            -- can be a hex color, or a named color (see below)
                     alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
                     -- signs = false, -- configure signs for some keywords individually
                 },
                 TODO = { icon = icons.ui.CheckAlt2, color = "info", alt = { "todo", "ToDo", "Todo", "toDo" } },
                 HACK = { icon = icons.ui.Fire, color = "warning", alt = { "hack", "Hack" } },
-                WARN = { icon = icons.diagnostics.Warning, color = "warning", alt = { "WARNING", "XXX", "warn", "warning" } },
+                WARN = {
+                    icon = icons.diagnostics.Warning,
+                    color = "warning",
+                    alt = { "WARNING", "XXX", "warn", "warning" },
+                },
                 -- TODO:Find this icon that doesn't work on linux
                 -- PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
                 PERF = { icon = icons.ui.History, alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
@@ -237,8 +241,8 @@ return {
             vim.keymap.set("n", "[t", function()
                 require("todo-comments").jump_prev()
             end, { desc = "Previous todo comment" }),
-            vim.keymap.set('n', '<leader>xt', '<Cmd>TodoTrouble<CR>', { desc = 'Open TodoTrouble' }),
-            vim.keymap.set('n', '<leader>xT', '<Cmd>TodoTrouble<CR>', { desc = 'Todo/Fix/Fixme (Trouble)' }),
+            vim.keymap.set("n", "<leader>xt", "<Cmd>TodoTrouble<CR>", { desc = "Open TodoTrouble" }),
+            vim.keymap.set("n", "<leader>xT", "<Cmd>TodoTrouble<CR>", { desc = "Todo/Fix/Fixme (Trouble)" }),
         },
     },
 

@@ -4,10 +4,9 @@ local icons = require("copper.plugins.extras.icons")
 
 return {
     -- File explorer
-    -- Neotree or NvimTree below
+    -- TODO: Change icons for file status
     {
         "nvim-neo-tree/neo-tree.nvim",
-        enabled = true,
         branch = "v3.x",
         cmd = "Neotree",
         keys = {
@@ -22,18 +21,25 @@ return {
                 filtered_items = {
                     visible = true, -- when true, they will just be displayed differently than normal items
                 },
-                follow_current_file = {
-                    enabled = true,          -- This will find and focus the file in the active buffer every time the current file is changed while the tree is open.
-                    leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
-                },
+                bind_to_cwd = true,
+                follow_current_file = { enabled = true },
                 use_libuv_file_watcher = true,
             },
-            enable_diagnostics = false,
+            default_component_configs = {
+                indent = {
+                    with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+                    expander_collapsed = "",
+                    expander_expanded = "",
+                    expander_highlight = "NeoTreeExpander",
+                },
+            },
             git_status = {
                 symbols = {
                     -- Change type
                     added = icons.git.Added,
-                    modified = icons.git.Modified,
+                    -- modified = icons.git.Modified,
+                    modified = "IamModified",
+
                     deleted = icons.git.Removed, -- this can only be used in the git_status source
                     renamed = icons.git.Renamed, -- this can only be used in the git_status source
                     -- Status type
@@ -47,6 +53,14 @@ return {
         },
         config = function(_, opts)
             require("neo-tree").setup(opts)
+            vim.api.nvim_create_autocmd("TermClose", {
+                pattern = "*lazygit",
+                callback = function()
+                    if package.loaded["neo-tree.sources.git_status"] then
+                        require("neo-tree.sources.git_status").refresh()
+                    end
+                end,
+            })
         end,
     },
 
