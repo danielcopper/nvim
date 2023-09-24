@@ -1,6 +1,6 @@
 -- Plugins that enable basic Editor features like file explorer, git plugins etc.
-
 local set = vim.keymap.set
+local icons = require("copper.plugins.extras.icons")
 
 return {
     -- File explorer
@@ -13,42 +13,17 @@ return {
         keys = {
             { "<leader>fe", "<Cmd>Neotree focus<CR>",  { desc = "Focus on Neotree" } },
             { "<leader>te", "<Cmd>Neotree toggle<CR>", { desc = "Toggle Neotree" } },
-            -- NOTE: Needed if the other commented options are enabled
-            -- {
-            --     "<leader>fe",
-            --     function()
-            --         require("neo-tree.command").execute({
-            --             position = "left",
-            --             toggle = true,
-            --         })
-            --     end,
-            --     desc = "Open Neotree in sidebar",
-            -- },
         },
         init = function()
-            -- NOTE: To open neotree on startup without specifying it in autocmd file
-            -- autocmd would require neotree to be installed
-            -- vim.api.nvim_create_autocmd("VimEnter", {
-            --     command = "Neotree"
-            -- })
-
-            -- NOTE: Somehow this doesn't break the design currently
-            -- TODO: check if update fixed it
             require("neo-tree")
         end,
         opts = {
-            -- NOTE: This would open neotree in the current window by default
-            -- helpful if you want to open neotree fullscreen on startup,
-            -- comes with some drawback though like the no name buffer and closing
-            -- after selecting a file to open.
-            -- window = { position = "current" }
             filesystem = {
                 filtered_items = {
                     visible = true, -- when true, they will just be displayed differently than normal items
                 },
                 follow_current_file = {
-                    -- TODO: Not working
-                    enabled = true, -- This will find and focus the file in the active buffer every time the current file is changed while the tree is open.
+                    enabled = true,          -- This will find and focus the file in the active buffer every time the current file is changed while the tree is open.
                     leave_dirs_open = false, -- `false` closes auto expanded dirs, such as with `:Neotree reveal`
                 },
                 use_libuv_file_watcher = true,
@@ -57,16 +32,16 @@ return {
             git_status = {
                 symbols = {
                     -- Change type
-                    added = "✚", -- or "✚", but this is redundant info if you use git_status_colors on the name
-                    modified = "", -- or "", but this is redundant info if you use git_status_colors on the name
-                    deleted = "✖", -- this can only be used in the git_status source
-                    renamed = "󰁕", -- this can only be used in the git_status source
+                    added = icons.git.Added,
+                    modified = icons.git.Modified,
+                    deleted = icons.git.Removed, -- this can only be used in the git_status source
+                    renamed = icons.git.Renamed, -- this can only be used in the git_status source
                     -- Status type
-                    untracked = "",
-                    ignored = "",
-                    unstaged = "󰄱",
-                    staged = "",
-                    conflict = "",
+                    untracked = icons.git.Untracked,
+                    ignored = icons.git.IgnoredAlt,
+                    unstaged = icons.git.Unstaged,
+                    staged = icons.git.Staged,
+                    conflict = icons.git.Conflict,
                 },
             },
         },
@@ -154,8 +129,8 @@ return {
                 defaults = {
                     mappings = {
                         i = {
-                            ["<C-j>"] = actions.move_selection_next, -- move to next result in list
-                            ["<C-k>"] = actions.move_selection_previous, -- move to previous result in list
+                            ["<C-j>"] = actions.move_selection_next,                  -- move to next result in list
+                            ["<C-k>"] = actions.move_selection_previous,              -- move to previous result in list
                             ["<C-q>"] = actions.send_to_qflist + actions.open_qflist, -- send all entries to quickfist list an open it
                         },
                     },
@@ -269,9 +244,8 @@ return {
         dependencies = { "kevinhwang91/promise-async" },
         event = "BufRead",
         keys = {
-            -- TODO: make peek work
             {
-                "K",
+                "zP",
                 function()
                     local winid = require("ufo").peekFoldedLinesUnderCursor()
                     if not winid then

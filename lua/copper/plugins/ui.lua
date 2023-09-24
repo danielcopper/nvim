@@ -1,6 +1,6 @@
 -- UI related plugins for Neovim
-
 local set = vim.keymap.set
+local icons = require("copper.plugins.extras.icons")
 
 return {
     -- Notifications
@@ -78,7 +78,7 @@ return {
                 --- this should return a string
                 --- Don't get too fancy as this function will be executed a lot
                 diagnostics_indicator = function(count, level, diagnostics_dict, context)
-                    local icon = level:match("error") and " " or " "
+                    local icon = level:match("error") and icons.diagnostics.Error or icons.diagnostics.Warning
                     return " " .. icon .. count
                 end,
                 color_icons = true,
@@ -142,10 +142,10 @@ return {
                         {
                             "diagnostics",
                             symbols = {
-                                Error = " ",
-                                Warn = " ",
-                                Hint = " ",
-                                Info = " ",
+                                Error = icons.diagnostics.Error,
+                                Warn = icons.diagnostics.Warning,
+                                Hint = icons.diagnostics.Hint,
+                                Info = icons.diagnostics.Information,
                             },
                         },
                         {
@@ -157,7 +157,7 @@ return {
                                 right = 0,
                             },
                         },
-                        { "filename", path = 1, symbols = { modified = "  ", readonly = "", unnamed = "" } },
+                        { "filename", path = 1, symbols = { modified = icons.ui.ModifiedFile, readonly = "", unnamed = "" } },
                         {
                             -- Breadcrumbs in the statusline
                             function()
@@ -190,7 +190,7 @@ return {
                         -- },
                         {
                             function()
-                                return "  " .. require("dap").status()
+                                return icons.dap.DapSymbol .. require("dap").status()
                             end,
                             cond = function()
                                 return package.loaded["dap"] and require("dap").status() ~= ""
@@ -205,9 +205,9 @@ return {
                         {
                             "diff",
                             symbols = {
-                                added = " ",
-                                modified = " ",
-                                removed = " ",
+                                added = icons.git.Added,
+                                modified = icons.git.Modified,
+                                removed = icons.git.Removed,
                             },
                         },
                         -- OLD stuff
@@ -221,7 +221,7 @@ return {
                     },
                     lualine_z = {
                         function()
-                            return " " .. os.date("%R")
+                            return icons.ui.Time .. os.date("%R")
                         end,
                     },
                 },
@@ -281,7 +281,6 @@ return {
     },
 
     -- noicer ui
-    -- TODO: Only seems to work in lua workspaces.
     {
         "folke/which-key.nvim",
     },
@@ -371,21 +370,21 @@ return {
         config = function()
             require("cinnamon").setup({
                 -- KEYMAPS:
-                default_keymaps = true, -- Create default keymaps.
-                extra_keymaps = true, -- Create extra keymaps.
+                default_keymaps = true,   -- Create default keymaps.
+                extra_keymaps = true,     -- Create extra keymaps.
                 extended_keymaps = false, -- Create extended keymaps.
-                override_keymaps = true, -- The plugin keymaps will override any existing keymaps.
+                override_keymaps = true,  -- The plugin keymaps will override any existing keymaps.
 
                 -- OPTIONS:
-                always_scroll = false, -- Scroll the cursor even when the window hasn't scrolled.
-                centered = true, -- Keep cursor centered in window when using window scrolling.
-                disabled = false, -- Disables the plugin.
-                default_delay = 4, -- The default delay (in ms) between each line when scrolling.
-                hide_cursor = false, -- Hide the cursor while scrolling. Requires enabling termguicolors!
+                always_scroll = false,    -- Scroll the cursor even when the window hasn't scrolled.
+                centered = true,          -- Keep cursor centered in window when using window scrolling.
+                disabled = false,         -- Disables the plugin.
+                default_delay = 4,        -- The default delay (in ms) between each line when scrolling.
+                hide_cursor = false,      -- Hide the cursor while scrolling. Requires enabling termguicolors!
                 horizontal_scroll = true, -- Enable smooth horizontal scrolling when view shifts left or right.
-                max_length = -1, -- Maximum length (in ms) of a command. The line delay will be
+                max_length = -1,          -- Maximum length (in ms) of a command. The line delay will be
                 -- re-calculated. Setting to -1 will disable this option.
-                scroll_limit = 150, -- Max number of lines moved before scrolling is skipped. Setting
+                scroll_limit = 150,       -- Max number of lines moved before scrolling is skipped. Setting
                 -- to -1 will disable this option.
             })
         end,
@@ -412,43 +411,7 @@ return {
                 separator = " ",
                 highlight = true,
                 depth_limit = 5,
-                icons = {
-                    Array = " ",
-                    Boolean = " ",
-                    Class = " ",
-                    Color = " ",
-                    Constant = " ",
-                    Constructor = " ",
-                    Copilot = " ",
-                    Enum = " ",
-                    EnumMember = " ",
-                    Event = " ",
-                    Field = " ",
-                    File = " ",
-                    Folder = " ",
-                    Function = " ",
-                    Interface = " ",
-                    Key = " ",
-                    Keyword = " ",
-                    Method = " ",
-                    Module = " ",
-                    Namespace = " ",
-                    Null = " ",
-                    Number = " ",
-                    Object = " ",
-                    Operator = " ",
-                    Package = " ",
-                    Property = " ",
-                    Reference = " ",
-                    Snippet = " ",
-                    String = " ",
-                    Struct = " ",
-                    Text = " ",
-                    TypeParameter = " ",
-                    Unit = " ",
-                    Value = " ",
-                    Variable = " ",
-                },
+                icons = icons.kinds
             }
         end,
     },
@@ -460,23 +423,23 @@ return {
         opts = {
             filetypes = { "*" },
             user_default_options = {
-                RGB = true, -- #RGB hex codes
-                RRGGBB = true, -- #RRGGBB hex codes
-                names = true, -- "Name" codes like Blue or blue
-                RRGGBBAA = false, -- #RRGGBBAA hex codes
-                AARRGGBB = false, -- 0xAARRGGBB hex codes
-                rgb_fn = true, -- CSS rgb() and rgba() functions
-                hsl_fn = false, -- CSS hsl() and hsla() functions
-                css = false, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-                css_fn = false, -- Enable all CSS *functions*: rgb_fn, hsl_fn
+                RGB = true,           -- #RGB hex codes
+                RRGGBB = true,        -- #RRGGBB hex codes
+                names = true,         -- "Name" codes like Blue or blue
+                RRGGBBAA = false,     -- #RRGGBBAA hex codes
+                AARRGGBB = false,     -- 0xAARRGGBB hex codes
+                rgb_fn = true,        -- CSS rgb() and rgba() functions
+                hsl_fn = false,       -- CSS hsl() and hsla() functions
+                css = false,          -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+                css_fn = false,       -- Enable all CSS *functions*: rgb_fn, hsl_fn
                 -- Available modes for `mode`: foreground, background,  virtualtext
                 mode = "virtualtext", -- Set the display mode.
                 -- Available methods are false / true / "normal" / "lsp" / "both"
                 -- True is same as normal
-                tailwind = false,                  -- Enable tailwind colors
+                tailwind = false,                              -- Enable tailwind colors
                 -- parsers can contain values used in |user_default_options|
                 sass = { enable = true, parsers = { "css" } }, -- Enable sass colors
-                virtualtext = "■",
+                virtualtext = icons.ui.Color,
                 -- update color values even if buffer is not focused
                 -- example use: cmp_menu, cmp_docs
                 always_update = false,

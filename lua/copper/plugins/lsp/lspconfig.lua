@@ -1,3 +1,5 @@
+local icons = require("copper.plugins.extras.icons")
+
 return {
     {
         "neovim/nvim-lspconfig",
@@ -62,8 +64,12 @@ return {
             local snippet_capabilities = vim.tbl_extend("keep", capabilities, _snippet_capabilities)
 
             -- Change the Diagnostic symbols in the sign column (gutter)
-            -- TODO: Again put these symbols in own file
-            local signs = { Error = " ", Warn = " ", Hint = "󰠠 ", Info = " " }
+            local signs = {
+                Error = icons.diagnostics.Error,
+                Warn = icons.diagnostics.Warn,
+                Hint = icons.diagnostics.hint,
+                Info = icons.diagnostics.Info,
+            }
             for type, icon in pairs(signs) do
                 local hl = "DiagnosticSign" .. type
                 vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
@@ -161,7 +167,7 @@ return {
             -- without snippet support
             local lsp_servers = {
                 "bashls",
-                "cssls",
+                "cssmodules_ls",
                 "docker_compose_language_service",
                 "dockerls",
                 "emmet_language_server",
@@ -169,6 +175,7 @@ return {
                 "html",
                 "marksman",
                 "sqlls",
+                "quick_lint_js",
                 "tsserver",
                 "yamlls",
             }
@@ -206,7 +213,7 @@ return {
                     enabled = true,
                     -- Text to show in the sign column.
                     -- Must be between 1-2 characters.
-                    text = "󰌵",
+                    text = icons.ui.Lightbulb,
                     -- Highlight group to highlight the sign column text.
                     hl = "LightBulbSign",
                 },

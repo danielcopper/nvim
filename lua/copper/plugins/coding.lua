@@ -1,3 +1,6 @@
+local set = vim.keymap.set
+local icons = require("copper.plugins.extras.icons")
+
 -- Plugins related to coding workflow like how brackets work or autocompletion and snippets
 return {
     -- Code snippets and completions
@@ -5,22 +8,20 @@ return {
         "hrsh7th/nvim-cmp",
         event = "InsertEnter",
         dependencies = {
-            "L3MON4D3/LuaSnip",    -- the actual snippet engine
-            "hrsh7th/cmp-nvim-lsp", -- completion source for lsp related stuff
-            "hrsh7th/cmp-buffer",  -- source for words in buffer
-            "hrsh7th/cmp-path",    -- source for path completion
-            "saadparwaiz1/cmp_luasnip", -- for autocompletion
+            "L3MON4D3/LuaSnip",             -- the actual snippet engine
+            "hrsh7th/cmp-nvim-lsp",         -- completion source for lsp related stuff
+            "hrsh7th/cmp-buffer",           -- source for words in buffer
+            "hrsh7th/cmp-path",             -- source for path completion
+            "saadparwaiz1/cmp_luasnip",     -- for autocompletion
             "rafamadriz/friendly-snippets", -- collection of useful snippets for different languages
-            "onsails/lspkind-nvim", -- change the appearance of the popup
+            "onsails/lspkind-nvim",         -- change the appearance of the popup
         },
         config = function()
             local cmp = require("cmp")
             local luasnip = require("luasnip")
             local lspkind = require("lspkind")
 
-            local set = vim.keymap.set
             -- keymaps for luasnip
-            -- NOTE: Maybe reconsider
             set({ "i", "s" }, "<C-f>", function()
                 luasnip.jump(1)
             end, { silent = true })
@@ -70,23 +71,21 @@ return {
                 },
 
                 mapping = cmp.mapping.preset.insert({
-                    ["<C-j>"] = cmp.mapping.select_next_item(), -- jump to next suggestion
-                    ["<C-k>"] = cmp.mapping.select_prev_item(), -- jump to previous suggestion
-                    ["<C-f>"] = cmp.mapping.scroll_docs(4), -- scroll through the hover documentation down
-                    ["<C-b>"] = cmp.mapping.scroll_docs(-4), -- scroll through the hover documentation up
-                    ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
-                    ["<C-e>"] = cmp.mapping.abort(),    -- close completion suggestions
+                    ["<C-j>"] = cmp.mapping.select_next_item(),        -- jump to next suggestion
+                    ["<C-k>"] = cmp.mapping.select_prev_item(),        -- jump to previous suggestion
+                    ["<C-f>"] = cmp.mapping.scroll_docs(4),            -- scroll through the hover documentation down
+                    ["<C-b>"] = cmp.mapping.scroll_docs(-4),           -- scroll through the hover documentation up
+                    ["<C-Space>"] = cmp.mapping.complete(),            -- show completion suggestions
+                    ["<C-c>"] = cmp.mapping.abort(),                   -- close completion suggestions
                     ["<CR>"] = cmp.mapping.confirm({ select = true }), -- apply suggestion (autoselect top suggestion)
                 }),
 
                 -- the sources for autocompletion, the order is represented in the suggestions
                 sources = cmp.config.sources({
-                    -- NOTE: To add priority here do this:
-                    -- { name = "nvim_lsp", priority = 75 }
-                    { name = "nvim_lsp" },       -- LSP related snippets
-                    { name = "luasnip" },        -- snippets
+                    { name = "nvim_lsp" },                      -- LSP related snippets
+                    { name = "luasnip" },                       -- snippets
                     { name = "buffer",  max_view_entries = 10 }, -- NOTE: if this doesn't work try max_item_count instead
-                    { name = "path" },           -- file system paths
+                    { name = "path" },                          -- file system paths
                 }),
 
                 -- disable the completion in comment sections
@@ -108,13 +107,12 @@ return {
         end,
     },
 
+    -- autoinsert matching pairs
     {
         "altermo/ultimate-autopair.nvim",
         event = { "InsertEnter", "CmdlineEnter" },
         config = function()
-            require("ultimate-autopair").setup({
-                --Config goes here
-            })
+            require("ultimate-autopair").setup({})
         end,
     },
 
@@ -141,12 +139,12 @@ return {
         end,
         opts = {
             mappings = {
-                add = "gza", -- Add surrounding in Normal and Visual modes
-                delete = "gzd", -- Delete surrounding
-                find = "gzf", -- Find surrounding (to the right)
-                find_left = "gzF", -- Find surrounding (to the left)
-                highlight = "gzh", -- Highlight surrounding
-                replace = "gzr", -- Replace surrounding
+                add = "gza",            -- Add surrounding in Normal and Visual modes
+                delete = "gzd",         -- Delete surrounding
+                find = "gzf",           -- Find surrounding (to the right)
+                find_left = "gzF",      -- Find surrounding (to the left)
+                highlight = "gzh",      -- Highlight surrounding
+                replace = "gzr",        -- Replace surrounding
                 update_n_lines = "gzn", -- Update `n_lines`
             },
         },
@@ -161,30 +159,34 @@ return {
         config = true,
     },
     {
+        -- TODO: Find out what other plugin? causes the other highlights like TODO
         "folke/todo-comments.nvim",
         cmd = { "TodoTrouble", "TodoTelescope" },
         event = "BufReadPost",
         opts = {
-            signs = true, -- show icons in the signs column
+            signs = true,      -- show icons in the signs column
             sign_priority = 8, -- sign priority
             -- keywords recognized as todo comments
             keywords = {
                 FIX = {
-                    icon = " ", -- icon used for the sign, and in search results
+                    icon = icons.ui.Bug, -- icon used for the sign, and in search results
                     color = "error", -- can be a hex color, or a named color (see below)
                     alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
                     -- signs = false, -- configure signs for some keywords individually
                 },
-                TODO = { icon = " ", color = "info", alt = { "todo", "ToDo", "Todo", "toDo" } },
-                HACK = { icon = " ", color = "warning", alt = { "hack", "Hack" } },
-                WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX", "warn", "warning" } },
-                PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-                NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
-                TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+                TODO = { icon = icons.ui.CheckAlt2, color = "info", alt = { "todo", "ToDo", "Todo", "toDo" } },
+                HACK = { icon = icons.ui.Fire, color = "warning", alt = { "hack", "Hack" } },
+                WARN = { icon = icons.diagnostics.Warning, color = "warning", alt = { "WARNING", "XXX", "warn", "warning" } },
+                -- TODO:Find this icon that doesn't work on linux
+                -- PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+                PERF = { icon = icons.ui.History, alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+                -- NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+                NOTE = { icon = icons.ui.Electric, color = "hint", alt = { "INFO" } },
+                TEST = { icon = icons.ui.Time, color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
             },
             gui_style = {
-                fg = "NONE", -- The gui style to use for the fg highlight group.
-                bg = "BOLD", -- The gui style to use for the bg highlight group.
+                fg = "NONE",       -- The gui style to use for the fg highlight group.
+                bg = "BOLD",       -- The gui style to use for the bg highlight group.
             },
             merge_keywords = true, -- when true, custom keywords will be merged with the defaults
             -- highlighting of the line containing the todo comment
@@ -192,16 +194,16 @@ return {
             -- * keyword: highlights of the keyword
             -- * after: highlights after the keyword (todo text)
             highlight = {
-                multiline = true,    -- enable multine todo comments
-                multiline_pattern = "^.", -- lua pattern to match the next multiline from the start of the matched keyword
-                multiline_context = 10, -- extra lines that will be re-evaluated when changing a line
-                before = "",         -- "fg" or "bg" or empty
-                keyword = "wide",    -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
-                after = "fg",        -- "fg" or "bg" or empty
+                multiline = true,                -- enable multine todo comments
+                multiline_pattern = "^.",        -- lua pattern to match the next multiline from the start of the matched keyword
+                multiline_context = 10,          -- extra lines that will be re-evaluated when changing a line
+                before = "",                     -- "fg" or "bg" or empty
+                keyword = "wide",                -- "fg", "bg", "wide", "wide_bg", "wide_fg" or empty. (wide and wide_bg is the same as bg, but will also highlight surrounding characters, wide_fg acts accordingly but with fg)
+                after = "fg",                    -- "fg" or "bg" or empty
                 pattern = [[.*<(KEYWORDS)\s*:]], -- pattern or table of patterns, used for highlighting (vim regex)
-                comments_only = true, -- uses treesitter to match keywords in comments only
-                max_line_len = 400,  -- ignore lines longer than this
-                exclude = {},        -- list of file types to exclude highlighting
+                comments_only = true,            -- uses treesitter to match keywords in comments only
+                max_line_len = 400,              -- ignore lines longer than this
+                exclude = {},                    -- list of file types to exclude highlighting
             },
             -- list of named colors where we try to extract the guifg from the
             -- list of highlight groups or use the hex color if hl not found as a fallback
@@ -235,8 +237,8 @@ return {
             vim.keymap.set("n", "[t", function()
                 require("todo-comments").jump_prev()
             end, { desc = "Previous todo comment" }),
-            -- vim.keymap.set('n', '<leader>xt', '<Cmd>TodoTrouble<CR>', { desc = 'Open TodoTrouble' }),
-            -- vim.keymap.set('n', '<leader>xT', '<Cmd>TodoTrouble<CR>', { desc = 'Todo/Fix/Fixme (Trouble)' }),
+            vim.keymap.set('n', '<leader>xt', '<Cmd>TodoTrouble<CR>', { desc = 'Open TodoTrouble' }),
+            vim.keymap.set('n', '<leader>xT', '<Cmd>TodoTrouble<CR>', { desc = 'Todo/Fix/Fixme (Trouble)' }),
         },
     },
 
@@ -246,15 +248,15 @@ return {
         event = "BufEnter",
         config = function()
             require("tabout").setup({
-                tabkey = "<Tab>", -- key to trigger tabout, set to an empty string to disable
+                tabkey = "<Tab>",             -- key to trigger tabout, set to an empty string to disable
                 backwards_tabkey = "<S-Tab>", -- key to trigger backwards tabout, set to an empty string to disable
-                act_as_tab = true, -- shift content if tab out is not possible
-                act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
-                default_tab = "<C-t>", -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
-                default_shift_tab = "<C-d>", -- reverse shift default action,
-                enable_backwards = true, -- well ...
+                act_as_tab = true,            -- shift content if tab out is not possible
+                act_as_shift_tab = false,     -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
+                default_tab = "<C-t>",        -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
+                default_shift_tab = "<C-d>",  -- reverse shift default action,
+                enable_backwards = true,      -- well ...
                 -- NOTE: so far this didn't cause issues
-                completion = true, -- if the tabkey is used in a completion pum
+                completion = true,            -- if the tabkey is used in a completion pum
                 tabouts = {
                     { open = "'", close = "'" },
                     { open = '"', close = '"' },

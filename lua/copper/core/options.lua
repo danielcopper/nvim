@@ -1,6 +1,8 @@
 local opt = vim.opt
 
 vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
 
 opt.clipboard = "unnamedplus" -- allows neovim to access the system clipboard
 opt.conceallevel = 0 -- so that `` is visible in markdown files
