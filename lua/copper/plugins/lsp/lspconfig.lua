@@ -172,7 +172,7 @@ return {
                 "dockerls",
                 "emmet_language_server",
                 "eslint",
-                "html",
+                "lemminx",
                 "marksman",
                 "sqlls",
                 "quick_lint_js",

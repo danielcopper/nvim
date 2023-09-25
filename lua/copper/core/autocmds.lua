@@ -18,7 +18,7 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
 })
 
 -- remember last cursor location of files
-vim.api.nvim_create_autocmd('BufReadPost', {
+vim.api.nvim_create_autocmd("BufReadPost", {
     callback = function()
         local mark = vim.api.nvim_buf_get_mark(0, '"')
         local lcount = vim.api.nvim_buf_line_count(0)
@@ -37,14 +37,22 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
--- TODO: Fix this, this should open neotree in fullscreen
--- autocmd is currently set directly in neotree config
--- open neotree on startup
--- vim.api.nvim_create_autocmd("VimEnter", {
---     command = "Neotree"
--- })
--- vim.api.nvim_create_autocmd("VimEnter", {
---     callback = function()
---         vim.cmd("BufDelOthers")
---     end
--- })
+local toggle_spell_checking = vim.api.nvim_create_augroup("toggle_spell_checking", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+    group = toggle_spell_checking,
+    desc = "Turn on spell checking on files where it makes sense.",
+    pattern = { "gitcommit", "markdown" },
+    callback = function()
+        vim.opt_local.wrap = true
+        vim.opt_local.spell = true
+    end,
+})
+
+-- NOTE: Test this it should open stuff that can't be opened in nvim with an external app
+local non_vim = vim.api.nvim_create_augroup("nonvim", { clear = true })
+vim.api.nvim_create_autocmd("BufRead", {
+    desc = "Open non-Vim-readable files in system default applications.",
+    group = non_vim,
+    pattern = "*.png, *.jpg, *.gif, *.pdf, *.xls*, *.ppt, *.doc*, *.rtf",
+    command = "sil exe '!open ' . shellescape(expand('%:p')) | bd | let &ft=&ft",
+})

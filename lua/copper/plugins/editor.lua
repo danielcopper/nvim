@@ -255,6 +255,8 @@ return {
 
     {
         "kevinhwang91/nvim-ufo",
+        -- TODO: Sometimes automatically folds in neo-tree, Fix or keep disabled
+        enabled = false,
         dependencies = { "kevinhwang91/promise-async" },
         event = "BufRead",
         keys = {

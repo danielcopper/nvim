@@ -55,7 +55,7 @@ vim.g.markdown_recommended_style = 0 -- Fix markdown indentation settings
 
 opt.updatetime = 50 -- should improve response time
 
-
+opt.spelllang = { "en", "de" }
 -- vim.opt.colorcolumn = "123"
 -- no ~ on gui
-vim.opt.fillchars = { eob = " " }
+-- vim.opt.fillchars = { eob = " " }
