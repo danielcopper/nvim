@@ -157,7 +157,11 @@ return {
                                 right = 0,
                             },
                         },
-                        { "filename", path = 1, symbols = { modified = icons.ui.ModifiedFile, readonly = "", unnamed = "" } },
+                        {
+                            "filename",
+                            path = 1,
+                            symbols = { modified = icons.ui.ModifiedFile, readonly = "", unnamed = "" },
+                        },
                         {
                             -- Breadcrumbs in the statusline
                             function()
@@ -234,21 +238,26 @@ return {
     -- Indentation guides
     {
         "lukas-reineke/indent-blankline.nvim",
+        main = "ibl",
         event = { "BufReadPost", "BufNewFile" },
         opts = {
-            char = "│",
-            filetype_exclude = {
-                "help",
-                "neo-tree",
-                "Trouble",
-                "lazy",
-                "mason",
-                "notify",
-                "toggleterm",
-                "lazyterm",
+            indent = {
+                char = "│",
             },
-            show_trailing_blankline_indent = false,
-            show_current_context = false,
+            exclude = {
+                filetypes = {
+                    "help",
+                    "neo-tree",
+                    "Trouble",
+                    "lazy",
+                    "mason",
+                    "notify",
+                    "toggleterm",
+                    "lazyterm",
+                },
+            },
+            -- show_trailing_blankline_indent = false,
+            -- show_current_context = false,
         },
     },
 
@@ -371,7 +380,7 @@ return {
             require("cinnamon").setup({
                 -- KEYMAPS:
                 default_keymaps = true,   -- Create default keymaps.
-                extra_keymaps = true,     -- Create extra keymaps.
+                extra_keymaps = false,    -- Create extra keymaps.
                 extended_keymaps = false, -- Create extended keymaps.
                 override_keymaps = true,  -- The plugin keymaps will override any existing keymaps.
 
@@ -384,7 +393,7 @@ return {
                 horizontal_scroll = true, -- Enable smooth horizontal scrolling when view shifts left or right.
                 max_length = -1,          -- Maximum length (in ms) of a command. The line delay will be
                 -- re-calculated. Setting to -1 will disable this option.
-                scroll_limit = 150,       -- Max number of lines moved before scrolling is skipped. Setting
+                scroll_limit = 100,       -- Max number of lines moved before scrolling is skipped. Setting
                 -- to -1 will disable this option.
             })
         end,
@@ -411,17 +420,18 @@ return {
                 separator = " ",
                 highlight = true,
                 depth_limit = 5,
-                icons = icons.kinds
+                icons = icons.kinds,
             }
         end,
     },
 
     -- Provides color previews in css
+    -- TODO: Try to disable this in comment sections or use foreground in comments
     {
         "NvChad/nvim-colorizer.lua",
         event = { "BufEnter" },
         opts = {
-            filetypes = { "*" },
+            filetypes = { "css", "scss", html = { mode = "foreground" } },
             user_default_options = {
                 RGB = true,           -- #RGB hex codes
                 RRGGBB = true,        -- #RRGGBB hex codes
@@ -436,7 +446,7 @@ return {
                 mode = "virtualtext", -- Set the display mode.
                 -- Available methods are false / true / "normal" / "lsp" / "both"
                 -- True is same as normal
-                tailwind = false,                              -- Enable tailwind colors
+                tailwind = true,                               -- Enable tailwind colors
                 -- parsers can contain values used in |user_default_options|
                 sass = { enable = true, parsers = { "css" } }, -- Enable sass colors
                 virtualtext = icons.ui.Color,

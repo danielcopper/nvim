@@ -92,7 +92,8 @@ return {
                 on_new_config = function(new_config, new_root_dir)
                     new_config.cmd = ng_cmd
                 end,
-                capabilities = capabilities,
+                -- capabilities = capabilities,
+                capabilities = snippet_capabilities,
                 on_attach = on_attach,
             })
 
