@@ -3,7 +3,25 @@
 
 # CopperVim
 
+<!--toc:start-->
+- [CopperVim](#coppervim)
+  - [Install](#install)
+    - [Windows](#windows)
+    - [Dependencies and Helpful Tools](#dependencies-and-helpful-tools)
+      - [MinGW (for windows)](#mingw-for-windows)
+      - [Lazygit](#lazygit)
+    - [Troubleshooting](#troubleshooting)
+  - [LSP](#lsp)
+    - [Angular](#angular)
+  - [Debugging](#debugging)
+    - [dotNET](#dotnet)
+  - [TODO](#todo)
+  - [Plugins to consider](#plugins-to-consider)
+<!--toc:end-->
+
 These are my config files for Neovim.
+
+
 
 ## Install
 

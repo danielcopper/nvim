@@ -11,7 +11,6 @@ return {
     config = function()
         local mason = require("mason")
         local mason_lspconfig = require("mason-lspconfig")
-        local mason_null_ls = require("mason-null-ls")
 
         mason.setup({
             ui = {
@@ -36,6 +35,7 @@ return {
                 "jsonls",
                 "lemminx",
                 "lua_ls",
+                "marksman",
                 "omnisharp",
                 "powershell_es",
                 "quick_lint_js",
@@ -43,17 +43,6 @@ return {
                 "yamlls",
             },
             -- also auto-install servers that are configured with lspconfig
-            automatic_installation = true,
-        })
-
-        mason_null_ls.setup({
-            -- list of formatters & linters for mason to install
-            ensure_installed = {
-                "prettierd", -- ts/js formatter
-                "stylua", -- lua formatter
-                "eslint_d", -- ts/js linter
-            },
-            -- auto-install configured servers (with lspconfig)
             automatic_installation = true,
         })
     end,

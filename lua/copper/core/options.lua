@@ -15,7 +15,6 @@ opt.cursorline = true -- Enable highlighting of the current line
 vim.lsp.codelens = true
 opt.hidden = true -- required to keep open hidden buffers
 
--- TODO: They don't apply anymore??
 opt.tabstop = 4 -- Number of spaces tabs count for
 opt.softtabstop = 4
 opt.shiftwidth = 4 -- indent size
@@ -28,9 +27,6 @@ opt.wrap = false -- no line wrapping when text flows over screen
 -- no vim backups but undo tree has a long history
 opt.swapfile = false
 opt.backup = false
--- TODO: Check how lazyvim does this platform agnostic
--- opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
--- opt.undodir = os.getenv("appdata") .. "/Local/nvim-data/undodir"
 ---@diagnostic disable-next-line: assign-type-mismatch
 opt.undodir = vim.fn.stdpath("data") .. "/undodir"
 opt.undofile = true
@@ -55,7 +51,6 @@ vim.g.markdown_recommended_style = 0 -- Fix markdown indentation settings
 
 opt.updatetime = 50 -- should improve response time
 
-opt.spelllang = { "en", "de" }
 -- vim.opt.colorcolumn = "123"
 -- no ~ on gui
 -- vim.opt.fillchars = { eob = " " }
