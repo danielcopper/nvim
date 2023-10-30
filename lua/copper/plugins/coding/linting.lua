@@ -12,7 +12,7 @@ return {
                 javascript = { "eslint_d" },
                 typescript = { "eslint_d" },
                 yaml = { "yamllint" },
-                -- editorconfig = { "editorconfig-checker" }
+                editorconfig = { "editorconfig-checker" }
             }
 
             vim.api.nvim_create_autocmd( events , {

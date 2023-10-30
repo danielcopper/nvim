@@ -51,15 +51,15 @@ return {
                             path = 1,
                             symbols = { modified = icons.ui.ModifiedFile, readonly = "", unnamed = "" },
                         },
-                        {
-                            -- Breadcrumbs in the statusline
-                            function()
-                                return require("nvim-navic").get_location()
-                            end,
-                            cond = function()
-                                return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
-                            end,
-                        },
+                        -- {
+                        --     -- Breadcrumbs in the statusline
+                        --     function()
+                        --         return require("nvim-navic").get_location()
+                        --     end,
+                        --     cond = function()
+                        --         return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
+                        --     end,
+                        -- },
                     },
                     lualine_x = {
                         {
@@ -69,7 +69,6 @@ return {
                             cond = function()
                                 return package.loaded["dap"] and require("dap").status() ~= ""
                             end,
-                            -- color = Util.fg("Debug"),
                         },
                         {
                             lazy_status.updates,
