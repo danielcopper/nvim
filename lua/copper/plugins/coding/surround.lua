@@ -1,5 +1,4 @@
 return {
-    -- Surround options
     {
         "echasnovski/mini.surround",
         keys = function(_, keys)

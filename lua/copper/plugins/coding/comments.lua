@@ -5,8 +5,7 @@ return {
     -- Code Comments
     {
         "numToStr/Comment.nvim",
-        -- TODO: Find a better way to lazy load
-        lazy = false,
+        even = { "BufEnter" },
         config = true,
     },
     {

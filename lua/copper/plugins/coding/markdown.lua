@@ -1,5 +1,4 @@
 return {
-    -- Markdown preview in browser
     {
         "iamcco/markdown-preview.nvim",
         build = function()

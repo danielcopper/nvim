@@ -1,5 +1,4 @@
 return {
-    -- Tabout of parenthesis
     {
         "abecodes/tabout.nvim",
         event = "BufEnter",
@@ -12,7 +11,6 @@ return {
                 default_tab = "<C-t>",        -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
                 default_shift_tab = "<C-d>",  -- reverse shift default action,
                 enable_backwards = true,      -- well ...
-                -- NOTE: so far this didn't cause issues
                 completion = true,            -- if the tabkey is used in a completion pum
                 tabouts = {
                     { open = "'", close = "'" },

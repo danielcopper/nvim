@@ -1,5 +1,4 @@
 return {
-    -- better text folding
     -- TODO: Sometimes automatically folds in neo-tree, Fix or keep disabled
     {
         "kevinhwang91/nvim-ufo",
@@ -72,6 +71,7 @@ return {
             })
 
             -- Disable UFO on certain filetypes
+            -- NOTE: this does not seem to work
             vim.api.nvim_create_autocmd("FileType", {
                 pattern = { "neo-tree" },
                 callback = function()

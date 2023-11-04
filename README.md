@@ -90,6 +90,7 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 - Adjust omnisharp options
 - textobjects ???
 - Share clipboard with system
+- Cleanup and simply after everything works as it should
 
 ## Plugins to consider
 

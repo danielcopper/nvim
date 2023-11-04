@@ -1,8 +1,5 @@
--- TODO: maybe move to editor
+-- NOTE: could be moved to editor, but is somewhere in between these
 return {
-    -- Treesitter is a new parser generator tool that we can
-    -- use in Neovim to power faster and more accurate
-    -- syntax highlighting.
     {
         "nvim-treesitter/nvim-treesitter",
         version = false, -- last release is way too old and doesn't work on Windows
@@ -14,10 +11,8 @@ return {
             },
         },
         cmd = { "TSUpdateSync" },
-        ---@param opts TSConfig
         config = function()
             require("nvim-treesitter.configs").setup({
-                -- A list of parser names, or "all" (the five listed parsers should always be installed)
                 ensure_installed = {
                     "bash",
                     "c",

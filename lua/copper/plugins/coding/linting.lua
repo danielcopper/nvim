@@ -15,7 +15,7 @@ return {
                 editorconfig = { "editorconfig-checker" }
             }
 
-            vim.api.nvim_create_autocmd( events , {
+            vim.api.nvim_create_autocmd(events, {
                 callback = function()
                     require("lint").try_lint()
                 end,

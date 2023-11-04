@@ -1,6 +1,5 @@
-
+---@diagnostic disable: missing-fields
 return {
-    -- Code snippets and completions
     {
         "hrsh7th/nvim-cmp",
         event = "InsertEnter",
@@ -9,6 +8,7 @@ return {
             "hrsh7th/cmp-nvim-lsp",         -- completion source for lsp related stuff
             "hrsh7th/cmp-buffer",           -- source for words in buffer
             "hrsh7th/cmp-path",             -- source for path completion
+            "hrsh7th/cmp-nvim-lua",
             "saadparwaiz1/cmp_luasnip",     -- for autocompletion
             "rafamadriz/friendly-snippets", -- collection of useful snippets for different languages
             "onsails/lspkind-nvim",         -- change the appearance of the popup
@@ -18,6 +18,20 @@ return {
             local luasnip = require("luasnip")
             local lspkind = require("lspkind")
 
+            local function border(hl_name)
+                return {
+                    { "╭", hl_name },
+                    { "─", hl_name },
+                    { "╮", hl_name },
+                    { "│", hl_name },
+                    { "╯", hl_name },
+                    { "─", hl_name },
+                    { "╰", hl_name },
+                    { "│", hl_name },
+                }
+            end
+
+            -- NOTE: Do they belong here?
             -- keymaps for luasnip
             vim.keymap.set({ "i", "s" }, "<C-f>", function()
                 luasnip.jump(1)
@@ -46,9 +60,14 @@ return {
                 window = {
                     completion = {
                         winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+                        -- winhighlight = "Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
                         col_offset = -3,
                         side_padding = 0,
+                        border = border "CmpDocBorder"
                     },
+                    documentation = {
+                        border = border "CmpDocBorder"
+                    }
                     -- completion = cmp.config.window.bordered(),
                     -- documentation = cmp.config.window.bordered(),
                 },
@@ -80,10 +99,12 @@ return {
 
                 -- the sources for autocompletion, the order is represented in the suggestions
                 sources = cmp.config.sources({
-                    { name = "nvim_lsp" },                      -- LSP related snippets
-                    { name = "luasnip" },                       -- snippets
-                    { name = "buffer",  max_view_entries = 10, keyword_length = 2 }, -- NOTE: if this doesn't work try max_item_count instead
-                    { name = "path" },                          -- file system paths
+                    { name = "nvim_lua", max_item_count = 30 }, -- nvim_lua automatically handles the enabling in lua files only
+                    { name = "nvim_lsp", max_item_count = 30 }, -- LSP related snippets
+                    { name = "luasnip",  max_item_count = 15 }, -- snippets
+                    -- { name = "buffer",  max_view_entries = 10, keyword_length = 2 }, -- NOTE: if this doesn't work try max_item_count instead
+                    { name = "buffer",   max_item_count = 10, keyword_length = 2 },
+                    { name = "path",     max_item_count = 10 }, -- file system paths
                 }),
 
                 -- disable the completion in comment sections
@@ -101,6 +122,36 @@ return {
                 performance = {
                     max_view_entries = 20,
                 },
+
+                experimental = {
+                    native_menu = false,
+                    ghost_text = true
+                }
+            })
+
+            -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+            cmp.setup.cmdline({ "/", "?" }, {
+                mapping = cmp.mapping.preset.cmdline(),
+                sources = cmp.config.sources({
+                    { name = "buffer", keyword_length = 3, max_item_count = 10 },
+                }),
+            })
+
+            -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+            cmp.setup.cmdline(":", {
+                mapping = cmp.mapping.preset.cmdline(),
+                sources = cmp.config.sources({
+                    { name = "path", keyword_length = 3, max_item_count = 15 },
+                }, {
+                    {
+                        name = "cmdline",
+                        keyword_length = 3,
+                        max_item_count = 15,
+                        option = {
+                            ignore_cmds = { "Man", "!" },
+                        },
+                    },
+                }),
             })
         end,
     },
