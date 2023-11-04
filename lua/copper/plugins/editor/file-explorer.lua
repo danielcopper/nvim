@@ -3,6 +3,7 @@ local icons = require("copper.plugins.extras.icons")
 return {
     {
         "nvim-neo-tree/neo-tree.nvim",
+        enabled = false,
         branch = "v3.x",
         cmd = "Neotree",
         keys = {
@@ -74,17 +75,19 @@ return {
 
     {
         "nvim-tree/nvim-tree.lua",
-        enabled = false,
-        -- lazy = false, -- opens the tree on nvim startup without a autocmd
+        enabled = true,
         init = function()
             require("nvim-tree")
         end,
         opts = {
-            hijack_unnamed_buffer_when_opening = true,
+            filters = {
+                dotfiles = false,
+            },
             disable_netrw = true,
-            hijack_cursor = false,
             hijack_netrw = true,
-            sync_root_with_cwd = false,
+            hijack_cursor = true,
+            hijack_unnamed_buffer_when_opening = false,
+            sync_root_with_cwd = true,
             reload_on_bufenter = true,
             git = {
                 enable = true,
@@ -95,42 +98,73 @@ return {
             },
             view = {
                 adaptive_size = false,
-                width = 36,
+                side = "left",
+                width = 30,
                 preserve_window_proportions = true,
+            },
+            filesystem_watchers = {
+                enable = true,
             },
             renderer = {
                 full_name = true,
                 highlight_opened_files = "all",
                 -- root_folder_label = ':~:s?$?/..?',
-                root_folder_label = ":t",
+                -- root_folder_label = ":t",
+                root_folder_label = false,
                 indent_width = 2,
                 indent_markers = {
                     enable = true,
                 },
                 icons = {
-                    -- git_placement = "signcolumn",
+                    git_placement = "signcolumn",
                     show = {
                         file = true,
                         folder = true,
-                        folder_arrow = false,
+                        folder_arrow = true,
                         git = true,
                     },
+                glyphs = {
+                    default = "󰈚",
+                    symlink = "",
+                    folder = {
+                        default = "",
+                        empty = "",
+                        empty_open = "",
+                        open = "",
+                        symlink = "",
+                        symlink_open = "",
+                        arrow_open = "",
+                        arrow_closed = "",
+                    },
+                    git = {
+                        unstaged = "✗",
+                        staged = "✓",
+                        unmerged = "",
+                        renamed = "➜",
+                        untracked = "★",
+                        deleted = "",
+                        ignored = "◌",
+                    },
                 },
+                },
+
             },
             update_focused_file = {
                 enable = true,
-                update_root = true,
-                ignore_list = { "help" },
+                update_root = false,
             },
             actions = {
+                open_file = {
+                    resize_window = true,
+                },
                 change_dir = {
                     restrict_above_cwd = false,
                 },
             },
         },
         keys = {
-            { "<leader>fe", "<Cmd>Neotree focus<CR>",   { desc = "Focus on NvimTree" } },
-            { "<leader>te", "<Cmd>Neotree toggle<CR>",  { desc = "Toggle NvimTree" } },
+            { "<leader>fe", "<Cmd>NvimTreeFocus<CR>",   { desc = "Focus on NvimTree" } },
+            { "<leader>te", "<Cmd>NvimTreeToggle<CR>",  { desc = "Toggle NvimTree" } },
             { "<leader>te", "<Cmd>NvimTreeRefresh<CR>", { desc = "Refresh NvimTree" } },
         },
     },

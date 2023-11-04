@@ -12,13 +12,16 @@ return {
                 mode = "buffers", -- set to "tabs" to only show tabpages instead
                 offsets = {
                     {
-                        -- NOTE: Pick one
                         filetype = "neo-tree",
-                        -- filetype = "NvimTree",
                         text = "File Explorer",
-                        --highlight = "Directory",
                         separator = true,
-                        --text_align = "left"
+                        text_align = "center"
+                    },
+                    {
+                        filetype = "NvimTree",
+                        text = "File Explorer",
+                        separator = true,
+                        text_align = "center"
                     },
                 },
                 -- indicator = {
