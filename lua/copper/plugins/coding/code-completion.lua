@@ -128,31 +128,6 @@ return {
                     ghost_text = true
                 }
             })
-
-            -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-            cmp.setup.cmdline({ "/", "?" }, {
-                mapping = cmp.mapping.preset.cmdline(),
-                sources = cmp.config.sources({
-                    { name = "buffer", keyword_length = 3, max_item_count = 10 },
-                }),
-            })
-
-            -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-            cmp.setup.cmdline(":", {
-                mapping = cmp.mapping.preset.cmdline(),
-                sources = cmp.config.sources({
-                    { name = "path", keyword_length = 3, max_item_count = 15 },
-                }, {
-                    {
-                        name = "cmdline",
-                        keyword_length = 3,
-                        max_item_count = 15,
-                        option = {
-                            ignore_cmds = { "Man", "!" },
-                        },
-                    },
-                }),
-            })
         end,
     },
 }
