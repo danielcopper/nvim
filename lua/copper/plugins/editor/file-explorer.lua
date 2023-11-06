@@ -165,7 +165,7 @@ return {
         keys = {
             { "<leader>fe", "<Cmd>NvimTreeFocus<CR>",   { desc = "Focus on NvimTree" } },
             { "<leader>te", "<Cmd>NvimTreeToggle<CR>",  { desc = "Toggle NvimTree" } },
-            { "<leader>te", "<Cmd>NvimTreeRefresh<CR>", { desc = "Refresh NvimTree" } },
+            { "<leader>tr", "<Cmd>NvimTreeRefresh<CR>", { desc = "Refresh NvimTree" } },
         },
     },
 }

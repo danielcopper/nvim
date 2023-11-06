@@ -5,7 +5,7 @@ return {
     -- Code Comments
     {
         "numToStr/Comment.nvim",
-        even = { "BufEnter" },
+        event = { "BufEnter" },
         config = true,
     },
     {

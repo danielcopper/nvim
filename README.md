@@ -91,6 +91,7 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 - textobjects ???
 - Share clipboard with system
 - Cleanup and simply after everything works as it should
+- Check if lua snippets actually show up in cmp
 
 ## Plugins to consider
 
