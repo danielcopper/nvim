@@ -4,6 +4,7 @@ return {
         branch = "0.1.x",
         dependencies = {
             { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }, -- for better sorting performance
+            { "catgoose/telescope-helpgrep.nvim" }
         },
         cmd = "Telescope",
         config = function()
@@ -20,8 +21,16 @@ return {
                         },
                     },
                 },
+                extensions = {
+                    helpgrep = {
+                        ignore_paths = {
+                            vim.fn.stdpath("state") .. "/lazy/readme",
+                        },
+                    }
+                }
             })
 
+            telescope.load_extension("helpgrep")
             telescope.load_extension("fzf") -- don't forget to load the performance improvements
         end,
         keys = {
@@ -49,10 +58,11 @@ return {
                 end,
                 { desc = "Show all Notifications in Telescope" },
             },
-            { "<leader>tt", "<Cmd>TodoTelescope<CR>",             { desc = "Open Todos in Telescope" } },
-            { "<leader>th", "<cmd>Telescope command_history<cr>", desc = "Telescope Command History" },
-            { "<leader>tc", "<cmd>Telescope commands<cr>",        desc = "Telesecope Commands" },
-            { "<leader>tm", "<cmd>Telescope man_pages<cr>",       desc = "Telescope Man Pages" },
+            { "<leader>tt", "<Cmd>TodoTelescope<CR>",       desc = "Open Todos in Telescope" },
+            -- { "<leader>th", "<cmd>Telescope command_history<cr>", desc = "Telescope Command History" },
+            { "<leader>th", "<cmd>Telescope helpgrep<cr>",  desc = "Telescope grep nvim documentation" },
+            { "<leader>tc", "<cmd>Telescope commands<cr>",  desc = "Telesecope Commands" },
+            { "<leader>tm", "<cmd>Telescope man_pages<cr>", desc = "Telescope Man Pages" },
             -- TODO: implement utility functions
             -- { "<leader>tC", Util.telescope("colorscheme", { enable_preview = true }), desc = "Colorscheme with preview" },
             {
@@ -67,4 +77,3 @@ return {
         },
     },
 }
-
