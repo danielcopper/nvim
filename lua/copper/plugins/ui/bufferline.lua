@@ -4,7 +4,8 @@ return {
     -- Bufferline (the tabs on top)
     {
         enabled = true,
-        event = "VeryLazy",
+        -- event = "VeryLazy",
+        event = "BufEnter",
         --lazy = false,
         "akinsho/nvim-bufferline.lua",
         opts = {

@@ -1,5 +1,17 @@
 return {
     "coffebar/neovim-project",
+    lazy = true,
+    enabled = false,
+    priority = 100,
+    init = function()
+        -- enable saving the state of plugins in the session
+        vim.opt.sessionoptions:append("globals") -- save global variables that start with an uppercase letter and contain at least one lowercase letter.
+    end,
+    dependencies = {
+        { "nvim-lua/plenary.nvim" },
+        { "nvim-telescope/telescope.nvim", tag = "0.1.4" },
+        { "Shatur/neovim-session-manager" },
+    },
     opts = {
         -- Project directories
         projects = {
@@ -30,15 +42,9 @@ return {
             },
         },
     },
-    init = function()
-        -- enable saving the state of plugins in the session
-        vim.opt.sessionoptions:append("globals") -- save global variables that start with an uppercase letter and contain at least one lowercase letter.
-    end,
-    dependencies = {
-        { "nvim-lua/plenary.nvim" },
-        { "nvim-telescope/telescope.nvim", tag = "0.1.4" },
-        { "Shatur/neovim-session-manager" },
+    keys = {
+        { "<leader>tp",  "<Cmd>Telescope neovim-project discover<CR>", desc = "Telescope discover projects" },
+        { "<leader>tph", "<Cmd>Telescope neovim-project history<CR>",  desc = "Telescope projects history" },
+        { "<leader>lrp", "<Cmd>NeovimProjectLoadRecent<CR>",           desc = "Load Recent Project" },
     },
-    lazy = false,
-    priority = 100,
 }

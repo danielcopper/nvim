@@ -13,6 +13,7 @@ return {
     -- You can restore sessions when returning through the dashboard.
     {
         "folke/persistence.nvim",
+        enabled = false,
         event = "BufReadPre",
         opts = { options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" } },
         -- stylua: ignore

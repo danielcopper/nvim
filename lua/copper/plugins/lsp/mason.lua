@@ -14,12 +14,12 @@ return {
 
         mason.setup({
             ui = {
-                -- TODO: Move icons into global spec table
                 icons = {
                     package_installed = icons.ui.CheckAlt,
                     package_pending = icons.ui.Arrow,
                     package_uninstalled = icons.ui.ErrorAlt
-                }
+                },
+                border = "single"
             }
         })
 

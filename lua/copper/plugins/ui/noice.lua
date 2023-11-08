@@ -1,8 +1,5 @@
 return {
     {
-        "folke/which-key.nvim",
-    },
-    {
         "folke/noice.nvim",
         event = "VeryLazy",
         opts = {
