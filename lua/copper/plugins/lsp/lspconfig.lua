@@ -1,13 +1,14 @@
-local icons = require("copper.plugins.extras.icons")
+local icons = require("copper.plugins.utils.icons")
+local utils = require("copper.plugins.utils.functions")
 
 return {
     {
         "neovim/nvim-lspconfig",
         event = { "BufReadPre", "BufNewFile" },
         dependencies = {
-            "hrsh7th/cmp-nvim-lsp",                          -- source for lsp cmp suggestions
+            "hrsh7th/cmp-nvim-lsp",                                   -- source for lsp cmp suggestions
             { "antosha417/nvim-lsp-file-operations", config = true }, -- allows to rename trough file explorer and auto update import statements
-            { "folke/neodev.nvim",                   opts = {} }, -- help docs etc. for developing neovim
+            { "folke/neodev.nvim",                   opts = {} },     -- help docs etc. for developing neovim
         },
         config = function()
             -- IMPORTANT: make sure to setup neodev BEFORE lspconfig
@@ -15,6 +16,10 @@ return {
 
             local lspconfig = require("lspconfig")
             local cmp_nvim_lsp = require("cmp_nvim_lsp")
+            local handlers = {
+                ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
+                ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "single" }),
+            }
             local set = vim.keymap.set
 
             local on_attach = function(_, bufnr)
@@ -23,17 +28,19 @@ return {
                     set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
                 end
 
-                keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions") -- show lsp definitions
-                keybind("gD", vim.lsp.buf.declaration, "Go to declaration")                       -- go to declaration
-                keybind("gr", require("telescope.builtin").lsp_references, "Show LSP references") -- show definition, references
-                keybind("gi", require("telescope.builtin").lsp_implementations, "Show LSP implementations") -- show lsp implementations
+                keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions")           -- show lsp definitions
+                keybind("gD", vim.lsp.buf.declaration, "Go to declaration")                                   -- go to declaration
+                keybind("gr", require("telescope.builtin").lsp_references, "Show LSP references")             -- show definition, references
+                keybind("gi", require("telescope.builtin").lsp_implementations, "Show LSP implementations")   -- show lsp implementations
                 keybind("gt", require("telescope.builtin").lsp_type_definitions, "Show LSP type definitions") -- show lsp type definitions
-                keybind("<leader>rn", vim.lsp.buf.rename, "Smart rename")                         -- smart rename
-                keybind("<leader>vd", vim.diagnostic.open_float, "Show line diagnostics")         -- show diagnostics for line
-                keybind("[d", vim.diagnostic.goto_prev, "Go to previous diagnostic")              -- jump to previous diagnostic in buffer
-                keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")                  -- jump to next diagnostic in buffer
+                keybind("<leader>rn", vim.lsp.buf.rename, "Smart rename")                                     -- smart rename
+                -- keybind("<leader>vd", vim.diagnostic.open_float, "Show line diagnostics")                     -- show diagnostics for line
+                keybind("<leader>vd", function() vim.diagnostic.open_float(nil, { border = "single" }) end,
+                    "Show line diagnostics")
+                keybind("[d", vim.diagnostic.goto_prev, "Go to previous diagnostic")               -- jump to previous diagnostic in buffer
+                keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")                   -- jump to next diagnostic in buffer
                 keybind("K", vim.lsp.buf.hover, "Show documentation for what is under the cursor") -- show documentation for what is under cursor
-                keybind("<leader>rs", ":LspRestart<CR>", "Restart LSP")                           -- mapping to restart lsp if necessary
+                keybind("<leader>rs", ":LspRestart<CR>", "Restart LSP")                            -- mapping to restart lsp if necessary
                 set(
                     { "n", "v" },
                     "<leader>ca",
@@ -95,12 +102,14 @@ return {
                 -- capabilities = capabilities,
                 capabilities = snippet_capabilities,
                 on_attach = on_attach,
+                handlers = handlers,
             })
 
             -- Lua
             lspconfig["lua_ls"].setup({
                 capabilities = capabilities,
                 on_attach = on_attach,
+                handlers = handlers,
                 settings = { -- custom settings for lua
                     Lua = {
                         -- make the language server recognize "vim" global
@@ -123,9 +132,10 @@ return {
             -- C# / OmniSharp
             local windowsDatapath = vim.fn.expand("~") .. "\\AppData\\local\\nvim-data"
             local linuxDatapath = vim.fn.expand("~") .. "/.local/share/nvim"
-            require("lspconfig").omnisharp.setup({
+            lspconfig.omnisharp.setup({
                 capabilities = capabilities,
                 on_attach = on_attach,
+                handlers = handlers,
                 cmd = { "dotnet", windowsDatapath .. "/mason/packages/omnisharp/libexec/OmniSharp.dll" },
                 -- Enables support for reading code style, naming convention and analyzer
                 -- settings from .editorconfig.
@@ -158,10 +168,34 @@ return {
             })
 
             -- Powershell
-            require("lspconfig").powershell_es.setup({
+            lspconfig.powershell_es.setup({
                 bundle_path = vim.fn.stdpath("data") .. "/mason/packages/powershell-editor-services",
                 capabilities = capabilities,
                 on_attach = on_attach,
+                handlers = handlers,
+            })
+
+            lspconfig.yamlls.setup({
+                capabilities = capabilities,
+                on_attach = on_attach,
+                handlers = handlers,
+                settings = {
+                    yaml = {
+                        -- Enable formatter
+                        format = {
+                            enable = true,
+                        },
+                        -- Schema configurations
+                        schemas = {
+                            -- Azure DevOps pipeline schema configuration
+                            ['https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json'] = {
+                                'azure-pipelines.yml', '/pipelines/*.yml', '/Pipelines/*.yml'
+                            },
+                            -- Add additional schemas as needed
+                        },
+                        -- Other settings ...
+                    },
+                },
             })
 
             -- Auto apply defaults to not specifically setup servers
@@ -178,12 +212,12 @@ return {
                 "sqlls",
                 "quick_lint_js",
                 "tsserver",
-                "yamlls",
             }
             for _, srv in pairs(lsp_servers) do
                 lspconfig[srv].setup({
                     capabilities = capabilities,
                     on_attach = on_attach,
+                    handlers = handlers,
                 })
             end
 
@@ -198,6 +232,7 @@ return {
                 lspconfig[srv].setup({
                     capabilities = snippet_capabilities,
                     on_attach = on_attach,
+                    handlers = handlers,
                 })
             end
         end,

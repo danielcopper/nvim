@@ -92,6 +92,7 @@ Install the netcoredbg adapter through Mason. Adjust the path to netcoredbg.exe!
 - Share clipboard with system
 - Cleanup and simply after everything works as it should
 - Check if lua snippets actually show up in cmp
+- Define borderstyle for hover etc globally
 
 ## Plugins to consider
 

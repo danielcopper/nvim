@@ -3,6 +3,7 @@ local events = { "BufWritePost", "BufReadPost", "InsertLeave" }
 return {
     {
         "mfussenegger/nvim-lint",
+        enabled = false,
         event = events,
         config = function()
             local lint = require("lint")

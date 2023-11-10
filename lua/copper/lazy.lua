@@ -26,7 +26,7 @@ require("lazy").setup({
         -- { import = "copper.plugins" },
         { import = "copper.plugins.coding" },
         { import = "copper.plugins.editor" },
-        { import = "copper.plugins.helpers" },
+        { import = "copper.plugins.helpers" }, -- this loads only core dependencies
         { import = "copper.plugins.lsp" },
         { import = "copper.plugins.ui" },
         -- { import = "copper.plugins.extras.vscode" }, -- Loads vscode specific configurations for plugins
