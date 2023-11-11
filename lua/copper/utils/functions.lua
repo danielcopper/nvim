@@ -11,7 +11,7 @@ function M.set_keybinds(bufnr, keymap_table)
     local set = vim.keymap.set
     for _, keymap in ipairs(keymap_table) do
         local mode, keys, func, desc = unpack(keymap)
-        print("Setting keybind:", keys, "for buffer", bufnr)         -- Debug print
+        print("Setting keybind:", keys, "for buffer", bufnr) -- Debug print
 
         set(mode, keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
     end

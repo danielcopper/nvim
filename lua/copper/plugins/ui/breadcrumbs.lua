@@ -1,4 +1,4 @@
-local icons = require("copper.plugins.utils.icons")
+local icons = require("copper.utils.icons")
 
 return {
     -- lsp symbol navigation for lualine. This shows where
@@ -36,6 +36,7 @@ return {
         opts = {
             show_basename = false,
             show_dirname = false,
+            theme = "catppuccin-mocha"
         },
     }
 }

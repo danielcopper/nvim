@@ -1,5 +1,5 @@
-local icons = require("copper.plugins.utils.icons")
-local utils = require("copper.plugins.utils.functions")
+local icons = require("copper.utils.icons")
+local utils = require("copper.utils.functions")
 
 return {
     {

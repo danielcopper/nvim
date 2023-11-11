@@ -1,3 +1,5 @@
+local function augroup(name) return vim.api.nvim_create_augroup("copper_" .. name, { clear = true }) end
+
 -- Check if we need to reload the file when it changed
 vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
     command = "checktime",
@@ -5,6 +7,7 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
+    group = augroup("highlight_yank"),
     callback = function()
         vim.highlight.on_yank()
     end,
@@ -12,6 +15,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 -- resize splits if window got resized
 vim.api.nvim_create_autocmd({ "VimResized" }, {
+    group = augroup("resize_splits"),
     callback = function()
         vim.cmd("tabdo wincmd =")
     end,
@@ -19,6 +23,7 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
 
 -- remember last cursor location of files
 vim.api.nvim_create_autocmd("BufReadPost", {
+    group = augroup("last_location"),
     callback = function()
         local mark = vim.api.nvim_buf_get_mark(0, '"')
         local lcount = vim.api.nvim_buf_line_count(0)
@@ -30,6 +35,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 -- wrap and check for spell in text filetypes
 vim.api.nvim_create_autocmd("FileType", {
+    group = augroup("wrap_and_spell"),
     pattern = { "gitcommit", "markdown" },
     callback = function()
         vim.opt_local.wrap = true
@@ -37,9 +43,8 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
-local toggle_spell_checking = vim.api.nvim_create_augroup("toggle_spell_checking", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
-    group = toggle_spell_checking,
+    group = augroup("toggle_spell_checking"),
     desc = "Turn on spell checking on files where it makes sense.",
     pattern = { "gitcommit", "markdown" },
     callback = function()
@@ -49,10 +54,9 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- NOTE: Test this it should open stuff that can't be opened in nvim with an external app
-local non_vim = vim.api.nvim_create_augroup("nonvim", { clear = true })
 vim.api.nvim_create_autocmd("BufRead", {
     desc = "Open non-Vim-readable files in system default applications.",
-    group = non_vim,
+    group = augroup("open_externally"),
     pattern = "*.png, *.jpg, *.gif, *.pdf, *.xls*, *.ppt, *.doc*, *.rtf",
     command = "sil exe '!open ' . shellescape(expand('%:p')) | bd | let &ft=&ft",
 })

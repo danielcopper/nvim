@@ -1,4 +1,4 @@
-local icons = require("copper.plugins.utils.icons")
+local icons = require("copper.utils.icons")
 
 return {
     -- Bufferline (the tabs on top)
