@@ -31,10 +31,7 @@ return {
                     color = "warning",
                     alt = { "WARNING", "XXX", "warn", "warning" },
                 },
-                -- TODO:Find this icon that doesn't work on linux
-                -- PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
                 PERF = { icon = icons.ui.History, alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-                -- NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
                 NOTE = { icon = icons.ui.Electric, color = "hint", alt = { "INFO" } },
                 TEST = { icon = icons.ui.Time, color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
             },

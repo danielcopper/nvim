@@ -109,8 +109,8 @@ return {
                 full_name = true,
                 highlight_opened_files = "all",
                 -- root_folder_label = ':~:s?$?/..?',
-                -- root_folder_label = ":t",
-                root_folder_label = false,
+                root_folder_label = ":t",
+                -- root_folder_label = false,
                 indent_width = 2,
                 indent_markers = {
                     enable = true,

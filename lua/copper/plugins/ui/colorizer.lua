@@ -2,7 +2,6 @@ local icons = require("copper.plugins.utils.icons")
 
 return {
     -- Provides color previews in css
-    -- TODO: Try to disable this in comment sections or use foreground in comments
     {
         "NvChad/nvim-colorizer.lua",
         event = { "BufEnter" },

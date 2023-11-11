@@ -1,5 +1,4 @@
 return {
-    -- Notifications
     {
         "rcarriga/nvim-notify",
         keys = {

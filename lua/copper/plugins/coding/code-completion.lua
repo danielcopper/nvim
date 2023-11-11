@@ -33,12 +33,8 @@ return {
 
             -- NOTE: Do they belong here?
             -- keymaps for luasnip
-            vim.keymap.set({ "i", "s" }, "<C-f>", function()
-                luasnip.jump(1)
-            end, { silent = true })
-            vim.keymap.set({ "i", "s" }, "<C-b>", function()
-                luasnip.jump(-1)
-            end, { silent = true })
+            vim.keymap.set({ "i", "s" }, "<C-f>", function() luasnip.jump(1) end, { silent = true })
+            vim.keymap.set({ "i", "s" }, "<C-b>", function() luasnip.jump(-1) end, { silent = true })
 
             -- load vscode style snippets from installed plugins (e.g. friendly-snippets)
             require("luasnip.loaders.from_vscode").lazy_load()
@@ -102,7 +98,6 @@ return {
                     { name = "nvim_lua", max_item_count = 30 }, -- nvim_lua automatically handles the enabling in lua files only
                     { name = "nvim_lsp", max_item_count = 30 }, -- LSP related snippets
                     { name = "luasnip",  max_item_count = 15 }, -- snippets
-                    -- { name = "buffer",  max_view_entries = 10, keyword_length = 2 }, -- NOTE: if this doesn't work try max_item_count instead
                     { name = "buffer",   max_item_count = 10, keyword_length = 2 },
                     { name = "path",     max_item_count = 10 }, -- file system paths
                 }),
@@ -120,7 +115,7 @@ return {
                 end,
 
                 performance = {
-                    max_view_entries = 20,
+                    max_view_entries = 30,
                 },
 
                 experimental = {

@@ -4,7 +4,6 @@ return {
         lazy = false,
         opts = {
             size = 30,
-            -- NOTE: Change when on windows
             shell = "bash",
             insert_mappings = true,
         },

@@ -1,24 +1,24 @@
 return {
     -- TODO: Sometimes automatically folds in neo-tree, Fix or keep disabled
+    -- {
+    --     "kevinhwang91/nvim-ufo",
+    --     enabled = true,
+    --     event = "BufRead",
+    --     dependencies = { "kevinhwang91/promise-async" },
+    --     config = function()
+    --         -- Fold options
+    --         -- vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+    --         vim.o.foldcolumn = "0" -- '0' is not bad -> controls the width of the extra column for fold icons
+    --         vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
+    --         vim.o.foldlevelstart = 99
+    --         vim.o.foldenable = true
+    --
+    --         require("ufo").setup()
+    --     end,
+    -- },
     {
         "kevinhwang91/nvim-ufo",
         enabled = true,
-        event = "BufRead",
-        dependencies = { "kevinhwang91/promise-async" },
-        config = function()
-            -- Fold options
-            -- vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-            vim.o.foldcolumn = "0" -- '0' is not bad -> controls the width of the extra column for fold icons
-            vim.o.foldlevel = 99   -- Using ufo provider need a large value, feel free to decrease the value
-            vim.o.foldlevelstart = 99
-            vim.o.foldenable = true
-
-            require("ufo").setup()
-        end,
-    },
-    {
-        "kevinhwang91/nvim-ufo",
-        enabled = false,
         dependencies = { "kevinhwang91/promise-async" },
         event = "BufRead",
         keys = {
@@ -71,7 +71,6 @@ return {
             })
 
             -- Disable UFO on certain filetypes
-            -- NOTE: this does not seem to work
             vim.api.nvim_create_autocmd("FileType", {
                 pattern = { "neo-tree" },
                 callback = function()
