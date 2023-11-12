@@ -6,5 +6,5 @@ local enabled = {
 }
 
 return {
-    -- TODO: return a table of plugins that should be enabled in vscode
+  -- TODO: return a table of plugins that should be enabled in vscode
 }
