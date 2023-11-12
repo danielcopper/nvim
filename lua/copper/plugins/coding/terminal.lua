@@ -4,24 +4,29 @@ return {
     lazy = false,
     opts = {
       size = 30,
-      shell = "bash",
       insert_mappings = true,
     },
     config = function(_, opts)
-      -- NOTE: Windows related
-      -- local powershell_options = {
-      --     shell = vim.fn.executable 'pwsh' == 1 and 'pwsh' or 'powershell',
-      --     shellcmdflag =
-      --     '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;',
-      --     shellredir = '-RedirectStandardOutput %s -NoNewWindow -Wait',
-      --     shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode',
-      --     shellquote = '',
-      --     shellxquote = '',
-      -- }
-      --
-      -- for option, value in pairs(powershell_options) do
-      --     vim.opt[option] = value
-      -- end
+      local os_name = vim.loop.os_uname().sysname
+      if os_name == "Windows_NT" then
+        -- Windows-specific settings
+        opts.shell = vim.fn.executable 'pwsh' == 1 and 'pwsh' or 'powershell'
+        local powershell_options = {
+          shell = vim.fn.executable 'pwsh' == 1 and 'pwsh' or 'powershell',
+          shellcmdflag =
+          '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;',
+          shellredir = '-RedirectStandardOutput %s -NoNewWindow -Wait',
+          shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode',
+          shellquote = '',
+          shellxquote = '',
+        }
+
+        for option, value in pairs(powershell_options) do
+          vim.opt[option] = value
+        end
+      else
+        opts.shell = "bash" -- or your preferred shell
+      end
 
       require("toggleterm").setup(opts)
 
