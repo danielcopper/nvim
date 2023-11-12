@@ -31,7 +31,6 @@ return {
                 }
             end
 
-            -- NOTE: Do they belong here?
             -- keymaps for luasnip
             vim.keymap.set({ "i", "s" }, "<C-f>", function() luasnip.jump(1) end, { silent = true })
             vim.keymap.set({ "i", "s" }, "<C-b>", function() luasnip.jump(-1) end, { silent = true })
