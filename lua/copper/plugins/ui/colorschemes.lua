@@ -1,19 +1,3 @@
--- Use this variable to set the colorscheme
--- TODO: Fix the colorscheme options. They could be in a different table and loaded by the function as well.
--- local colorscheme = "rose-pine"
-
--- local M = {}
-
--- This is how it works without configuration
--- M.colorschemes = {
---     { "rose-pine/neovim", name = "rose-pine" },
---     { "catppuccin/nvim", name = "catppuccin" },
---     { "folke/tokyonight.nvim", name = "tokyonight" },
---     { "rebelot/kanagawa.nvim", name = "kanagawa" },
---     { "neanias/everforest-nvim", name = "everforest" }
--- }
-
--- M.colorschemes = {
 return {
   {
     "rose-pine/neovim",
@@ -27,8 +11,8 @@ return {
       dark_variant = "main",
       bold_vert_split = false,
       dim_nc_background = false,
-      disable_background = false,
-      disable_float_background = false,
+      disable_background = true,
+      disable_float_background = true,
       disable_italics = true,
 
       --- @usage string hex value or named color from rosepinetheme.com/palette
@@ -68,11 +52,12 @@ return {
         -- Blend colours against the "base" background
         CursorLine = { bg = "foam", blend = 10 },
         StatusLine = { fg = "love", bg = "love", blend = 10 },
+        StatusLineNC = { fg = "subtle", bg = "surface" },
 
         -- By default each group adds to the existing config.
         -- If you only want to set what is written in this config exactly,
         -- you can set the inherit option:
-        Search = { bg = "gold", inherit = false },
+        -- Search = { bg = "gold", inherit = false },
       },
     },
     config = function(_, opts)
@@ -217,22 +202,26 @@ return {
     lazy = false,
     priority = 1000,
     opts = {
+      compile = false,
       undercurl = true, -- enable undercurls
       commentStyle = { italic = true },
       functionStyle = {},
       keywordStyle = { italic = true },
       statementStyle = { bold = true },
       typeStyle = {},
+      transparent = true,
+      dimInactive = false,     -- dim inactive window `:h hl-NormalNC`
+      terminalColors = true,   -- define vim.g.terminal_color_{0,17}
       variablebuiltinStyle = { italic = true },
       specialReturn = true,    -- special highlight for the return keyword
       specialException = true, -- special highlight for exception handling keywords
-      transparent = true,      -- do not set background color
-      dimInactive = false,     -- dim inactive window `:h hl-NormalNC`
       globalStatus = true,     -- adjust window separators highlight for laststatus=3
-      terminalColors = true,   -- define vim.g.terminal_color_{0,17}
-      -- Remove the background of LineNr, {Sign,Fold}Column and friends
       colors = {
+        palette = {},
         theme = {
+          wave = {},
+          lotus = {},
+          dragon = {},
           all = {
             ui = {
               bg_gutter = "none",
@@ -246,30 +235,34 @@ return {
           -- Transparent Floating Windows
           NormalFloat = { bg = "none" },
           FloatBorder = { bg = "none" },
-          -- Save an hlgroup with dark background and dimmed foreground
-          -- so that you can use it where your still want darker windows.
-          -- E.g.: autocmd TermOpen * setlocal winhighlight=Normal:NormalDark
-          NormalDark = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m3 },
-          -- Popular plugins that open floats will link to NormalFloat by default;
-          -- set their background accordingly if you wish to keep them dark and borderless
-          LazyNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
-          MasonNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
-          -- Telescope
-          TelescopeTitle = { fg = theme.ui.special, bold = true },
-          TelescopePromptNormal = { bg = theme.ui.bg_p1 },
-          TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
-          TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
-          TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
-          TelescopePreviewNormal = { bg = theme.ui.bg_dim },
-          TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
-          -- Dark completion popup menu
-          Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
-          PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
-          PmenuSbar = { bg = theme.ui.bg_m1 },
-          PmenuThumb = { bg = theme.ui.bg_p2 },
+          FloatTitle = { bg = "none" },
+          StatusLine = { bg = "none" }, -- Making status line background transparent
+          StatusLineNC = { bg = "none" }, -- Making non-current status line transparent
+          TelescopeBorder = { bg = "none", fg = "none" },
+          -- -- Save an hlgroup with dark background and dimmed foreground
+          -- -- so that you can use it where your still want darker windows.
+          -- -- E.g.: autocmd TermOpen * setlocal winhighlight=Normal:NormalDark
+          -- NormalDark = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m3 },
+          -- -- Popular plugins that open floats will link to NormalFloat by default;
+          -- -- set their background accordingly if you wish to keep them dark and borderless
+          -- LazyNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
+          -- MasonNormal = { bg = theme.ui.bg_m3, fg = theme.ui.fg_dim },
+          -- -- Telescope
+          -- TelescopeTitle = { fg = theme.ui.special, bold = true },
+          -- TelescopePromptNormal = { bg = theme.ui.bg_p1 },
+          -- TelescopePromptBorder = { fg = theme.ui.bg_p1, bg = theme.ui.bg_p1 },
+          -- TelescopeResultsNormal = { fg = theme.ui.fg_dim, bg = theme.ui.bg_m1 },
+          -- TelescopeResultsBorder = { fg = theme.ui.bg_m1, bg = theme.ui.bg_m1 },
+          -- TelescopePreviewNormal = { bg = theme.ui.bg_dim },
+          -- TelescopePreviewBorder = { bg = theme.ui.bg_dim, fg = theme.ui.bg_dim },
+          -- -- Dark completion popup menu
+          -- Pmenu = { fg = theme.ui.shade0, bg = theme.ui.bg_p1 },
+          -- PmenuSel = { fg = "NONE", bg = theme.ui.bg_p2 },
+          -- PmenuSbar = { bg = theme.ui.bg_m1 },
+          -- PmenuThumb = { bg = theme.ui.bg_p2 },
         }
       end,
-      theme = "default", -- Load "default" theme or the experimental "light" theme
+      theme = "wave",
     },
     config = function(_, opts)
       require("kanagawa").setup(opts)
@@ -278,7 +271,6 @@ return {
   },
 
   {
-    -- TODO: Make the original work
     -- 'sainnhe/everforest',
     "neanias/everforest-nvim",
     enabled = false,
@@ -306,24 +298,3 @@ return {
     end,
   },
 }
-
--- TODO: Fix this to also inclue Configuarations for colorschemes
--- for i, value in ipairs(M.colorschemes) do
---     if value.name == colorscheme then
---         -- Prioritize colorscheme
---         M.colorschemes[i].lazy = false
---         M.colorschemes[i].priority = 1000
---
---         if value.config == nil then
---             M.colorschemes[i].config = function()
---                 vim.cmd.colorscheme(colorscheme)
---             end
---         end
---
---         break
---     else
---         M.colorschemes[i].lazy = true
---     end
--- end
-
--- return M.colorschemes

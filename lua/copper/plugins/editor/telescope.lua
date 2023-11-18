@@ -69,7 +69,8 @@ return {
         "<leader>ts",
         function()
           require("telescope.builtin").lsp_document_symbols({
-            symbols = require("lazyvim.config").get_kind_filter(),
+            -- TODO: fix returned icons
+            -- symbols = require("copper.utils.icons").kinds,
           })
         end,
         desc = "Goto Symbol",

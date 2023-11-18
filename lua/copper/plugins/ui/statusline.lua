@@ -11,7 +11,7 @@ return {
           icons_enabled = true,
           theme = "auto",
           globalstatus = true,
-          disabled_filetypes = { statusline = { "lazy", "alpha" } },
+          disabled_filetypes = { statusline = { "lazy", "alpha", "starter" } },
         },
         sections = {
           lualine_a = {
@@ -51,15 +51,6 @@ return {
               path = 1,
               symbols = { modified = icons.ui.ModifiedFile, readonly = "", unnamed = "" },
             },
-            -- {
-            --     -- Breadcrumbs in the statusline
-            --     function()
-            --         return require("nvim-navic").get_location()
-            --     end,
-            --     cond = function()
-            --         return package.loaded["nvim-navic"] and require("nvim-navic").is_available()
-            --     end,
-            -- },
           },
           lualine_x = {
             {
@@ -87,34 +78,15 @@ return {
             { "fileformat" },
           },
           lualine_y = {
-            {
-              "progress",
-              separator = " ",
-              padding = { left = 1, right = 0 },
-
-              -- color = {
-              --     fg = "#1e1e2e",
-              --     bg = "#eba0ac",
-              -- },
-            },
-            {
-              "location",
-              padding = { left = 0, right = 1 },
-              -- color = {
-              --     fg = "#1e1e2e",
-              --     bg = "#eba0ac",
-              -- },
-            },
+            { "progress", separator = " ",                   padding = { left = 1, right = 0 },           color = { fg = "#1e1e2e", bg = "#eba0ac", }, },
+            { "location", padding = { left = 0, right = 1 }, color = { fg = "#1e1e2e", bg = "#eba0ac", }, },
           },
           lualine_z = {
             {
               function()
                 return icons.ui.Time .. os.date("%R")
               end,
-              -- color = {
-              --     fg = "#1e1e2e",
-              --     bg = "#f2cdcd",
-              -- },
+              color = { fg = "#1e1e2e", bg = "#f2cdcd", },
             },
           },
         },

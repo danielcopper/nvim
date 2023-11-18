@@ -1,16 +1,12 @@
 local icons = require("copper.utils.icons")
 
 return {
-  -- Bufferline (the tabs on top)
   {
-    enabled = true,
-    -- event = "VeryLazy",
-    event = "BufEnter",
-    --lazy = false,
     "akinsho/nvim-bufferline.lua",
+    enabled = true,
+    event = "VeryLazy",
     opts = {
       options = {
-        mode = "buffers", -- set to "tabs" to only show tabpages instead
         offsets = {
           {
             filetype = "neo-tree",
@@ -25,20 +21,18 @@ return {
             text_align = "center"
           },
         },
-        -- indicator = {
-        --     style = 'underline'
-        -- },
         separator_style = "thin", -- "slant" | "thick" | "thin" | { 'any', 'any' },
-        show_tab_indicators = true,
+        -- show_tab_indicators = true,
+        always_show_bufferline = false,
         diagnostics = "nvim_lsp",
-        --- count is an integer representing total count of errors
-        --- level is a string "error" | "warning"
-        --- diagnostics_dict ij a dictionary from error level ("error", "warning" or "info")to number of errors for each level.
-        --- this should return a string
-        --- Don't get too fancy as this function will be executed a lot
-        diagnostics_indicator = function(count, level, diagnostics_dict, context)
-          local icon = level:match("error") and icons.diagnostics.Error or icons.diagnostics.Warning
-          return " " .. icon .. count
+        -- diagnostics_indicator = function(count, level, diagnostics_dict, context)
+        --   local icon = level:match("error") and icons.diagnostics.Error or icons.diagnostics.Warning
+        --   return " " .. icon .. count
+        -- end,
+        diagnostics_indicator = function(_, _, diag)
+          local ret = (diag.error and icons.Error .. diag.error .. " " or "")
+              .. (diag.warning and icons.Warn .. diag.warning or "")
+          return vim.trim(ret)
         end,
         color_icons = true,
         show_buffer_icons = true,
@@ -48,6 +42,14 @@ return {
       require("bufferline").setup(opts)
       require("bufdel").setup({
         quit = false, -- quit Neovim when last buffer is closed
+      })
+      -- Fix bufferline when restoring a session
+      vim.api.nvim_create_autocmd("BufAdd", {
+        callback = function()
+          vim.schedule(function()
+            pcall(nvim_bufferline)
+          end)
+        end,
       })
     end,
     keys = {

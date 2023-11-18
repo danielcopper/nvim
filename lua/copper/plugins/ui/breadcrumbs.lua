@@ -6,6 +6,7 @@ return {
   -- etc - in the statusline.
   {
     "SmiteshP/nvim-navic",
+    enabled = true,
     -- init = function()
     --     vim.g.navic_silence = true
     --     vim.api.nvim_create_autocmd("LspAttach", {
@@ -36,7 +37,8 @@ return {
     opts = {
       show_basename = false,
       show_dirname = false,
-      theme = "catppuccin-mocha"
+      -- theme = "catppuccin-mocha"
+      theme = "rosepinetheme"
     },
   }
 }
