@@ -30,8 +30,8 @@ return {
         --   return " " .. icon .. count
         -- end,
         diagnostics_indicator = function(_, _, diag)
-          local ret = (diag.error and icons.Error .. diag.error .. " " or "")
-              .. (diag.warning and icons.Warn .. diag.warning or "")
+          local ret = (diag.error and icons.diagnostics.Error .. diag.error .. " " or "")
+              .. (diag.warning and icons.diagnostics.Warning .. diag.warning or "")
           return vim.trim(ret)
         end,
         color_icons = true,

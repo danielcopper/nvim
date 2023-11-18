@@ -1,5 +1,98 @@
 local icons = require("copper.utils.icons")
 
+--- Sets up the enhanced capabilities for the LSP client, especially for autocompletion.
+-- This function is typically called during the LSP server setup to provide
+-- additional features like snippet support, folding range, and other language-specific capabilities.
+-- @return table The enhanced capabilities.
+local function setup_capabilites()
+  -- Set up enhanced capabilities for LSP, especially for autocompletion
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  -- Explicitly enable snippet support
+  capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+  -- Additional capabilities for LSP features like folding and enhanced completion items
+  capabilities.textDocument.completion.completionItem.snippetSupport = true
+  -- Add additional capabilities for better LSP features (needed for nvim-ufo folds for example)
+  capabilities.textDocument.foldingRange = { dynamicRegistration = false, lineFoldingOnly = true }
+  capabilities.textDocument.completion.completionItem.preselectSupport = true
+  capabilities.textDocument.completion.completionItem.insertReplaceSupport = true
+  capabilities.textDocument.completion.completionItem.labelDetailsSupport = true
+  capabilities.textDocument.completion.completionItem.deprecatedSupport = true
+  capabilities.textDocument.completion.completionItem.commitCharactersSupport = true
+  capabilities.textDocument.completion.completionItem.tagSupport = { valueSet = { 1 } }
+  capabilities.textDocument.completion.completionItem.resolveSupport = { properties = { 'documentation', 'detail', 'additionalTextEdits' } }
+
+  return capabilities
+end
+
+--- Configures keybindings specifically for LSP functionalities in the provided buffer.
+-- Keybindings include shortcuts for go-to definition, references, diagnostics, etc.
+-- This function is called in the on_attach callback of each LSP server.
+-- @param bufnr number The buffer number where the keybindings will be set.
+local function setup_keybindings(bufnr)
+  local set = vim.keymap.set
+  -- Keybinding setup for LSP functions like go-to definition, references, etc.
+  local keybind = function(keys, func, desc)
+    set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
+  end
+
+  keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions")
+  keybind("gD", vim.lsp.buf.declaration, "Go to declaration")
+  keybind("gr", require("telescope.builtin").lsp_references, "Show LSP references")
+  keybind("gi", require("telescope.builtin").lsp_implementations, "Show LSP implementations")
+  keybind("gt", require("telescope.builtin").lsp_type_definitions, "Show LSP type definitions")
+  keybind("<leader>rn", vim.lsp.buf.rename, "Smart rename")
+  keybind("<leader>vd", function() vim.diagnostic.open_float(nil, { border = "single" }) end,
+    "Show line diagnostics")
+  keybind("[d", vim.diagnostic.goto_prev, "Go to previous diagnostic")
+  keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")
+  keybind("K", vim.lsp.buf.hover, "Show documentation for what is under the cursor")
+  keybind("<leader>rs", ":LspRestart<CR>", "Restart LSP")
+  set(
+    { "n", "v" },
+    "<leader>ca",
+    vim.lsp.buf.code_action,
+    { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" }
+  )
+  set(
+    "n",
+    "<leader>vD",
+    "<cmd>Telescope diagnostics bufnr=0<CR>",
+    { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" }
+  )
+end
+
+--- Configures handlers for different LSP server responses.
+-- Handlers in LSP are functions that determine how certain types of server responses
+-- (like hover, signature help, etc.) are displayed or processed in Neovim.
+-- This function sets up customized behavior for these responses, like defining borders
+-- or other UI enhancements.
+local function setup_handlers()
+  local handlers = {
+    ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
+    ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "single" }),
+  }
+
+  return handlers
+end
+
+--- Sets up diagnostic signs used in the sign column (gutter).
+-- This function defines visual indicators (like icons or text) for different types of diagnostics
+-- such as errors, warnings, information, and hints. These signs help in quickly identifying
+-- the nature of the diagnostic in the code.
+local function setup_signs()
+  -- Change the diagnostic symbols in the sign column (gutter)
+  local signs = {
+    Error = icons.diagnostics.Error,
+    Warn = icons.diagnostics.Warning,
+    Hint = icons.diagnostics.Hint,
+    Info = icons.diagnostics.Information,
+  }
+  for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+  end
+end
+
 return {
   {
     "neovim/nvim-lspconfig",
@@ -8,157 +101,76 @@ return {
       "hrsh7th/cmp-nvim-lsp",                                   -- Integration with nvim-cmp for LSP-based completions
       { "antosha417/nvim-lsp-file-operations", config = true }, -- File operations through LSP
       { "folke/neodev.nvim",                   opts = {} },     -- Enhanced support for Neovim development
+      "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
     },
     config = function()
+      -- First some general configuration
       -- neodev setup must be done before lspconfig to enhance Lua dev experience
       require("neodev").setup({})
 
       local lspconfig = require("lspconfig")
-      -- Handlers define how certain LSP responses are displayed
-      local handlers = {
-        ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
-        ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "single" }),
-      }
+      local mason = require("mason")
+      local mason_lspconfig = require("mason-lspconfig")
 
-      -- Set up enhanced capabilities for LSP, especially for autocompletion
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      -- Explicitly enable snippet support
-      capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-      -- Additional capabilities for LSP features like folding and enhanced completion items
-      capabilities.textDocument.completion.completionItem.snippetSupport = true
-      -- Add additional capabilities for better LSP features (needed for nvim-ufo folds for example)
-      capabilities.textDocument.foldingRange = { dynamicRegistration = false, lineFoldingOnly = true }
-      capabilities.textDocument.completion.completionItem.preselectSupport = true
-      capabilities.textDocument.completion.completionItem.insertReplaceSupport = true
-      capabilities.textDocument.completion.completionItem.labelDetailsSupport = true
-      capabilities.textDocument.completion.completionItem.deprecatedSupport = true
-      capabilities.textDocument.completion.completionItem.commitCharactersSupport = true
-      capabilities.textDocument.completion.completionItem.tagSupport = { valueSet = { 1 } }
-      capabilities.textDocument.completion.completionItem.resolveSupport = { properties = { 'documentation', 'detail', 'additionalTextEdits' } }
+      local handlers = setup_handlers()
+      local capabilities = setup_capabilites()
+      local on_attach = function(_, bufnr) setup_keybindings(bufnr) end
 
-      local set = vim.keymap.set
-      local on_attach = function(_, bufnr)
-        -- Keybinding setup for LSP functions like go-to definition, references, etc.
-        local keybind = function(keys, func, desc)
-          set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
-        end
+      setup_signs()
 
-        keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions")
-        keybind("gD", vim.lsp.buf.declaration, "Go to declaration")
-        keybind("gr", require("telescope.builtin").lsp_references, "Show LSP references")
-        keybind("gi", require("telescope.builtin").lsp_implementations, "Show LSP implementations")
-        keybind("gt", require("telescope.builtin").lsp_type_definitions, "Show LSP type definitions")
-        keybind("<leader>rn", vim.lsp.buf.rename, "Smart rename")
-        keybind("<leader>vd", function() vim.diagnostic.open_float(nil, { border = "single" }) end,
-          "Show line diagnostics")
-        keybind("[d", vim.diagnostic.goto_prev, "Go to previous diagnostic")
-        keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")
-        keybind("K", vim.lsp.buf.hover, "Show documentation for what is under the cursor")
-        keybind("<leader>rs", ":LspRestart<CR>", "Restart LSP")
-        set(
-          { "n", "v" },
-          "<leader>ca",
-          vim.lsp.buf.code_action,
-          { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" }
-        )
-        set(
-          "n",
-          "<leader>vD",
-          "<cmd>Telescope diagnostics bufnr=0<CR>",
-          { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" }
-        )
-      end
+      -- And second the actual lsp servers setup
+      mason.setup({
+        ui = {
+          icons = {
+            package_installed = icons.ui.CheckAlt,
+            package_pending = icons.ui.Arrow,
+            package_uninstalled = icons.ui.ErrorAlt
+          },
+          border = "single"
+        }
+      })
 
-      -- Change the diagnostic symbols in the sign column (gutter)
-      local signs = {
-        Error = icons.diagnostics.Error,
-        Warn = icons.diagnostics.Warning,
-        Hint = icons.diagnostics.Hint,
-        Info = icons.diagnostics.Information,
-      }
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-      end
+      mason_lspconfig.setup({
+        ensure_installed = {
+          "angularls",
+          "bashls",
+          "cssls",
+          "cssmodules_ls",
+          "emmet_language_server",
+          "eslint",
+          "html",
+          "jsonls",
+          "lemminx",
+          "lua_ls",
+          "marksman",
+          "omnisharp",
+          "powershell_es",
+          "quick_lint_js",
+          "sqlls",
+          "tsserver",
+          "yamlls",
+        },
+      })
 
-      -- Server setup for both standard and custom-configured servers
-      -- Standard servers
-      local servers_with_standard_config = {
-        "bashls",
-        "cssls",
-        "cssmodules_ls",
-        "docker_compose_language_service",
-        "dockerls",
-        "emmet_language_server",
-        "eslint",
-        "html",
-        "jsonls",
-        "lemminx",
-        "marksman",
-        "sqlls",
-        "quick_lint_js",
-        "tsserver"
-      }
-
-      -- Custom server configurations
-      local servers_with_custom_config = {
-        angularls = function()
-          local ng_cwd = vim.fn.getcwd()
-          local ng_project_library_path = ng_cwd .. "/node_modules"
-          local ng_cmd = {
-            "ngserver",
-            "--stdio",
-            "--tsProbeLocations",
-            ng_project_library_path,
-            "--ngProbeLocations",
-            ng_project_library_path,
-          }
-          return {
-            cmd = {
-              "ngserver",
-              "--stdio",
-              "--tsProbeLocations", ng_project_library_path,
-              "--ngProbeLocations", ng_project_library_path,
-            },
-            on_new_config = function(new_config, new_root_dir)
-              new_config.cmd = ng_cmd
-            end,
+      mason_lspconfig.setup_handlers({
+        -- The first entry (without a key) will be the default handler
+        -- and will be called for each installed server that doesn't have
+        -- a dedicated handler.
+        function(server_name) -- default handler (optional)
+          lspconfig[server_name].setup {
+            capabilities = capabilities,
+            handlers = handlers,
+            on_attach = on_attach
           }
         end,
-        powershell_es = function()
-          return { bundle_path = vim.fn.stdpath("data") .. "/mason/packages/powershell-editor-services" }
-        end,
-        yamlls = function()
-          return {
-            settings = {
-              yaml = {
-                format = { enable = true },
-                schemas = {
-                  ['https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json'] = {
-                    'azure-pipelines.yml', '/pipelines/*.yml', '/Pipelines/*.yml'
-                  },
-                },
-              },
-            },
-          }
-        end,
-        omnisharp = function()
-          local cmd_path = vim.loop.os_uname().sysname == "Windows_NT" and
-              vim.fn.expand("~\\AppData\\local\\nvim-data\\mason\\packages\\omnisharp\\libexec\\OmniSharp.dll") or
-              vim.fn.expand("~/.local/share/nvim/mason/packages/omnisharp/libexec/OmniSharp.dll")
-          return {
-            cmd = { "dotnet", cmd_path },
-            enable_editorconfig_support = true,
-            enable_ms_build_load_projects_on_demand = false,
-            enable_roslyn_analyzers = true,
-            organize_imports_on_format = true,
-            enable_import_completion = true,
-            sdk_include_prereleases = true,
-            analyze_open_documents_only = false,
-          }
-        end,
-        lua_ls = function()
-          return {
+
+        -- Next, you can provide a dedicated handler for specific servers.
+        ["lua_ls"] = function()
+          lspconfig["lua_ls"].setup({
+            capabilities = capabilities,
+            on_attach = on_attach,
+            handlers = handlers,
             settings = {
               Lua = {
                 diagnostics = {
@@ -167,7 +179,7 @@ return {
                 format = {
                   defaultConfig = {
                     indent_style = "space",
-                    indent_size = "2" -- this is overridden by the editors default settings
+                    indent_size = 2
                   }
                 },
                 hint = { enable = true },
@@ -180,25 +192,35 @@ return {
                 },
               },
             },
-          }
+          })
         end,
-      }
 
-      for _, server in ipairs(servers_with_standard_config) do
-        lspconfig[server].setup({
-          capabilities = capabilities,
-          on_attach = on_attach,
-          handlers = handlers,
-        })
-      end
+        ["powershell_es"] = function()
+          lspconfig["powershell_es"].setup({
+            { bundle_path = vim.fn.stdpath("data") .. "/mason/packages/powershell-editor-services" }
+          })
+        end,
 
-      for server, config_fn in pairs(servers_with_custom_config) do
-        lspconfig[server].setup(vim.tbl_extend("force", {
-          capabilities = capabilities,
-          on_attach = on_attach,
-          handlers = handlers,
-        }, config_fn()))
-      end
+        ["omnisharp"] = function()
+          local cmd_path = vim.loop.os_uname().sysname == "Windows_NT" and
+              vim.fn.expand("~\\AppData\\local\\nvim-data\\mason\\packages\\omnisharp\\libexec\\OmniSharp.dll") or
+              vim.fn.expand("~/.local/share/nvim/mason/packages/omnisharp/libexec/OmniSharp.dll")
+
+          require("lspconfig")["omnisharp"].setup({
+            cmd = { "dotnet", cmd_path },
+            capabilities = capabilities,
+            on_attach = on_attach,
+            handlers = handlers,
+            enable_editorconfig_support = true,
+            enable_ms_build_load_projects_on_demand = false,
+            enable_roslyn_analyzers = true,
+            organize_imports_on_format = true,
+            enable_import_completion = true,
+            sdk_include_prereleases = true,
+            analyze_open_documents_only = false,
+          })
+        end,
+      })
     end,
   },
 }
