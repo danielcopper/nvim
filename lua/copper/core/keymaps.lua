@@ -25,13 +25,6 @@ vim.keymap.set(
   { desc = "Search and Replace the String under the cursor for the current file" }
 )
 
--- TODO: - need testing. probably not working
--- related to the quick fix list -> do some research
--- vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
--- vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
--- vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
--- vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
-
 vim.keymap.set("v", "J", ":m '<+1<CR>gv=gv", { desc = "Move selected text bulk down and indent" })
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected text bulk up and indent" })
 vim.keymap.set("v", "<leader>y", '"+y', { desc = "Yank into system clipboard" })

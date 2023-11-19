@@ -40,7 +40,6 @@ opt.hlsearch = false
 opt.incsearch = true
 -- TODO: find a way so that the window showing the prieview adjusts in size
 opt.inccommand = "split" -- open a hsplit showing all the "upcoming" changes
--- opt.inccommand = "nosplit" -- preview incremental substitute
 
 opt.termguicolors = true -- Full color support - enable 24bit color support, also ignores the terminal color scheme
 

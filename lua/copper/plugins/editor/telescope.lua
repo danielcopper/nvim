@@ -63,8 +63,6 @@ return {
       { "<leader>th", "<cmd>Telescope helpgrep<cr>",  desc = "Telescope grep nvim documentation" },
       { "<leader>tc", "<cmd>Telescope commands<cr>",  desc = "Telesecope Commands" },
       { "<leader>tm", "<cmd>Telescope man_pages<cr>", desc = "Telescope Man Pages" },
-      -- TODO: implement utility functions
-      -- { "<leader>tC", Util.telescope("colorscheme", { enable_preview = true }), desc = "Colorscheme with preview" },
       {
         "<leader>ts",
         function()

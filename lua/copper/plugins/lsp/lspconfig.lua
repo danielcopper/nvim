@@ -119,9 +119,7 @@ return {
 
       setup_signs()
 
-      -- require('lspconfig.ui.windows').default_options.border = 'single'
-
-      lspconfig.ui.windows.default_options.border = "single"
+      require('lspconfig.ui.windows').default_options.border = 'single'
 
       -- And second the actual lsp servers setup
       mason.setup({

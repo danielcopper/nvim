@@ -21,11 +21,17 @@
   <!--toc:end-->
 
 These are my config files for Neovim.
+They aim to work on both Linux and Windows.
 
 ## Install
 
-Clone this repo and move the contents to
-`OS:/Users/<your-user-name/AppData/Local/nvim`
+Clone this repo into the nvim standard path
+**Linux**: ~/.config/nvim
+**Windows**: `OS:/Users/<your-user-name/AppData/Local/nvim`
+
+### Linux
+
+Use your favorite package manager.
 
 ### Windows
 
@@ -51,10 +57,6 @@ There are other options, but I had the most success with this one.
 
 To install MinGW you need chocolatey currently, execute: `choco install mingw`
 
-#### Lazygit
-
-Intall with choco: `choco install lazygit`
-
 ### Troubleshooting
 
 On windows with some language parser errors in treesitter can occur, for example
@@ -72,13 +74,6 @@ For Angular Language Service to work you either have to be sure to install
 typescript and angular/language-service as a dev dependency on the project or
 TODO: find a solution for the LSP setup to set the correct parameters
 automatically (LSP Zero seems to do that correctly).
-
-## Debugging
-
-### dotNET
-
-Install the netcoredbg adapter through Mason. Adjust the path to
-netcoredbg.exe!!!
 
 ## TODO
 
