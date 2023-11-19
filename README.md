@@ -4,21 +4,18 @@
 ![Lua](https://img.shields.io/badge/lua-%232C2D72.svg?style=for-the-badge&logo=lua&logoColor=white)
 
 <!--toc:start-->
-
 - [CopperVim](#coppervim)
   - [Install](#install)
+    - [Linux](#linux)
     - [Windows](#windows)
     - [Dependencies and Helpful Tools](#dependencies-and-helpful-tools)
       - [MinGW (for windows)](#mingw-for-windows)
-      - [Lazygit](#lazygit)
     - [Troubleshooting](#troubleshooting)
   - [LSP](#lsp)
     - [Angular](#angular)
-  - [Debugging](#debugging)
-    - [dotNET](#dotnet)
   - [TODO](#todo)
   - [Plugins to consider](#plugins-to-consider)
-  <!--toc:end-->
+<!--toc:end-->
 
 These are my config files for Neovim.
 They aim to work on both Linux and Windows.

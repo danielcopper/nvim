@@ -1,7 +1,6 @@
 return {
   -- Improves the UI for input and select options
   -- for example for code actions
-  -- NOTE: Try to simplify this setup
   {
     "stevearc/dressing.nvim",
     init = function()
