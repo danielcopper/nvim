@@ -7,19 +7,25 @@ local icons = require("copper.utils.icons")
 local function setup_capabilites()
   -- Set up enhanced capabilities for LSP, especially for autocompletion
   local capabilities = vim.lsp.protocol.make_client_capabilities()
-  -- Explicitly enable snippet support
   capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
   -- Additional capabilities for LSP features like folding and enhanced completion items
-  capabilities.textDocument.completion.completionItem.snippetSupport = true
-  -- Add additional capabilities for better LSP features (needed for nvim-ufo folds for example)
   capabilities.textDocument.foldingRange = { dynamicRegistration = false, lineFoldingOnly = true }
-  capabilities.textDocument.completion.completionItem.preselectSupport = true
-  capabilities.textDocument.completion.completionItem.insertReplaceSupport = true
-  capabilities.textDocument.completion.completionItem.labelDetailsSupport = true
-  capabilities.textDocument.completion.completionItem.deprecatedSupport = true
-  capabilities.textDocument.completion.completionItem.commitCharactersSupport = true
-  capabilities.textDocument.completion.completionItem.tagSupport = { valueSet = { 1 } }
-  capabilities.textDocument.completion.completionItem.resolveSupport = { properties = { 'documentation', 'detail', 'additionalTextEdits' } }
+  capabilities.textDocument.completion.completionItem = {
+    snippetSupport = true,
+    preselectSupport = true,
+    insertReplaceSupport = true,
+    deprecatedSupport = true,
+    labelDetailsSupport = true,
+    commitCharactersSupport = true,
+    tagSupport = { valueSet = { 1 } },
+    resolveSupport = {
+      properties = {
+        'documentation',
+        'detail',
+        'additionalTextEdits',
+      }
+    }
+  }
 
   return capabilities
 end
@@ -35,30 +41,35 @@ local function setup_keybindings(bufnr)
     set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
   end
 
+  local function code_action_current_line()
+    local current_line = vim.api.nvim_win_get_cursor(0)[1] - 1
+    local params = {
+      range = {
+        start = { line = current_line, character = 0 },
+        ["end"] = { line = current_line, character = 4294967295 },
+      },
+    }
+    vim.lsp.buf.code_action(params)
+  end
+
+
   keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions")
   keybind("gD", vim.lsp.buf.declaration, "Go to declaration")
   keybind("gr", require("telescope.builtin").lsp_references, "Show LSP references")
   keybind("gi", require("telescope.builtin").lsp_implementations, "Show LSP implementations")
   keybind("gt", require("telescope.builtin").lsp_type_definitions, "Show LSP type definitions")
   keybind("<leader>rn", vim.lsp.buf.rename, "Smart rename")
-  keybind("<leader>vd", function() vim.diagnostic.open_float(nil, { border = "single" }) end,
-    "Show line diagnostics")
+  keybind("<leader>vd", function() vim.diagnostic.open_float(nil, { border = "single" }) end, "Show line diagnostics")
   keybind("[d", vim.diagnostic.goto_prev, "Go to previous diagnostic")
   keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")
   keybind("K", vim.lsp.buf.hover, "Show documentation for what is under the cursor")
   keybind("<leader>rs", ":LspRestart<CR>", "Restart LSP")
-  set(
-    { "n", "v" },
-    "<leader>ca",
-    vim.lsp.buf.code_action,
-    { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" }
-  )
-  set(
-    "n",
-    "<leader>vD",
-    "<cmd>Telescope diagnostics bufnr=0<CR>",
-    { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" }
-  )
+  set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action,
+    { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" })
+  set({ "n", "v" }, "<leader>cA", code_action_current_line,
+    { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions for the entire line" })
+  set("n", "<leader>vD", "<cmd>Telescope diagnostics bufnr=0<CR>",
+    { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" })
 end
 
 --- Configures handlers for different LSP server responses.

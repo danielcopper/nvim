@@ -55,6 +55,16 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- close some stuff with q
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("close_buffers"),
+  -- this is the stuff to close
+  pattern = "fugitive",
+  callback = function()
+    vim.api.nvim_buf_set_keymap(0, "n", "q", "<Cmd>q<CR>", { noremap = true, silent = true })
+  end
+})
+
 -- NOTE: Test this it should open stuff that can't be opened in nvim with an external app
 vim.api.nvim_create_autocmd("BufRead", {
   desc = "Open non-Vim-readable files in system default applications.",
