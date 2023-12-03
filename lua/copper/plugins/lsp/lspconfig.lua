@@ -64,12 +64,8 @@ local function setup_keybindings(bufnr)
   keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")
   keybind("K", vim.lsp.buf.hover, "Show documentation for what is under the cursor")
   keybind("<leader>rs", ":LspRestart<CR>", "Restart LSP")
-  set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action,
-    { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" })
-  set({ "n", "v" }, "<leader>cA", code_action_current_line,
-    { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions for the entire line" })
-  set("n", "<leader>vD", "<cmd>Telescope diagnostics bufnr=0<CR>",
-    { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" })
+  set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" })
+  set("n", "<leader>vD", "<cmd>Telescope diagnostics bufnr=0<CR>", { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" })
 end
 
 --- Configures handlers for different LSP server responses.
@@ -79,8 +75,8 @@ end
 -- or other UI enhancements.
 local function setup_handlers()
   local handlers = {
-    ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
-    ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "single" }),
+    ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
+    ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
   }
 
   return handlers

@@ -5,25 +5,13 @@ vim.keymap.set("n", "J", "mzJ`z", { desc = "Keep the cursor in line when appendi
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Scrolling down keeps the cursor in the middle of the screen" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Scrolling up keeps the cursor in the middle of the screen" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "Jumping to the next result keeps the cursor in the middle of the screen" })
-vim.keymap.set(
-  "n",
-  "N",
-  "Nzzzv",
-  { desc = "Jumping to the previous result keeps the cursor in the middle of the screen" }
-)
+vim.keymap.set("n", "N", "Nzzzv", { desc = "Jumping to the previous result keeps the cursor in the middle of the screen" })
 vim.keymap.set("n", "<leader>y", '"+y', { desc = "Yank into system clipboard" })
 vim.keymap.set("n", "<leader>Y", '"+Y', { desc = "Yank into system clipboard" })
 vim.keymap.set("n", "<leader>d", '"_d', { desc = "Delete into system clipboard" })
 vim.keymap.set("n", "Q", "<nop>", { desc = "Prevent from using capital Q" })
-vim.keymap.set("n", "<leader>cf", function()
-  vim.lsp.buf.format()
-end, { desc = "Quick format the open buffer" })
-vim.keymap.set(
-  "n",
-  "<leader>sr",
-  ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>",
-  { desc = "Search and Replace the String under the cursor for the current file" }
-)
+vim.keymap.set("n", "<leader>cf", function() vim.lsp.buf.format() end, { desc = "Quick format the open buffer" })
+vim.keymap.set( "n", "<leader>sr", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>", { desc = "Search and Replace the String under the cursor for the current file" })
 
 vim.keymap.set("v", "J", ":m '<+1<CR>gv=gv", { desc = "Move selected text bulk down and indent" })
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selected text bulk up and indent" })

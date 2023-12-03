@@ -12,6 +12,7 @@ opt.cursorline = true     -- Enable highlighting of the current line
 
 opt.splitbelow = true
 opt.splitright = true
+opt.splitkeep = "screen" -- Keep the same relative cursor position when splitting
 
 opt.clipboard = "unnamedplus" -- allows neovim to access the system clipboard
 opt.conceallevel = 0          -- so that `` is visible in markdown files
@@ -19,6 +20,7 @@ opt.fileencoding = "utf-8"
 
 opt.hidden = true    -- required to keep open hidden buffers
 
+-- Tabs
 opt.expandtab = true -- use spaces instead of tabs
 opt.tabstop = 4      -- Number of spaces neovim inserts when tabbing
 opt.shiftwidth = 4   -- indent size when using <, > or 'cindent' for indentation
@@ -52,5 +54,11 @@ opt.smartcase = true     -- Don't ignore case with capitals
 opt.list = true          -- Show some invisible characters (tabs...
 opt.mouse = "a"          -- Enable mouse mode
 opt.spelllang = { "en", "de" }
+vim.opt.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
+
+
+-- Folds
+opt.foldlevelstart = 99 -- Don't close any folds at the start
+opt.foldcolumn = "1" -- Clickable column that shows folds
 
 opt.updatetime = 50 -- should improve response time

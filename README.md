@@ -85,6 +85,7 @@ automatically (LSP Zero seems to do that correctly).
 - Cleanup and simply after everything works as it should
 - Check if lua snippets actually show up in cmp
 - Define borderstyle for hover etc globally
+- TestRunner for dotnet (Neotest?)
 
 ## Plugins to consider
 

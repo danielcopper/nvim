@@ -38,7 +38,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- wrap and check for spell in text filetypes
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("wrap_and_spell"),
-  pattern = { "gitcommit", "markdown" },
+  pattern = { "gitcommit", "markdown", "tex" },
   callback = function()
     vim.opt_local.wrap = true
     vim.opt_local.spell = true
@@ -53,6 +53,21 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.wrap = true
     vim.opt_local.spell = true
   end,
+})
+
+-- TODO: Check if helpful
+vim.api.nvim_create_autocmd("FileType", {
+    desc = "Disable foldcolumn",
+    group = augroup("adjust_foldcolumn"),
+    pattern = {
+        "neotest-summary",
+        "dap-repl",
+        "NeogitCommitMessage",
+        "NeogitCommitView",
+        "NeogitPopup",
+        "NeogitStatus",
+    },
+    callback = function() vim.opt_local.foldcolumn = "0" end,
 })
 
 -- close some stuff with q

@@ -18,27 +18,6 @@ return {
       local luasnip = require("luasnip")
       local lspkind = require("lspkind")
 
-      local function border(hl_name)
-        return {
-          { "╭", hl_name },
-          { "─", hl_name },
-          { "╮", hl_name },
-          { "│", hl_name },
-          { "╯", hl_name },
-          { "─", hl_name },
-          { "╰", hl_name },
-          { "│", hl_name },
-        }
-      end
-
-      -- keymaps for luasnip
-      vim.keymap.set({ "i", "s" }, "<C-f>", function()
-        luasnip.jump(1)
-      end, { silent = true })
-      vim.keymap.set({ "i", "s" }, "<C-b>", function()
-        luasnip.jump(-1)
-      end, { silent = true })
-
       -- load vscode style snippets from installed plugins (e.g. friendly-snippets)
       require("luasnip.loaders.from_vscode").lazy_load()
 
@@ -62,13 +41,11 @@ return {
             -- winhighlight = "Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
             col_offset = -3,
             side_padding = 0,
-            border = border("CmpDocBorder"),
+            border = "rounded"
           },
           documentation = {
-            border = border("CmpDocBorder"),
+            border = "rounded",
           },
-          -- completion = cmp.config.window.bordered(),
-          -- documentation = cmp.config.window.bordered(),
         },
 
         formatting = {
@@ -94,6 +71,22 @@ return {
           ["<C-Space>"] = cmp.mapping.complete(),            -- show completion suggestions
           ["<C-c>"] = cmp.mapping.abort(),                   -- close completion suggestions
           ["<CR>"] = cmp.mapping.confirm({ select = true }), -- apply suggestion (autoselect top suggestion)
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then cmp.select_next_item()
+            elseif luasnip.jumpable(1) then luasnip.jump(1)
+            -- Kinda hindering...
+            -- elseif luasnip.expandable() then luasnip.expand()
+            else fallback() end
+          end, { "i", "s" }),
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
         }),
 
         -- the sources for autocompletion, the order is represented in the suggestions

@@ -14,29 +14,23 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   defaults = {
     lazy = true,
-    cond = function()
-      if vim.g.vscode then
-        return false
-      else
-        return true
-      end
-    end,
   },
   spec = {
-    -- { import = "copper.plugins" },
+    -- Some core plugins
+    -- NOTE: Maybe remove (or move to where they are a dependency)
+    { "nvim-tree/nvim-web-devicons" },
+    { "nvim-lua/plenary.nvim" },
+    { "MunifTanjim/nui.nvim" },
+    -- TODO: Test if it is useful
+    -- textDocument/onTypeFormatting
+    { "yioneko/nvim-type-fmt" },
     { import = "copper.plugins.coding" },
     { import = "copper.plugins.editor" },
-    { import = "copper.plugins.helpers" }, -- this loads only core dependencies
     { import = "copper.plugins.lsp" },
     { import = "copper.plugins.ui" },
-    -- { import = "copper.plugins.extras.vscode" }, -- Loads vscode specific configurations for plugins
-  },
-  install = {
-    -- try to load one of these colorschemes when starting an installation during startup
-    colorscheme = { "catppuccin", "tokyonight", "habamax" },
   },
   ui = {
-    border = "single",
+    border = "rounded",
   },
   checker = {
     enabled = true, -- automatically check for plugin updates
@@ -48,9 +42,10 @@ require("lazy").setup({
   performance = {
     rtp = {
       disabled_plugins = {
+        -- TODO: Check what these do
         "gzip",
         "matchit",
-        -- "matchparen",
+        "matchparen",
         "netrwPlugin",
         "tarPlugin",
         "tohtml",

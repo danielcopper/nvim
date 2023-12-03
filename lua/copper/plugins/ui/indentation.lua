@@ -1,4 +1,10 @@
 return {
+  -- Automatic indenting, not really UI but whatever
+  {
+    "nmac427/guess-indent.nvim",
+    config = true
+  },
+
   -- Indentation guides
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -20,10 +26,12 @@ return {
           "lazyterm",
         },
       },
-      -- show_trailing_blankline_indent = false,
-      -- show_current_context = false,
+      scope = {
+        enabled = false
+      }
     },
   },
+
   -- animates the indentscope
   {
     "echasnovski/mini.indentscope",

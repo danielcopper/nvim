@@ -5,6 +5,9 @@ return {
     "akinsho/nvim-bufferline.lua",
     enabled = true,
     event = "VeryLazy",
+    dependencies = {
+      { 'ojroques/nvim-bufdel' },
+    },
     opts = {
       options = {
         offsets = {

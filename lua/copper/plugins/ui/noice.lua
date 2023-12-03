@@ -60,16 +60,16 @@ return {
         desc = "Dismiss All"
       },
       {
-        "<c-f>",
-        function() if not require("noice.lsp").scroll(4) then return "<c-f>" end end,
+        "<c-d>",
+        function() if not require("noice.lsp").scroll(4) then return "<c-d>" end end,
         silent = true,
         expr = true,
         desc = "Scroll forward",
         mode = { "i", "n", "s" }
       },
       {
-        "<c-b>",
-        function() if not require("noice.lsp").scroll(-4) then return "<c-b>" end end,
+        "<c-u>",
+        function() if not require("noice.lsp").scroll(-4) then return "<c-u>" end end,
         silent = true,
         expr = true,
         desc = "Scroll backward",
