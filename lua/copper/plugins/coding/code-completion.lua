@@ -9,6 +9,7 @@ return {
       "hrsh7th/cmp-buffer",           -- source for words in buffer
       "hrsh7th/cmp-path",             -- source for path completion
       "hrsh7th/cmp-nvim-lua",
+      "hrsh7th/cmp-nvim-lsp-signature-help",
       "saadparwaiz1/cmp_luasnip",     -- for autocompletion
       "rafamadriz/friendly-snippets", -- collection of useful snippets for different languages
       "onsails/lspkind-nvim",         -- change the appearance of the popup
@@ -38,7 +39,6 @@ return {
         window = {
           completion = {
             winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
-            -- winhighlight = "Normal:CmpPmenu,CursorLine:CmpSel,Search:PmenuSel",
             col_offset = -3,
             side_padding = 0,
             border = "rounded"
@@ -113,10 +113,16 @@ return {
             },
           },
           { name = "path", max_item_count = 10 }, -- file system paths
+          -- NOTE:Signature help is already enabled but i leave it here for future reference
+          -- { name = 'nvim_lsp_signature_help' }
         }),
 
         -- disable the completion in comment sections
         enabled = function()
+          -- disable completion in telescope and other prompts
+          local buftype = vim.api.nvim_buf_get_option(0, "buftype")
+          if buftype == "prompt" then return false end
+
           -- disable completion in comments
           local context = require("cmp.config.context")
           -- keep command mode completion enabled when cursor is in a comment
@@ -137,17 +143,5 @@ return {
         },
       })
     end,
-    -- config = function(_, opts)
-    --   local cmp = require("cmp")
-    --   cmp.setup(opts)
-    --
-    --   -- DAP Completion
-    --   -- TODO: Research usecase
-    --   cmp.setup.filetype({ "dapui_watches", "dapui_hover" }, {
-    --     sources = {
-    --       { name = "dap" },
-    --     },
-    --   })
-    -- end,
   },
 }

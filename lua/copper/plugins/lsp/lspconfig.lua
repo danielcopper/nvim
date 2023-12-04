@@ -8,8 +8,118 @@ local function setup_capabilites()
   -- Set up enhanced capabilities for LSP, especially for autocompletion
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-  -- Additional capabilities for LSP features like folding and enhanced completion items
+
+  -- Enables text folding range capabilities in the LSP
   capabilities.textDocument.foldingRange = { dynamicRegistration = false, lineFoldingOnly = true }
+
+  -- Sets supported formats for hover content (like Markdown or plaintext)
+  capabilities.textDocument.hover = {
+    contentFormat = { "markdown", "plaintext" },
+  }
+
+  -- Enables semantic highlighting, providing more meaningful syntax colors
+  capabilities.textDocument.semanticHighlightingCapabilities = {
+    semanticHighlighting = true,
+  }
+
+  -- Enhances signature help with Markdown and plaintext support
+  capabilities.textDocument.signatureHelp = {
+    signatureInformation = {
+      documentationFormat = { "markdown", "plaintext" },
+      parameterInformation = { labelOffsetSupport = true }
+    }
+  }
+
+  -- Enables workspace folder support and dynamic configuration in LSP
+  capabilities.workspace = {
+    workspaceFolders = true,
+    configuration = true,
+  }
+
+  -- Enables code lens capabilities, providing inline actions and information
+  capabilities.textDocument.codeLens = { dynamicRegistration = true }
+
+  -- Enhances diagnostics capabilities, including related information and tag support
+  capabilities.textDocument.publishDiagnostics = {
+    relatedInformation = true,
+    versionSupport = false,
+    tagSupport = { valueSet = { 1, 2 } }
+  }
+
+  -- Enables linked editing range, allowing for simultaneous edits of linked items
+  capabilities.textDocument.linkedEditingRange = {
+    dynamicRegistration = true
+  }
+
+  -- Allows the LSP to support rename preparation, providing more context for renaming
+  capabilities.textDocument.prepareRename = {
+    dynamicRegistration = true
+  }
+
+  -- Enhances code action capabilities with dynamic registration and a variety of code action kinds
+  capabilities.textDocument.codeAction = {
+    dynamicRegistration = true,
+    codeActionLiteralSupport = {
+      codeActionKind = {
+        valueSet = {
+          "", -- Empty means all kinds of code actions
+          "quickfix",
+          "refactor",
+          "refactor.extract",
+          "refactor.inline",
+          "refactor.rewrite",
+          "source",
+          "source.organizeImports",
+        },
+      },
+    },
+  }
+
+  -- Enables range formatting for partial code formatting instead of whole documents
+  capabilities.textDocument.rangeFormatting = {
+    dynamicRegistration = true,
+  }
+
+  -- Enables various synchronization features for the LSP, like willSave, didSave events
+  capabilities.textDocument.synchronization = {
+    dynamicRegistration = true,
+    willSave = true,
+    willSaveWaitUntil = true,
+    didSave = true,
+  }
+
+  -- Enables call hierarchy capabilities, allowing visualization of call chains
+  capabilities.textDocument.callHierarchy = {
+    dynamicRegistration = true,
+  }
+
+  -- Enables type hierarchy capabilities, useful for object-oriented languages
+  capabilities.textDocument.typeHierarchy = {
+    dynamicRegistration = true,
+  }
+
+  -- Enables selection range capabilities, allowing for smart selection of code blocks
+  capabilities.textDocument.selectionRange = {
+    dynamicRegistration = true,
+  }
+
+  -- Enables moniker capabilities, useful for cross-repository navigation
+  capabilities.textDocument.moniker = {
+    dynamicRegistration = true,
+  }
+
+  -- Specifies the regular expression engine and version the LSP should use for searches
+  capabilities.textDocument.regularExpressions = {
+    engine = "ECMAScript",
+    version = "ECMAScript 2020",
+  }
+
+  -- Enables inlay hint capabilities, providing inline hints and information
+  capabilities.textDocument.inlayHint = {
+    dynamicRegistration = true,
+  }
+
+  -- Enhances completion items with various features like snippet support and additional documentation formats
   capabilities.textDocument.completion.completionItem = {
     snippetSupport = true,
     preselectSupport = true,
@@ -18,6 +128,7 @@ local function setup_capabilites()
     labelDetailsSupport = true,
     commitCharactersSupport = true,
     tagSupport = { valueSet = { 1 } },
+    documentationFormat = { "markdown", "plaintext" },
     resolveSupport = {
       properties = {
         'documentation',
@@ -40,18 +151,6 @@ local function setup_keybindings(bufnr)
   local keybind = function(keys, func, desc)
     set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
   end
-
-  local function code_action_current_line()
-    local current_line = vim.api.nvim_win_get_cursor(0)[1] - 1
-    local params = {
-      range = {
-        start = { line = current_line, character = 0 },
-        ["end"] = { line = current_line, character = 4294967295 },
-      },
-    }
-    vim.lsp.buf.code_action(params)
-  end
-
 
   keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions")
   keybind("gD", vim.lsp.buf.declaration, "Go to declaration")
@@ -195,7 +294,7 @@ return {
         end,
 
         ["jsonls"] = function()
-          lspconfig["jsonls"].setup({
+          lspconfig.jsonls.setup({
             capabilities = capabilities,
             handlers = handlers,
             on_attach = on_attach,
@@ -210,7 +309,7 @@ return {
 
         -- Next, you can provide a dedicated handler for specific servers.
         ["lua_ls"] = function()
-          lspconfig["lua_ls"].setup({
+          lspconfig.lua_ls.setup({
             capabilities = capabilities,
             on_attach = on_attach,
             handlers = handlers,
@@ -239,29 +338,36 @@ return {
         end,
 
         ["powershell_es"] = function()
-          lspconfig["powershell_es"].setup({
+          lspconfig.powershell_es.setup({
             { bundle_path = vim.fn.stdpath("data") .. "/mason/packages/powershell-editor-services" }
           })
         end,
 
         ["omnisharp"] = function()
-          local cmd_path = vim.loop.os_uname().sysname == "Windows_NT" and
+          local system_name = vim.loop.os_uname().sysname
+          local cmd_path = system_name == "Windows_NT" and
               vim.fn.expand("~\\AppData\\local\\nvim-data\\mason\\packages\\omnisharp\\libexec\\OmniSharp.dll") or
               vim.fn.expand("~/.local/share/nvim/mason/packages/omnisharp/libexec/OmniSharp.dll")
 
-          require("lspconfig")["omnisharp"].setup({
+          require("lspconfig").omnisharp.setup {
             cmd = { "dotnet", cmd_path },
             capabilities = capabilities,
             on_attach = on_attach,
             handlers = handlers,
+            -- NOTE: This is experimental i should check thouroughly if this improves load times for example
+            roslynExtensionsOptions = {
+              documentAnalysisTimeoutMs = 30000, -- Sets a timeout for document analysis (in milliseconds)
+              diagnosticWorkersThreadCount = 4, -- Limits the number of threads for computing diagnostics
+            },
             enable_editorconfig_support = true,
             enable_ms_build_load_projects_on_demand = false,
             enable_roslyn_analyzers = true,
             organize_imports_on_format = true,
             enable_import_completion = true,
+            enableNamespaceSync = true,
             sdk_include_prereleases = true,
             analyze_open_documents_only = false,
-          })
+          }
         end,
       })
     end,
