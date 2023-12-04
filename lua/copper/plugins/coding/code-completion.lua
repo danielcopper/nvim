@@ -137,17 +137,17 @@ return {
         },
       })
     end,
-    config = function(_, opts)
-      local cmp = require("cmp")
-      cmp.setup(opts)
-
-      -- DAP Completion
-      -- TODO: Research usecase
-      cmp.setup.filetype({ "dapui_watches", "dapui_hover" }, {
-        sources = {
-          { name = "dap" },
-        },
-      })
-    end,
+    -- config = function(_, opts)
+    --   local cmp = require("cmp")
+    --   cmp.setup(opts)
+    --
+    --   -- DAP Completion
+    --   -- TODO: Research usecase
+    --   cmp.setup.filetype({ "dapui_watches", "dapui_hover" }, {
+    --     sources = {
+    --       { name = "dap" },
+    --     },
+    --   })
+    -- end,
   },
 }
