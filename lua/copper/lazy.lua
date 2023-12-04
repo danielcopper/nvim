@@ -32,6 +32,10 @@ require("lazy").setup({
   ui = {
     border = "rounded",
   },
+  install = {
+    -- try to load one of these colorschemes when starting an installation during startup
+    colorscheme = { "catppuccin", "rose-pine", "tokyonight", "habamax" },
+  },
   checker = {
     enabled = true, -- automatically check for plugin updates
     notify = false, -- We get this in the statusline

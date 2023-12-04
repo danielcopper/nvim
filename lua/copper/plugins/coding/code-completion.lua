@@ -72,11 +72,13 @@ return {
           ["<C-c>"] = cmp.mapping.abort(),                   -- close completion suggestions
           ["<CR>"] = cmp.mapping.confirm({ select = true }), -- apply suggestion (autoselect top suggestion)
           ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then cmp.select_next_item()
-            elseif luasnip.jumpable(1) then luasnip.jump(1)
-            -- Kinda hindering...
-            -- elseif luasnip.expandable() then luasnip.expand()
-            else fallback() end
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif luasnip.jumpable(1) then
+              luasnip.jump(1)
+            else
+              fallback()
+            end
           end, { "i", "s" }),
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
@@ -94,8 +96,23 @@ return {
           { name = "nvim_lua", max_item_count = 30 }, -- nvim_lua automatically handles the enabling in lua files only
           { name = "nvim_lsp", max_item_count = 30 }, -- LSP related snippets
           { name = "luasnip",  max_item_count = 15 }, -- snippets
-          { name = "buffer",   max_item_count = 10, keyword_length = 2 },
-          { name = "path",     max_item_count = 10 }, -- file system paths
+          {
+            name = "buffer",
+            max_item_count = 20,
+            keyword_length = 2,
+            option = {
+              keyword_pattern = [[\k\+]],
+              -- Enable completion from all visible buffers
+              get_bufnrs = function()
+                local bufs = {}
+                for _, win in ipairs(vim.api.nvim_list_wins()) do
+                  bufs[vim.api.nvim_win_get_buf(win)] = true
+                end
+                return vim.tbl_keys(bufs)
+              end,
+            },
+          },
+          { name = "path", max_item_count = 10 }, -- file system paths
         }),
 
         -- disable the completion in comment sections
@@ -117,6 +134,18 @@ return {
         experimental = {
           native_menu = false,
           ghost_text = true,
+        },
+      })
+    end,
+    config = function(_, opts)
+      local cmp = require("cmp")
+      cmp.setup(opts)
+
+      -- DAP Completion
+      -- TODO: Research usecase
+      cmp.setup.filetype({ "dapui_watches", "dapui_hover" }, {
+        sources = {
+          { name = "dap" },
         },
       })
     end,

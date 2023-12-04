@@ -16,6 +16,7 @@ return {
   --         require("ufo").setup()
   --     end,
   -- },
+
   {
     "kevinhwang91/nvim-ufo",
     enabled = true,
@@ -68,6 +69,14 @@ return {
 
       require("ufo").setup({
         fold_virt_text_handler = handler,
+  --     provider_selector = function(_, filetype, _)
+  --       -- Languages that support LSP folding
+  --       local foldable = { "python", "rust", "typescript" }
+  --       if vim.tbl_contains(foldable, filetype) then
+  --         return { "lsp", "indent" }
+  --       end
+  --       return { "treesitter", "indent" }
+  --     end,
       })
 
       -- Disable UFO on certain filetypes

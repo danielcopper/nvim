@@ -64,8 +64,10 @@ local function setup_keybindings(bufnr)
   keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")
   keybind("K", vim.lsp.buf.hover, "Show documentation for what is under the cursor")
   keybind("<leader>rs", ":LspRestart<CR>", "Restart LSP")
-  set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" })
-  set("n", "<leader>vD", "<cmd>Telescope diagnostics bufnr=0<CR>", { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" })
+  set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action,
+    { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" })
+  set("n", "<leader>vD", "<cmd>Telescope diagnostics bufnr=0<CR>",
+    { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" })
 end
 
 --- Configures handlers for different LSP server responses.
@@ -100,6 +102,23 @@ local function setup_signs()
   end
 end
 
+-- Diagnostics
+vim.diagnostic.config({
+  -- Limit length
+  open_float = {
+    width = 80,
+  },
+  -- Enable border
+  float = {
+    style = "minimal",
+    border = "rounded",
+    source = "always",
+    header = "",
+    prefix = "",
+  },
+  severity_sort = true,
+})
+
 return {
   {
     "neovim/nvim-lspconfig",
@@ -110,6 +129,7 @@ return {
       { "folke/neodev.nvim",                   opts = {} },     -- Enhanced support for Neovim development
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
+      "b0o/schemastore.nvim", -- Validate JSON files
     },
     config = function()
       -- First some general configuration
@@ -172,6 +192,20 @@ return {
             handlers = handlers,
             on_attach = on_attach
           }
+        end,
+
+        ["jsonls"] = function()
+          lspconfig["jsonls"].setup({
+            capabilities = capabilities,
+            handlers = handlers,
+            on_attach = on_attach,
+            settings = {
+              json = {
+                schemas = require("schemastore").json.schemas(),
+                validate = { enable = true },
+              },
+            },
+          })
         end,
 
         -- Next, you can provide a dedicated handler for specific servers.

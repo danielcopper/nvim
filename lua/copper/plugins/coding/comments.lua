@@ -8,7 +8,6 @@ return {
   },
 
   {
-    -- TODO: Find out what other plugin? causes the other highlights like TODO (seems to be treesitter ?!)
     "folke/todo-comments.nvim",
     cmd = { "TodoTrouble", "TodoTelescope" },
     event = "BufReadPost",
