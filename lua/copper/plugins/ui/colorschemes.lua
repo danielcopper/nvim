@@ -2,6 +2,7 @@ return {
   {
     "rose-pine/neovim",
     enabled = false,
+    name = "rose-pine",
     lazy = false,
     priority = 1000,
     opts = {
@@ -69,6 +70,7 @@ return {
   {
     "catppuccin/nvim",
     enabled = true,
+    name = "catppuccin",
     lazy = false,
     priority = 1000,
     opts = {
@@ -297,4 +299,17 @@ return {
       vim.cmd.colorscheme("everforest")
     end,
   },
+
+  {
+    "chriskempson/base16-vim",
+    enabled = false,
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.g.base16colorspace = 256
+      -- vim.cmd.colorscheme("base16-default-dark")
+      vim.cmd.colorscheme("base16-tomorrow-night")
+      vim.cmd("hi Normal guibg=NONE ctermbg=NONE")
+    end,
+  }
 }
