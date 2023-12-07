@@ -61,14 +61,14 @@ return {
                 return package.loaded["dap"] and require("dap").status() ~= ""
               end,
             },
-            {
-              -- TODO: From the noice wiki -> find an updated way to do this
-              ---@diagnostic disable-next-line: deprecated, undefined-field
-              require("noice").api.statusline.mode.get,
-              ---@diagnostic disable-next-line: deprecated, undefined-field
-              cond = require("noice").api.statusline.mode.has,
-              color = { fg = "#ff9e64" },
-            },
+            -- {
+            --   -- TODO: From the noice wiki -> find an updated way to do this
+            --   ---@diagnostic disable-next-line: deprecated, undefined-field
+            --   require("noice").api.statusline.mode.get,
+            --   ---@diagnostic disable-next-line: deprecated, undefined-field
+            --   cond = require("noice").api.statusline.mode.has,
+            --   color = { fg = "#ff9e64" },
+            -- },
             {
               lazy_status.updates,
               cond = lazy_status.has_updates,

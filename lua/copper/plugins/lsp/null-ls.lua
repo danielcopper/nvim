@@ -35,6 +35,10 @@ return {
           filetypes = { "markdown" },
           extra_args = { "--print-width", "80", "--prose-wrap", "always" },
         }),
+        formatting.prettier.with({
+          filetypes = { "css", "scss" },
+          extra_args = {}
+        }),
 
         diagnostics.eslint_d,
         diagnostics.markdownlint,

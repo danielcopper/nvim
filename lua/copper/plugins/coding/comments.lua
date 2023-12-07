@@ -82,12 +82,24 @@ return {
     dependencies = "nvim-treesitter/nvim-treesitter",
     keys = {
       vim.keymap.set("n", "<leader>gc", ":lua require('neogen').generate()<CR>", { desc = "Generate comment block" }),
-      vim.keymap.set("n", "<Leader>gcf", ":lua require('neogen').generate({ type = 'class' })<CR>", { desc = " Generate comment block for function" }),
-      vim.keymap.set("n", "<Leader>gcc", ":lua require('neogen').generate({ type = 'class' })<CR>", { desc = " Generate comment block for class" }),
-      vim.keymap.set("n", "<Leader>gct", ":lua require('neogen').generate({ type = 'class' })<CR>", { desc = " Generate comment block for type" }),
-      vim.keymap.set("n", "<Leader>gcF", ":lua require('neogen').generate({ type = 'class' })<CR>", { desc = " Generate comment block for file" })
+      vim.keymap.set("n", "<Leader>gcf", ":lua require('neogen').generate({ type = 'class' })<CR>",
+        { desc = " Generate comment block for function" }),
+      vim.keymap.set("n", "<Leader>gcc", ":lua require('neogen').generate({ type = 'class' })<CR>",
+        { desc = " Generate comment block for class" }),
+      vim.keymap.set("n", "<Leader>gct", ":lua require('neogen').generate({ type = 'class' })<CR>",
+        { desc = " Generate comment block for type" }),
+      vim.keymap.set("n", "<Leader>gcF", ":lua require('neogen').generate({ type = 'class' })<CR>",
+        { desc = " Generate comment block for file" })
     },
     config = true,
-  }
+  },
 
+  {
+    'kkoomen/vim-doge',
+    build = ':call doge#install()',
+    keys = {
+      vim.keymap.set("n", "<leader>dg", "<CMD>DogeGenerate<CR>", { desc = "Generate comment block with DoGe" }),
+    },
+    event = "BufReadPre",
+  },
 }
