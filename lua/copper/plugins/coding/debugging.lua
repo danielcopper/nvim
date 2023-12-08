@@ -1,14 +1,128 @@
+-- TODO: Check out this: https://github.com/mfussenegger/nvim-dap/wiki/Cookbook
 return {
   {
     "mfussenegger/nvim-dap",
-    event = "User BaseFile",
-    config = function(_, opts)
+    -- TODO: Make this more understandable
+    dependencies = {
+      {
+        "rcarriga/nvim-dap-ui",
+        keys = {
+          { "<leader>du", function() require("dapui").toggle({}) end, desc = "Dap UI" },
+          { "<leader>de", function() require("dapui").eval() end,     desc = "Eval",  mode = { "n", "v" } },
+        },
+        opts = { floating = { border = "rounded" } },
+        config = function(_, opts)
+          local dap, dapui = require "dap", require "dapui"
+          dap.listeners.after.event_initialized["dapui_config"] = function(
+          )
+            dapui.open()
+          end
+          dap.listeners.before.event_terminated["dapui_config"] = function(
+          )
+            dapui.close()
+          end
+          dap.listeners.before.event_exited["dapui_config"] = function()
+            dapui.close()
+          end
+          dapui.setup(opts)
+        end,
+      },
+      -- mason.nvim integration
+      {
+        -- NOTE: This probably wont help/work because it is lazyloaded
+        "jay-babu/mason-nvim-dap.nvim",
+        dependencies = "mason.nvim",
+        cmd = { "DapInstall", "DapUninstall" },
+        opts = {
+          -- Makes a best effort to setup the various debuggers with
+          -- reasonable debug configurations
+          automatic_installation = true,
+
+          -- You can provide additional configuration to the handlers,
+          -- see mason-nvim-dap README for more information
+          handlers = {},
+
+          -- You'll need to check that you have the required things installed
+          -- online, please don't ask me how to install them :)
+          ensure_installed = {
+            "coreclr"
+          },
+        }
+      },
+      -- virtual text for the debugger
+      {
+        "theHamsta/nvim-dap-virtual-text",
+        opts = {},
+      },
+      {
+        "rcarriga/cmp-dap",
+        dependencies = { "nvim-cmp" },
+        config = function()
+          require("cmp").setup.filetype(
+            { "dap-repl", "dapui_watches", "dapui_hover" },
+            {
+              sources = {
+                { name = "dap" },
+              },
+            }
+          )
+        end,
+      },
+      -- {
+      --   "mfussenegger/nvim-jdtls",
+      --   dependencies = { "nvim-dap" },
+      --   cmd = { "DapInstall", "DapUninstall" },
+      --   opts = { handlers = {} },
+      -- },
+      "jbyuki/one-small-step-for-vimkind",
+    },
+    keys = {
+      { "<F4>",       "<CMD>DapTerminate<CR>",               desc = "DAP Terminate" },
+      {
+        "<F5>",
+        function()
+          -- (Re-)reads launch.json if present
+          if vim.fn.filereadable(".vscode/launch.json") then
+            require("dap.ext.vscode").load_launchjs(nil, {
+              ["codelldb"] = { "c", "cpp" },
+              ["pwa-node"] = { "typescript", "javascript" },
+            })
+          end
+          require("dap").continue()
+        end,
+        desc = "DAP Continue",
+      },
+      -- { "<F6>", function() require("dap").run_to_cursor() end, desc = "Run to Cursor" }, -- used by compiler
+      { "<F7>",       function() require("dap").goto_() end, desc = "Go to line (skip)" },
+      { "<F9>",       "<CMD>DapToggleBreakpoint<CR>",        desc = "Toggle Breakpoint" },
+      { "<leader>tb", "<CMD>DapToggleBreakpoint<CR>",        desc = "Toggle Breakpoint" },
+      {
+        "<leader>tcb",
+        function() require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: ")) end,
+        desc = "Breakpoint Condition",
+      },
+      { "<F10>", "<CMD>DapStepOver<CR>", desc = "Step Over" },
+      { "<F11>", "<CMD>DapStepInto<CR>", desc = "Step Into" },
+      { "<F12>", "<CMD>DapStepOut<CR>",  desc = "Step Out" },
+    },
+    config = function()
       local dap = require("dap")
+
+      vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
+
+      for name, sign in pairs(require("copper.utils.icons").dap) do
+        sign = type(sign) == "table" and sign or { sign }
+        vim.fn.sign_define(
+          "Dap" .. name,
+          { text = sign[1], texthl = sign[2] or "DiagnosticInfo", linehl = sign[3], numhl = sign[3] }
+        )
+      end
 
       -- C#
       dap.adapters.coreclr = {
         type = 'executable',
-        command = vim.fn.stdpath('data') .. '/mason/bin/netcoredbg',
+        command = vim.fn.stdpath('data') .. '/mason/bin/netcoredbg.cmd',
+        -- command = vim.fn.stdpath('data') .. '/mason/bin/netcoredbg',
         args = { '--interpreter=vscode' }
       }
       dap.configurations.cs = {
@@ -17,7 +131,7 @@ return {
           name = "launch - netcoredbg",
           request = "launch",
           program = function() -- Ask the user what executable wants to debug
-            return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/bin/Program.exe', 'file')
+            return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/bin/Debug/net8.0/', 'file')
           end,
         },
       }
@@ -111,49 +225,6 @@ return {
           terminalKind = "integrated",
         }
       }
-    end, -- of dap config
-    dependencies = {
-      {
-        "jay-babu/mason-nvim-dap.nvim",
-        "jbyuki/one-small-step-for-vimkind",
-        "mfussenegger/nvim-jdtls",
-        dependencies = { "nvim-dap" },
-        cmd = { "DapInstall", "DapUninstall" },
-        opts = { handlers = {} },
-      },
-      {
-        "rcarriga/nvim-dap-ui",
-        opts = { floating = { border = "rounded" } },
-        config = function(_, opts)
-          local dap, dapui = require "dap", require "dapui"
-          dap.listeners.after.event_initialized["dapui_config"] = function(
-          )
-            dapui.open()
-          end
-          dap.listeners.before.event_terminated["dapui_config"] = function(
-          )
-            dapui.close()
-          end
-          dap.listeners.before.event_exited["dapui_config"] = function()
-            dapui.close()
-          end
-          dapui.setup(opts)
-        end,
-      },
-      {
-        "rcarriga/cmp-dap",
-        dependencies = { "nvim-cmp" },
-        config = function()
-          require("cmp").setup.filetype(
-            { "dap-repl", "dapui_watches", "dapui_hover" },
-            {
-              sources = {
-                { name = "dap" },
-              },
-            }
-          )
-        end,
-      },
-    },
+    end,
   },
 }

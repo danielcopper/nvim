@@ -1,9 +1,7 @@
 return {
   dap = {
-    DapSymbol = "  ",
     Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
     Breakpoint = " ",
-    BreakpointAlt = " ",
     BreakpointCondition = " ",
     BreakpointRejected = { " ", "DiagnosticError" },
     LogPoint = ".>",

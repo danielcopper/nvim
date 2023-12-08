@@ -33,15 +33,19 @@ return {
       require('lspconfig.ui.windows').default_options.border = 'rounded' -- Borders for LspInfo
 
       -- Defining the icons for diagnostics
-      local signs = {
-        Error = icons.diagnostics.Error,
-        Warn = icons.diagnostics.Warning,
-        Hint = icons.diagnostics.Hint,
-        Info = icons.diagnostics.Information,
-      }
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+      -- local signs = {
+      --   Error = icons.diagnostics.Error,
+      --   Warn = icons.diagnostics.Warning,
+      --   Hint = icons.diagnostics.Hint,
+      --   Info = icons.diagnostics.Information,
+      -- }
+      -- for type, icon in pairs(signs) do
+      --   local hl = "DiagnosticSign" .. type
+      --   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+      -- end
+      for name, icon in pairs(require("copper.utils.icons").diagnostics) do
+        name = "DiagnosticSign" .. name
+        vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
       end
 
       -- SECTION: Functionalities
