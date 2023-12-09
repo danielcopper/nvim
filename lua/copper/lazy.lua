@@ -27,6 +27,7 @@ require("lazy").setup({
     { import = "copper.plugins.coding" },
     { import = "copper.plugins.editor" },
     { import = "copper.plugins.lsp" },
+    { import = "copper.plugins.debugging" },
     { import = "copper.plugins.ui" },
   },
   ui = {
