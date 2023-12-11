@@ -149,6 +149,13 @@ return {
     config = function(_, opts)
       require("catppuccin").setup(opts)
       vim.cmd.colorscheme("catppuccin")
+
+      -- Create an autocommand group for Neo-tree highlight customization
+      local group = vim.api.nvim_create_augroup("NeoTreeTransparentBackground", { clear = true })
+      vim.api.nvim_create_autocmd("VimEnter", {
+        group = group,
+        command = "highlight NeoTreeNormalNC guibg=NONE ctermbg=NONE",
+      })
     end,
   },
 

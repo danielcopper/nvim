@@ -1,78 +1,6 @@
 local icons = require("copper.utils.icons")
 
 return {
-  -- {
-  --   "nvim-neo-tree/neo-tree.nvim",
-  --   enabled = true,
-  --   branch = "v3.x",
-  --   cmd = "Neotree",
-  --   keys = {
-  --     { "<leader>fe", "<Cmd>Neotree focus<CR>",  { desc = "Focus on Neotree" } },
-  --     { "<leader>te", "<Cmd>Neotree toggle<CR>", { desc = "Toggle Neotree" } },
-  --   },
-  --   init = function()
-  --     if vim.fn.argc() == 1 then
-  --       local stat = vim.loop.fs_stat(vim.fn.argv(0))
-  --       if stat and stat.type == "directory" then
-  --         require("neo-tree")
-  --       end
-  --     end
-  --   end,
-  --   opts = {
-  --     sources = { "filesystem", "buffers", "git_status", "document_symbols" },
-  --     filesystem = {
-  --       filtered_items = {
-  --         visible = true, -- when true, they will just be displayed differently than normal items
-  --       },
-  --       bind_to_cwd = true,
-  --       follow_current_file = { enabled = true },
-  --       use_libuv_file_watcher = true,
-  --     },
-  --     window = {
-  --       width = 27,
-  --       mappings = {
-  --         ["<space>"] = "none",
-  --       },
-  --     },
-  --     default_component_configs = {
-  --       indent = {
-  --         with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
-  --         expander_collapsed = "",
-  --         expander_expanded = "",
-  --         expander_highlight = "NeoTreeExpander",
-  --       },
-  --     },
-  --     git_status = {
-  --       symbols = {
-  --         -- Change type
-  --         added = icons.git.Added,
-  --         -- modified = icons.git.Modified,
-  --         modified = "IamModified",
-  --
-  --         deleted = icons.git.Removed, -- this can only be used in the git_status source
-  --         renamed = icons.git.Renamed, -- this can only be used in the git_status source
-  --         -- Status type
-  --         untracked = icons.git.Untracked,
-  --         ignored = icons.git.IgnoredAlt,
-  --         unstaged = icons.git.Unstaged,
-  --         staged = icons.git.Staged,
-  --         conflict = icons.git.Conflict,
-  --       },
-  --     },
-  --   },
-  --   config = function(_, opts)
-  --     require("neo-tree").setup(opts)
-  --     vim.api.nvim_create_autocmd("TermClose", {
-  --       pattern = "*lazygit",
-  --       callback = function()
-  --         if package.loaded["neo-tree.sources.git_status"] then
-  --           require("neo-tree.sources.git_status").refresh()
-  --         end
-  --       end,
-  --     })
-  --   end,
-  -- },
-
   {
     "nvim-neo-tree/neo-tree.nvim",
     cmd = "Neotree",
@@ -126,16 +54,17 @@ return {
           default = " ",
         },
         modified = { symbol = "" },
-        git_status = { symbols = icons.git },
-        diagnostics = { symbols = icons.diagnostics },
+        -- TODO: Fix loading the icons correctly
+        -- git_status = { symbols = icons.git },
+        -- diagnostics = { symbols = icons.diagnostics },
       },
       window = {
         width = 40,
-          mappings = {
-            -- ["<space>"] = false, -- disable space until we figure out which-key disabling
-            ["H"] = "prev_source",
-            ["L"] = "next_source",
-          },
+        mappings = {
+          -- ["<space>"] = false, -- disable space until we figure out which-key disabling
+          ["H"] = "prev_source",
+          ["L"] = "next_source",
+        },
       },
       filesystem = {
         window = {
@@ -155,66 +84,49 @@ return {
         },
         follow_current_file = {
           enabled = true,
-        },                   -- This will find and focus the file in the active buffer every
+        },                       -- This will find and focus the file in the active buffer every
         -- time the current file is changed while the tree is open.
         group_empty_dirs = true, -- when true, empty folders will be grouped together
       },
       async_directory_scan = "always",
     },
+    -- A simple version which just opens neotree when starting nvim but leaves the other standard behaviour like opening an empty buffer as is.
+    -- init = function()
+    --   vim.g.neo_tree_remove_legacy_commands = 1
+    --   vim.cmd("Neotree show")
+    -- end,
     init = function()
       vim.g.neo_tree_remove_legacy_commands = 1
-      if vim.fn.argc() == 1 then
-        local stat = vim.loop.fs_stat(vim.fn.argv(0))
-        if stat and stat.type == "directory" then
-          require("neo-tree")
-          vim.cmd([[set showtabline=0]])
-        end
+
+      -- TODO: Somehow this seems to interfere with diagnostics sign icons in the statuscol
+      -- Function to close the empty buffer
+      local function close_empty_buffer()
+        vim.defer_fn(function()
+          for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            if vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_name(buf) == "" and vim.api.nvim_buf_line_count(buf) == 1 then
+              vim.api.nvim_buf_delete(buf, { force = true })
+            end
+          end
+        end, 10)
       end
+
+      -- Open Neo-tree if Neovim is started with a directory or no arguments
+      if vim.fn.argc() == 0 or (vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1) then
+        vim.cmd("Neotree reveal") -- Open Neo-tree in the current directory or default to home
+        close_empty_buffer()
+      end
+
+      -- Auto-command to close the empty buffer when a file is opened from Neo-tree
+      vim.api.nvim_create_autocmd("BufEnter", {
+        pattern = "*",
+        callback = function()
+          if vim.fn.winnr('$') == 1 and vim.fn.bufname() ~= "" then
+            close_empty_buffer()
+          end
+        end
+      })
     end,
   },
-
-  -- {
-  --   "nvim-neo-tree/neo-tree.nvim",
-  --   dependencies = { "MunifTanjim/nui.nvim" },
-  --   cmd = "Neotree",
-  --   init = function() vim.g.neo_tree_remove_legacy_commands = true end,
-  --   opts = function()
-  --     return {
-  --       auto_clean_after_session_restore = true,
-  --       close_if_last_window = false,
-  --       buffers = {
-  --         show_unloaded = true
-  --       },
-  --       sources = { "filesystem", "buffers", "git_status" },
-  --       source_selector = {
-  --         winbar = true,
-  --         content_layout = "center",
-  --         sources = {
-  --           { source = "filesystem", display_name = "󰉓" },
-  --           { source = "buffers", display_name = "󰈙" },
-  --           { source = "git_status", display_name = "" },
-  --           { source = "document_symbols", display_name = "o" },
-  --           { source = "diagnostics", display_name = "󰒡" },
-  --         },
-  --       },
-  --       window = {
-  --         width = 30,
-  --         mappings = {
-  --           -- ["<space>"] = false, -- disable space until we figure out which-key disabling
-  --           ["H"] = "prev_source",
-  --           ["L"] = "next_source",
-  --         },
-  --       },
-  --       filesystem = {
-  --         follow_current_file = {
-  --           enabled = true,
-  --         },
-  --         hijack_netrw_behavior = "open_current",
-  --         use_libuv_file_watcher = true,
-  --       },
-  --     }
-  --   end,
-  -- },
 
   {
     "nvim-tree/nvim-tree.lua",
