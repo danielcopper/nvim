@@ -238,7 +238,7 @@ return {
           NormalFloat = { bg = "none" },
           FloatBorder = { bg = "none" },
           FloatTitle = { bg = "none" },
-          StatusLine = { bg = "none" }, -- Making status line background transparent
+          StatusLine = { bg = "none" },   -- Making status line background transparent
           StatusLineNC = { bg = "none" }, -- Making non-current status line transparent
           TelescopeBorder = { bg = "none", fg = "none" },
           -- -- Save an hlgroup with dark background and dimmed foreground
@@ -311,5 +311,34 @@ return {
       vim.cmd.colorscheme("base16-tomorrow-night")
       vim.cmd("hi Normal guibg=NONE ctermbg=NONE")
     end,
-  }
+  },
+
+  {
+    "kvrohit/rasmus.nvim",
+    enabled = false,
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.g.rasmus_transparent = true
+      vim.cmd.colorscheme("rasmus")
+    end,
+  },
+
+  {
+    "fynnfluegge/monet.nvim",
+    name = "monet",
+    enabled = false,
+    lazy = false,
+    priority = 1000,
+    opts = {
+      transparent_background = true,
+      styles = {
+        comments = { "italic" }
+      }
+    },
+    config = function(_, opts)
+      require("monet").setup(opts)
+      vim.cmd.colorscheme("monet")
+    end
+  },
 }
