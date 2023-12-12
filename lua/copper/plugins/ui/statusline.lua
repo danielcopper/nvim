@@ -54,21 +54,13 @@ return {
           },
           lualine_x = {
             {
-              function()
-                return icons.dap.DapSymbol .. require("dap").status()
-              end,
-              cond = function()
-                return package.loaded["dap"] and require("dap").status() ~= ""
-              end,
+              function() return icons.dap.DapSymbol .. require("dap").status() end,
+              cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
             },
-            -- {
-            --   -- TODO: From the noice wiki -> find an updated way to do this
-            --   ---@diagnostic disable-next-line: deprecated, undefined-field
-            --   require("noice").api.statusline.mode.get,
-            --   ---@diagnostic disable-next-line: deprecated, undefined-field
-            --   cond = require("noice").api.statusline.mode.has,
-            --   color = { fg = "#ff9e64" },
-            -- },
+            {
+              function() return require("noice").api.status.command.get() end,
+              cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
+            },
             {
               lazy_status.updates,
               cond = lazy_status.has_updates,

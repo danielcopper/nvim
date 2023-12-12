@@ -8,9 +8,9 @@ return {
       "hrsh7th/cmp-nvim-lsp",                                   -- Integration with nvim-cmp for LSP-based completions
       { "antosha417/nvim-lsp-file-operations", config = true }, -- File operations through LSP
       { "folke/neodev.nvim",                   opts = {} },     -- Enhanced support for Neovim development
-      { "williamboman/mason.nvim",             lazy = false }, -- TODO: Test if this lazy = false works as intended (it should always laod mason but not lspconfig)
+      { "williamboman/mason.nvim",             lazy = false },  -- TODO: Test if this lazy = false works as intended (it should always laod mason but not lspconfig)
       "williamboman/mason-lspconfig.nvim",
-      "b0o/schemastore.nvim", -- Validate JSON files
+      "b0o/schemastore.nvim",                                   -- Validate JSON files
     },
     config = function()
       -- neodev setup must be done before lspconfig to enhance Lua dev experience
@@ -33,17 +33,6 @@ return {
       require('lspconfig.ui.windows').default_options.border = 'rounded' -- Borders for LspInfo
 
       -- Defining the icons for diagnostics
-      -- local signs = {
-      --   Error = icons.diagnostics.Error,
-      --   Warn = icons.diagnostics.Warning,
-      --   Hint = icons.diagnostics.Hint,
-      --   Info = icons.diagnostics.Information,
-      -- }
-      -- for type, icon in pairs(signs) do
-      --   local hl = "DiagnosticSign" .. type
-      --   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-      -- end
-      -- TODO: Not Working
       for name, icon in pairs(require("copper.utils.icons").diagnostics) do
         name = "DiagnosticSign" .. name
         vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })

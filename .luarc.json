@@ -117,5 +117,9 @@
         "/home/daniel/.config/nvim/lua",
         "${3rd}/luv/library"
     ],
-    "completion.autoRequire": false
+    "completion.autoRequire": false,
+    "diagnostics.globals": [
+        "vim",
+        "local"
+    ]
 }

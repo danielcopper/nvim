@@ -8,10 +8,10 @@ return {
   },
   diagnostics = {
     Error = " ",
+    Warn = " ",
     Hint = "󰠠 ",
-    Information = " ",
-    Question = " ",
-    Warning = " ",
+    Info = " ",
+    -- Question = " ",
   },
   documents = {
     File = " ",
@@ -42,7 +42,17 @@ return {
     Unstaged = "󰄱 ",
     Untracked = "",
   },
+  gitsigns = {
+    Add = "┃",
+    Change = "┋",
+    Delete = "",
+    Topdelhfe = "",
+    Changedelete = "┃",
+    Untracked = "┃",
+  },
   kinds = {
+    Array = " ",
+    Boolean = "",
     Class = " ",
     Color = " ",
     Constant = " ",
@@ -61,6 +71,7 @@ return {
     Interface = " ",
     Key = " ",
     Keyword = " ",
+    Macro = "", -- Macro
     Method = " ",
     -- Method = 'm ',
     Module = " ",

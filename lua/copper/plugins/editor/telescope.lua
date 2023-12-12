@@ -13,6 +13,7 @@ return {
 
       telescope.setup({
         defaults = {
+          dynamic_preview_title = true,
           mappings = {
             i = {
               ["<C-j>"] = actions.move_selection_next,                  -- move to next result in list
@@ -27,7 +28,7 @@ return {
               vim.fn.stdpath("state") .. "/lazy/readme",
             },
           }
-        }
+        },
       })
 
       telescope.load_extension("helpgrep")

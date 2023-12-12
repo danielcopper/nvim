@@ -26,7 +26,7 @@ return {
         },
         separator_style = "thin", -- "slant" | "thick" | "thin" | { 'any', 'any' },
         -- show_tab_indicators = true,
-        always_show_bufferline = false,
+        always_show_bufferline = true,
         diagnostics = "nvim_lsp",
         -- diagnostics_indicator = function(count, level, diagnostics_dict, context)
         --   local icon = level:match("error") and icons.diagnostics.Error or icons.diagnostics.Warning
@@ -34,11 +34,16 @@ return {
         -- end,
         diagnostics_indicator = function(_, _, diag)
           local ret = (diag.error and icons.diagnostics.Error .. diag.error .. " " or "")
-              .. (diag.warning and icons.diagnostics.Warning .. diag.warning or "")
+              .. (diag.warning and icons.diagnostics.Warn .. diag.warning or "")
           return vim.trim(ret)
         end,
         color_icons = true,
         show_buffer_icons = true,
+        hover = {
+          enabled = true,
+          delay = 0,
+          reveal = { "close" },
+        },
       },
     },
     config = function(_, opts)
@@ -74,7 +79,7 @@ return {
       { "<A-p>",       "<Cmd>BufferLineTogglePin<CR>",            { desc = "Pin current Buffer" } },
       { "<C-p>",       "<Cmd>BufferLineGoToBuffer<CR>",           { desc = "Pick Buffer to jump to" } },
       -- NOTE: Stopped working suddenly...
-      -- { "<A-c>",       ":BufDel",                                 { desc = "Close current Buffer" } },
+      { "<A-c>",       ":BufDel",                                 { desc = "Close current Buffer" } },
       { "<A-d>",       "<Cmd>BufDel<CR>",                         { desc = "Close current Buffer" } },
       { "<leader>bd",  "<Cmd>BufDel<CR>",                         { desc = "Close current Buffer" } },
       { "<leader>bca", "<C-w>h <bar> <Cmd>BufDelOthers<CR>",      { desc = "Close all Buffers but File Explorer" }, },

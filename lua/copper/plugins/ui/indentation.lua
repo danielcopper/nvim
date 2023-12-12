@@ -1,10 +1,4 @@
 return {
-  -- Automatic indenting, not really UI but whatever
-  {
-    "nmac427/guess-indent.nvim",
-    config = true
-  },
-
   -- Indentation guides
   {
     "lukas-reineke/indent-blankline.nvim",

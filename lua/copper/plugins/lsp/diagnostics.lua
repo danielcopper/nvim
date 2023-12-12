@@ -2,16 +2,9 @@ return {
   -- More detailed lsp diagnostics info
   {
     url = "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-    lazy = false, -- so that the autocmd always works
+    lazy = true,
     event = { "BufEnter" },
-    config = function()
-      vim.diagnostic.config({
-        virtual_text = false,
-        virtual_lines = {
-          only_current_line = true,
-        }
-      })
-
+    init = function ()
       -- Disable the plugin in specified filetypes
       vim.api.nvim_create_autocmd("FileType", {
         pattern = "lazy",
@@ -22,7 +15,14 @@ return {
           end
         end,
       })
-
+    end,
+    config = function()
+      vim.diagnostic.config({
+        virtual_text = false,
+        virtual_lines = {
+          only_current_line = true,
+        }
+      })
       require("lsp_lines").setup()
     end,
   },

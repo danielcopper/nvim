@@ -4,10 +4,10 @@ return {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
-      "L3MON4D3/LuaSnip",             -- the actual snippet engine
-      "hrsh7th/cmp-nvim-lsp",         -- completion source for lsp related stuff
-      "hrsh7th/cmp-buffer",           -- source for words in buffer
-      "hrsh7th/cmp-path",             -- source for path completion
+      "L3MON4D3/LuaSnip",     -- the actual snippet engine
+      "hrsh7th/cmp-nvim-lsp", -- completion source for lsp related stuff
+      "hrsh7th/cmp-buffer",   -- source for words in buffer
+      "hrsh7th/cmp-path",     -- source for path completion
       "hrsh7th/cmp-nvim-lua",
       "hrsh7th/cmp-nvim-lsp-signature-help",
       "saadparwaiz1/cmp_luasnip",     -- for autocompletion
@@ -21,6 +21,15 @@ return {
 
       -- load vscode style snippets from installed plugins (e.g. friendly-snippets)
       require("luasnip.loaders.from_vscode").lazy_load()
+
+      -- TODO: Make these work and add angular as well https://github.com/rafamadriz/friendly-snippets/tree/main/snippets/frameworks/angular
+      -- if they work also enable snippets in comments again -> at the bottom here in this file
+      -- whats not working is triggering the snippets with /// for example
+      -- friendly-snippets - enable standardized comments snippets
+      luasnip.filetype_extend("typescript", { "tsdoc" })
+      luasnip.filetype_extend("javascript", { "jsdoc" })
+      luasnip.filetype_extend("lua", { "luadoc" })
+      luasnip.filetype_extend("cs", { "csharpdoc" })
 
       cmp.setup({
         preselect = "item",
