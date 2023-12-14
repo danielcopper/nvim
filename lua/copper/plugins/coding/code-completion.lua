@@ -23,8 +23,7 @@ return {
       require("luasnip.loaders.from_vscode").lazy_load()
 
       -- TODO: Make these work and add angular as well https://github.com/rafamadriz/friendly-snippets/tree/main/snippets/frameworks/angular
-      -- if they work also enable snippets in comments again -> at the bottom here in this file
-      -- whats not working is triggering the snippets with /// for example
+      -- whats not working is triggering the snippets with ///. It works if using <C-n> to manually trigger completions.
       -- friendly-snippets - enable standardized comments snippets
       luasnip.filetype_extend("typescript", { "tsdoc" })
       luasnip.filetype_extend("javascript", { "jsdoc" })

@@ -181,4 +181,7 @@ return {
     Wifi = " ",
     Windows = " ",
   },
+  misc = {
+    dots = "󰇘",
+  }
 }

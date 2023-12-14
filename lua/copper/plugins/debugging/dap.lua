@@ -4,7 +4,7 @@ vim.g.dotnet_build_project = function()
   if vim.g['dotnet_last_proj_path'] ~= nil then
     default_path = vim.g['dotnet_last_proj_path']
   end
-  local path = vim.fn.input('Path to your *proj file', default_path, 'file')
+  local path = vim.fn.input('Path to your *proj file: ', default_path, 'file')
   vim.g['dotnet_last_proj_path'] = path
   -- local cmd = 'dotnet build -c Debug ' .. path .. ' > /dev/null'
   local cmd = 'dotnet build'
@@ -20,7 +20,7 @@ end
 
 vim.g.dotnet_get_dll_path = function()
   local request = function()
-    return vim.fn.input('Path to dll', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+    return vim.fn.input('Path to dll: ', vim.fn.getcwd() .. '/bin/Debug/', 'file')
   end
 
   if vim.g['dotnet_last_dll_path'] == nil then
@@ -85,13 +85,13 @@ return {
     end
 
     -- C#
-    dap.adapters.coreclr = {
-      type = 'executable',
-      -- TODO: Test this path on linux
-      -- command = vim.fn.stdpath('data') .. '/mason/packages/netcoredbg/netcoredbg/netcoredbg.exe',
-      command = vim.fn.stdpath('data') .. '/mason/bin/netcoredbg',
-      args = { '--interpreter=vscode' }
-    }
+    -- dap.adapters.coreclr = {
+    --   type = 'executable',
+    --   -- TODO: Test this path on linux
+    --   command = vim.fn.stdpath('data') .. '/mason/packages/netcoredbg/netcoredbg/netcoredbg.exe',
+    --   -- command = vim.fn.stdpath('data') .. '/mason/bin/netcoredbg',
+    --   args = { '--interpreter=vscode' }
+    -- }
     -- dap.configurations.cs = {
     --   {
     --     type = "coreclr",
@@ -104,23 +104,23 @@ return {
     -- }
     -- -- Visual basic dotnet
     -- dap.configurations.vb = dap.configurations.cs
-    local config = {
-      {
-        type = "coreclr",
-        name = "launch - netcoredbg",
-        request = "launch",
-        program = function()
-          -- TODO: This might be the place to use compiler for handling the build
-          if vim.fn.confirm('Should I recompile first?', '&yes\n&no', 2) == 1 then
-            vim.g.dotnet_build_project()
-          end
-          return vim.g.dotnet_get_dll_path()
-        end,
-      },
-    }
+    -- local config = {
+    --   {
+    --     type = "coreclr",
+    --     name = "launch - netcoredbg",
+    --     request = "launch",
+    --     program = function()
+    --       -- TODO: This might be the place to use compiler for handling the build
+    --       if vim.fn.confirm('Should I recompile first?', '&yes\n&no', 2) == 1 then
+    --         vim.g.dotnet_build_project()
+    --       end
+    --       return vim.g.dotnet_get_dll_path()
+    --     end,
+    --   },
+    -- }
 
-    dap.configurations.cs = config
-    dap.configurations.fsharp = config
+    -- dap.configurations.cs = config
+    -- dap.configurations.fsharp = config
 
     -- Lua
     dap.adapters.nlua = function(callback, config)

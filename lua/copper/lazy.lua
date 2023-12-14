@@ -16,7 +16,6 @@ require("lazy").setup({
     lazy = true,
   },
   spec = {
-    -- Some core plugins
     -- NOTE: Maybe remove (or move to where they are a dependency)
     { "nvim-tree/nvim-web-devicons" },
     { "nvim-lua/plenary.nvim" },
@@ -34,8 +33,7 @@ require("lazy").setup({
     border = "rounded",
   },
   install = {
-    -- try to load one of these colorschemes when starting an installation during startup
-    colorscheme = { "catppuccin", "rose-pine", "tokyonight", "habamax" },
+    colorscheme = { vim.user_config.colorscheme, "habamax" }, -- try to load one of these colorschemes when starting an installation during startup
   },
   checker = {
     enabled = true, -- automatically check for plugin updates

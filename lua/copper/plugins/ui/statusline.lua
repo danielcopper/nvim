@@ -58,6 +58,7 @@ return {
               cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
             },
             {
+              -- TODO: This is supposed to show the recording state
               function() return require("noice").api.status.command.get() end,
               cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
             },

@@ -1,10 +1,11 @@
 return {
   {
     "rose-pine/neovim",
-    enabled = false,
+    -- enabled = false,
     name = "rose-pine",
     lazy = false,
     priority = 1000,
+    cond = vim.user_config.colorscheme == "rose-pine",
     opts = {
       --- @usage 'auto'|'main'|'moon'|'dawn'
       variant = "auto",
@@ -69,10 +70,11 @@ return {
 
   {
     "catppuccin/nvim",
-    enabled = true,
+    -- enabled = true,
     name = "catppuccin",
     lazy = false,
     priority = 1000,
+    cond = vim.user_config.colorscheme == "catppuccin",
     opts = {
       transparent_background = true,
       show_end_of_buffer = false,

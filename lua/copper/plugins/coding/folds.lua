@@ -34,14 +34,10 @@ return {
       },
     },
     config = function()
-      vim.o.foldcolumn = "0"
-      vim.o.foldlevel = 99
-      vim.o.foldlevelstart = 99
-      vim.o.foldenable = true
       -- To show number of folded lines
       local handler = function(virtText, lnum, endLnum, width, truncate)
         local newVirtText = {}
-        local suffix = ("     ... ↙ %d "):format(endLnum - lnum)
+        local suffix = ("   ... ↙ %d "):format(endLnum - lnum)
         local sufWidth = vim.fn.strdisplaywidth(suffix)
         local targetWidth = width - sufWidth
         local curWidth = 0
@@ -69,14 +65,14 @@ return {
 
       require("ufo").setup({
         fold_virt_text_handler = handler,
-  --     provider_selector = function(_, filetype, _)
-  --       -- Languages that support LSP folding
-  --       local foldable = { "python", "rust", "typescript" }
-  --       if vim.tbl_contains(foldable, filetype) then
-  --         return { "lsp", "indent" }
-  --       end
-  --       return { "treesitter", "indent" }
-  --     end,
+        --     provider_selector = function(_, filetype, _)
+        --       -- Languages that support LSP folding
+        --       local foldable = { "python", "rust", "typescript" }
+        --       if vim.tbl_contains(foldable, filetype) then
+        --         return { "lsp", "indent" }
+        --       end
+        --       return { "treesitter", "indent" }
+        --     end,
       })
 
       -- Disable UFO on certain filetypes

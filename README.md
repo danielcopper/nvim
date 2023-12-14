@@ -79,11 +79,7 @@ automatically (LSP Zero seems to do that correctly).
 - configure DAP for c# and typescript (partly finished)
 - Adjust Readme to Linux
 - autocomand to replace :q to bufdel or checkout mini bufremove
-- Adjust omnisharp options
-- textobjects ???
-- Share clipboard with system
-- Cleanup and simply after everything works as it should
-- Check if lua snippets actually show up in cmp
+- Cleanup and simplify after everything works as it should
 - Define borderstyle for hover etc globally
 - TestRunner for dotnet (Neotest?)
 
