@@ -7,7 +7,6 @@ local enabled = {
   "numToStr/Comment.nvim",
   "nvim-treesitter",
   "nvim-treesitter-textobjects",
-  "nvim-ts-context-commentstring",
 }
 
 local Config = require("lazy.core.config")

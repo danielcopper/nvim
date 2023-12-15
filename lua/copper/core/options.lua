@@ -1,4 +1,4 @@
-vim.user_config = vim.user_config or {}
+vim.copper_config = vim.copper_config or {}
 
 local options = {
   opt = {
@@ -59,6 +59,7 @@ local options = {
     swapfile = false,                                              -- no vim backups but undo tree has a long history
     tabstop = 4,                                                   -- Number of spaces neovim inserts when tabbing
     termguicolors = true,                                          -- Full color support - enable 24bit color support, also ignores the terminal color scheme
+    timeout = true,
     timeoutlen = 300,                                              -- sets the time in milliseconds to wait for a mapped sequence to complete (keymaps)
     undodir = vim.fn.stdpath("data") .. "/undodir",                -- specifies the directory where undo files are stored.
     undofile = true,                                               -- enables the creation of undo files
@@ -86,7 +87,7 @@ local options = {
   lsp = {
     codelens = true,
   },
-  user_config = { -- My own settings table
+  copper_config = { -- My own settings table
     borders = "rounded",
     colorscheme = "catppuccin",
     transparent = true,

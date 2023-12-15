@@ -36,7 +36,6 @@ return {
         "markdown",
         "markdown_inline",
         "mermaid",
-        "norg",
         "python",
         "query",
         "regex",

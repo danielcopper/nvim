@@ -82,6 +82,9 @@ automatically (LSP Zero seems to do that correctly).
 - Cleanup and simplify after everything works as it should
 - Define borderstyle for hover etc globally
 - TestRunner for dotnet (Neotest?)
+- Auto use compiler when starting dap
+- adjust tab key to better work together with cmp
+- update which key (general modes "+code" and so on)
 
 ## Plugins to consider
 

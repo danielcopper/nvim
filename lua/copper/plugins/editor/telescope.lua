@@ -3,8 +3,9 @@ return {
     "nvim-telescope/telescope.nvim",
     branch = "0.1.x",
     dependencies = {
+      "nvim-lua/plenary.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }, -- for better sorting performance
-      { "catgoose/telescope-helpgrep.nvim" }
+      "catgoose/telescope-helpgrep.nvim"
     },
     cmd = "Telescope",
     config = function()
@@ -68,7 +69,7 @@ return {
         "<leader>ts",
         function()
           require("telescope.builtin").lsp_document_symbols({
-            -- TODO: fix returned icons
+            -- TODO: fix returned icons -> Check lazyvim config.init.get_kind_filter
             -- symbols = require("copper.utils.icons").kinds,
           })
         end,

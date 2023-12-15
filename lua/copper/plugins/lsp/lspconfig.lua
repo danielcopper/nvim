@@ -26,11 +26,11 @@ return {
       -- This function sets up customized behavior for these responses, like defining borders
       -- or other UI enhancements.
       local handlers = {
-        ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
-        ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
+        ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = vim.copper_config.borders }),
+        ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = vim.copper_config.borders }),
       }
 
-      require('lspconfig.ui.windows').default_options.border = 'rounded' -- Borders for LspInfo
+      require('lspconfig.ui.windows').default_options.border = vim.copper_config.borders -- Borders for LspInfo
 
       -- Defining the icons for diagnostics
       for name, icon in pairs(require("copper.utils.icons").diagnostics) do
@@ -80,7 +80,7 @@ return {
             package_pending = icons.ui.Arrow,
             package_uninstalled = icons.ui.ErrorAlt
           },
-          border = "rounded"
+          border = vim.copper_config.borders
         }
       })
 

@@ -17,7 +17,7 @@ return {
           lualine_a = {
             {
               "mode",
-              icon = "",
+              icon = icons.ui.Vim,
               separator = { left = "", right = "" },
               color = {
                 fg = "#1e1e2e",

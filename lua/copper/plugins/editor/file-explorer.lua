@@ -4,7 +4,13 @@ return {
   {
     "nvim-neo-tree/neo-tree.nvim",
     cmd = "Neotree",
-    dependencies = "mrbjarksen/neo-tree-diagnostics.nvim",
+    dependencies = {
+      "mrbjarksen/neo-tree-diagnostics.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons",
+      "MunifTanjim/nui.nvim",
+      "3rd/image.nvim"
+    },
     keys = {
       { "<leader>fe", "<Cmd>Neotree focus<CR>",  { desc = "Focus on Neotree" } },
       { "<leader>te", "<Cmd>Neotree toggle<CR>", { desc = "Toggle Neotree" } },
@@ -68,11 +74,11 @@ return {
         tabs_layout = "equal",
         show_separator_on_edge = true,
         sources = {
-          { source = "filesystem", display_name = "󰉓" },
-          { source = "buffers", display_name = "󰈙" },
-          { source = "git_status", display_name = "" },
-          { source = "document_symbols", display_name = "o" },
-          { source = "diagnostics", display_name = "󰒡" },
+          { source = "filesystem",       display_name = icons.ui.ProjectAlt },
+          { source = "buffers",          display_name = icons.ui.Buffer },
+          { source = "git_status",       display_name = icons.ui.GitHub },
+          { source = "document_symbols", display_name = icons.ui.Symbols },
+          { source = "diagnostics",      display_name = icons.ui.Diagnostics },
         },
       },
       default_component_configs = {
@@ -80,19 +86,19 @@ return {
           indent_size = 2,
           padding = 1, -- extra padding on left hand side
           with_markers = true,
-          indent_marker = "│",
-          last_indent_marker = "└",
+          indent_marker = icons.borders.Left,
+          last_indent_marker = icons.borders.BottomLeft,
         },
         icon = {
-          folder_closed = "",
-          folder_open = "",
-          folder_empty = "",
-          folder_empty_open = "",
+          folder_closed = icons.ui.folder_closed,
+          folder_open = icons.ui.folder_open,
+          folder_empty = icons.ui.folder_empty,
+          folder_empty_open = icons.ui.folder_empty_open,
           -- The next two settings are only a fallback, if you use nvim-web-devicons and configure default icons there
           -- then these will never be used.
-          default = " ",
+          default = icons.ui.Text,
         },
-        modified = { symbol = "" },
+        modified = { symbol = icons.ui.ModifiedFile },
         git_status = { symbols = icons.git },
         diagnostics = { symbols = icons.diagnostics },
       },
@@ -142,6 +148,9 @@ return {
   {
     "nvim-tree/nvim-tree.lua",
     enabled = false,
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
     init = function()
       require("nvim-tree")
     end,

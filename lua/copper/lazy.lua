@@ -16,13 +16,6 @@ require("lazy").setup({
     lazy = true,
   },
   spec = {
-    -- NOTE: Maybe remove (or move to where they are a dependency)
-    { "nvim-tree/nvim-web-devicons" },
-    { "nvim-lua/plenary.nvim" },
-    { "MunifTanjim/nui.nvim" },
-    -- TODO: Test if it is useful
-    -- textDocument/onTypeFormatting
-    { "yioneko/nvim-type-fmt" },
     { import = "copper.plugins.coding" },
     { import = "copper.plugins.debugging" },
     { import = "copper.plugins.editor" },
@@ -31,10 +24,10 @@ require("lazy").setup({
     { import = "copper.plugins.vscode" },
   },
   ui = {
-    border = vim.user_config.borders,
+    border = vim.copper_config.borders,
   },
   install = {
-    colorscheme = { vim.user_config.colorscheme, "habamax" }, -- try to load one of these colorschemes when starting an installation during startup
+    colorscheme = { vim.copper_config.colorscheme, "habamax" }, -- try to load one of these colorschemes when starting an installation during startup
   },
   checker = {
     enabled = true, -- automatically check for plugin updates

@@ -2,6 +2,7 @@ return {
   {
     "folke/trouble.nvim",
     cmd = { "TroubleToggle", "Trouble" },
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
       position = "right",
       icons = true,

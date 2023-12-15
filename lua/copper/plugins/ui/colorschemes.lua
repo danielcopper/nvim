@@ -1,11 +1,10 @@
 return {
   {
     "rose-pine/neovim",
-    -- enabled = false,
     name = "rose-pine",
     lazy = false,
     priority = 1000,
-    cond = vim.user_config.colorscheme == "rose-pine",
+    cond = vim.copper_config.colorscheme == "rose-pine",
     opts = {
       --- @usage 'auto'|'main'|'moon'|'dawn'
       variant = "auto",
@@ -70,11 +69,10 @@ return {
 
   {
     "catppuccin/nvim",
-    -- enabled = true,
     name = "catppuccin",
     lazy = false,
     priority = 1000,
-    cond = vim.user_config.colorscheme == "catppuccin",
+    cond = vim.copper_config.colorscheme == "catppuccin",
     opts = {
       transparent_background = true,
       show_end_of_buffer = false,
@@ -156,16 +154,20 @@ return {
       local group = vim.api.nvim_create_augroup("NeoTreeTransparentBackground", { clear = true })
       vim.api.nvim_create_autocmd("VimEnter", {
         group = group,
-        command = "highlight NeoTreeNormalNC guibg=NONE ctermbg=NONE",
+        callback = function ()
+          if vim.copper_config.transparent then
+            vim.cmd("highlight NeoTreeNormalNC guibg=NONE ctermbg=NONE")
+          end
+        end
       })
     end,
   },
 
   {
     "folke/tokyonight.nvim",
-    enabled = false,
     lazy = false,
     priority = 1000,
+    cond = vim.copper_config.colorscheme == "tokyonight",
     opts = {
       -- your configuration comes here
       -- or leave it empty to use the default settings
@@ -209,9 +211,9 @@ return {
 
   {
     "rebelot/kanagawa.nvim",
-    enabled = false,
     lazy = false,
     priority = 1000,
+    cond = vim.copper_config.colorscheme == "kanagawa",
     opts = {
       compile = false,
       undercurl = true, -- enable undercurls
@@ -284,9 +286,9 @@ return {
   {
     -- 'sainnhe/everforest',
     "neanias/everforest-nvim",
-    enabled = false,
     lazy = false,
     priority = 1000,
+    cond = vim.copper_config.colorscheme == "everforest",
     opts = {
       -- Controls the "hardness" of the background. Options are "soft", "medium" or "hard".
       -- Default is "medium".
@@ -311,9 +313,9 @@ return {
 
   {
     "chriskempson/base16-vim",
-    enabled = false,
     lazy = false,
     priority = 1000,
+    cond = vim.copper_config.colorscheme == "base16",
     config = function()
       vim.g.base16colorspace = 256
       -- vim.cmd.colorscheme("base16-default-dark")
@@ -324,9 +326,9 @@ return {
 
   {
     "kvrohit/rasmus.nvim",
-    enabled = false,
     lazy = false,
     priority = 1000,
+    cond = vim.copper_config.colorscheme == "rasmus",
     config = function()
       vim.g.rasmus_transparent = true
       vim.cmd.colorscheme("rasmus")
@@ -336,9 +338,9 @@ return {
   {
     "fynnfluegge/monet.nvim",
     name = "monet",
-    enabled = false,
     lazy = false,
     priority = 1000,
+    cond = vim.copper_config.colorscheme == "monet",
     opts = {
       transparent_background = true,
       styles = {
