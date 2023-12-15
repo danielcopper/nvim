@@ -1,24 +1,8 @@
--- TODO: Maybe this needs some rework for order of execution
--- Check jay-babu mason-null-ls github page (source of truth)
--- but the primary functionalities do work as expected
--- find out how to install eslint_d when not using mason-null-ls
 return {
   "nvimtools/none-ls.nvim",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
-    {
-      "jay-babu/mason-null-ls.nvim",
-      config = function()
-        require("mason-null-ls").setup({
-          ensure_installed =
-          {
-            "prettier",
-            "eslint_d"
-          },
-          automatic_installation = true,
-        })
-      end,
-    },
+    "jay-babu/mason-null-ls.nvim",
   },
   config = function()
     local null_ls = require("null-ls")

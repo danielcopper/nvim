@@ -24,13 +24,14 @@ require("lazy").setup({
     -- textDocument/onTypeFormatting
     { "yioneko/nvim-type-fmt" },
     { import = "copper.plugins.coding" },
+    { import = "copper.plugins.debugging" },
     { import = "copper.plugins.editor" },
     { import = "copper.plugins.lsp" },
-    { import = "copper.plugins.debugging" },
     { import = "copper.plugins.ui" },
+    { import = "copper.plugins.vscode" },
   },
   ui = {
-    border = "rounded",
+    border = vim.user_config.borders,
   },
   install = {
     colorscheme = { vim.user_config.colorscheme, "habamax" }, -- try to load one of these colorschemes when starting an installation during startup

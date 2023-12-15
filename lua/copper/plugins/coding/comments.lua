@@ -75,7 +75,6 @@ return {
     },
   },
 
-
   -- allows generating block comments like jsdoc
   {
     "danymat/neogen",

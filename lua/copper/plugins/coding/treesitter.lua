@@ -13,7 +13,6 @@ return {
     opts = {
       ensure_installed = {
         "bash",
-        "bibtex",
         "c",
         "c_sharp",
         "comment",

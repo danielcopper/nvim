@@ -74,16 +74,6 @@ return {
         --       return { "treesitter", "indent" }
         --     end,
       })
-
-      -- Disable UFO on certain filetypes
-      -- NOTE: does not seem to work but is not needed for nvmitree
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "neo-tree" },
-        callback = function()
-          require("ufo").detach()
-          vim.opt_local.foldenable = false
-        end,
-      })
     end,
   },
 }

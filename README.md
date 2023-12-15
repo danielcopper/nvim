@@ -4,6 +4,7 @@
 ![Lua](https://img.shields.io/badge/lua-%232C2D72.svg?style=for-the-badge&logo=lua&logoColor=white)
 
 <!--toc:start-->
+
 - [CopperVim](#coppervim)
   - [Install](#install)
     - [Linux](#linux)
@@ -15,15 +16,14 @@
     - [Angular](#angular)
   - [TODO](#todo)
   - [Plugins to consider](#plugins-to-consider)
-<!--toc:end-->
+  <!--toc:end-->
 
-These are my config files for Neovim.
-They aim to work on both Linux and Windows.
+These are my config files for Neovim. They aim to work on both Linux and
+Windows.
 
 ## Install
 
-Clone this repo into the nvim standard path
-**Linux**: ~/.config/nvim
+Clone this repo into the nvim standard path **Linux**: ~/.config/nvim
 **Windows**: `OS:/Users/<your-user-name/AppData/Local/nvim`
 
 ### Linux

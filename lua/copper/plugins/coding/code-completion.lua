@@ -4,12 +4,11 @@ return {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
-      "L3MON4D3/LuaSnip",     -- the actual snippet engine
-      "hrsh7th/cmp-nvim-lsp", -- completion source for lsp related stuff
-      "hrsh7th/cmp-buffer",   -- source for words in buffer
-      "hrsh7th/cmp-path",     -- source for path completion
+      "L3MON4D3/LuaSnip",             -- the actual snippet engine
+      "hrsh7th/cmp-nvim-lsp",         -- completion source for lsp related stuff
+      "hrsh7th/cmp-buffer",           -- source for words in buffer
+      "hrsh7th/cmp-path",             -- source for path completion
       "hrsh7th/cmp-nvim-lua",
-      "hrsh7th/cmp-nvim-lsp-signature-help",
       "saadparwaiz1/cmp_luasnip",     -- for autocompletion
       "rafamadriz/friendly-snippets", -- collection of useful snippets for different languages
       "onsails/lspkind-nvim",         -- change the appearance of the popup
@@ -121,8 +120,6 @@ return {
             },
           },
           { name = "path", max_item_count = 10 }, -- file system paths
-          -- NOTE:Signature help is already enabled but i leave it here for future reference
-          -- { name = 'nvim_lsp_signature_help' }
         }),
 
         -- disable the completion in comment sections
