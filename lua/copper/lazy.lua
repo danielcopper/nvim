@@ -12,9 +12,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  defaults = {
-    lazy = true,
-  },
   spec = {
     { import = "copper.plugins.coding" },
     { import = "copper.plugins.debugging" },
@@ -40,14 +37,14 @@ require("lazy").setup({
     rtp = {
       disabled_plugins = {
         -- TODO: Check what these do
-        "gzip",
-        "matchit",
-        "matchparen",
-        "netrwPlugin",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
+        -- "gzip",
+        -- "matchit",
+        -- "matchparen",
+        -- "netrwPlugin",
+        -- "tarPlugin",
+        -- "tohtml",
+        -- "tutor",
+        -- "zipPlugin",
       },
     },
   },

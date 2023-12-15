@@ -1,6 +1,6 @@
-require("copper.core.options")
-require("copper.core.autocmds")
-require("copper.core.filetype")
-require("copper.core.keymaps")
+require("copper.config.options")
+require("copper.config.autocmds")
+require("copper.config.filetype")
+require("copper.config.keymaps")
 
 require("copper.lazy")

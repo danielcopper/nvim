@@ -1,4 +1,4 @@
-local icons = require("copper.utils.icons")
+local icons = require("copper.config.icons")
 
 return {
   {
@@ -33,7 +33,7 @@ return {
       require('lspconfig.ui.windows').default_options.border = vim.copper_config.borders -- Borders for LspInfo
 
       -- Defining the icons for diagnostics
-      for name, icon in pairs(require("copper.utils.icons").diagnostics) do
+      for name, icon in pairs(icons.diagnostics) do
         name = "DiagnosticSign" .. name
         vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
       end

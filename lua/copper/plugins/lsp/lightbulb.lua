@@ -1,4 +1,4 @@
-local icons = require("copper.utils.icons")
+local icons = require("copper.config.icons")
 
 return {
   -- Show a lightbulb where codeactions are available

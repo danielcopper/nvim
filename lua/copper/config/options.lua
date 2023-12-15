@@ -15,8 +15,8 @@ local options = {
     foldenable = true,
     foldlevel = 99,      -- A foldlevel of 0 means all folds are closed
     foldlevelstart = 99, -- Don't close any folds at the start
-    -- TODO: Find a good solution for this - I only want to show a symbol if a fold is open or closed, no numbers
-    foldtext = "v:lua.require'copper.utils'.ui.foldtext()",
+    -- TODO: Find a good solution for this - I only want to show a symbol if a fold is open or closed, no numbers -> check lazyvim as a first step
+    -- foldtext = "v:lua.require'copper.config'.ui.foldtext()",
     formatoptions = "jcroqlnt", -- This sets various formatting options in Neovim. Each letter represents a specific behavior
     grepformat = "%f:%l:%c:%m", -- This defines the format that Neovim expects for the output of the
     grepprg = "rg --vimgrep",   -- This sets the program Neovim uses for the :grep command
@@ -64,7 +64,7 @@ local options = {
     undodir = vim.fn.stdpath("data") .. "/undodir",                -- specifies the directory where undo files are stored.
     undofile = true,                                               -- enables the creation of undo files
     undolevels = 10000,                                            -- specifies the maximum number of changes that can be undone
-    updatetime = 200,                                              -- Save swap file and trigger CursorHold. This sets the time in milliseconds to wait before triggering the CursorHold event and updating the swap file. A shorter updatetime makes Neovim more responsive in triggering certain autocommands and updating swap files, but it might increase disk write frequency.
+    updatetime = 500,                                              -- Save swap file and trigger CursorHold. This sets the time in milliseconds to wait before triggering the CursorHold event and updating the swap file. A shorter updatetime makes Neovim more responsive in triggering certain autocommands and updating swap files, but it might increase disk write frequency.
     virtualedit = "block",                                         -- Allow cursor to move where there is no text in visual block mode
     wildmode = "longest:full,full",                                -- Command-line completion mode
     winminwidth = 5,                                               -- Minimum window width
