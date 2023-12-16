@@ -17,8 +17,10 @@ return {
     },
     init = function()
       vim.g.neo_tree_remove_legacy_commands = 1
-      -- vim.cmd("Neotree show")
-      vim.cmd("Neotree focus")
+      if vim.fn.argc() == 0 or (vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1) then
+        -- vim.cmd("Neotree show")
+        vim.cmd("Neotree focus")
+      end
     end,
     -- NOTE: This opens neo-tree in fullscreen on startup
     -- init = function()

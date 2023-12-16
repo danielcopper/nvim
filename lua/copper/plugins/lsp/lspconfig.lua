@@ -27,7 +27,8 @@ return {
       -- or other UI enhancements.
       local handlers = {
         ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = vim.copper_config.borders }),
-        ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = vim.copper_config.borders }),
+        ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help,
+          { border = vim.copper_config.borders }),
       }
 
       require('lspconfig.ui.windows').default_options.border = vim.copper_config.borders -- Borders for LspInfo
@@ -171,6 +172,15 @@ return {
         end,
 
         ["omnisharp"] = function()
+          -- TODO: to debug the issue with this:
+          -- Error executing luv callback:
+          -- /usr/share/nvim/runtime/lua/vim/lsp/rpc.lua:389: attempt to index local 'decoded' (a nil value)
+          -- stack traceback:
+          -- 	/usr/share/nvim/runtime/lua/vim/lsp/rpc.lua:389: in function 'handle_body'
+          -- 	/usr/share/nvim/runtime/lua/vim/lsp/rpc.lua:739: in function 'handle_body'
+          -- 	/usr/share/nvim/runtime/lua/vim/lsp/rpc.lua:263: in function </usr/share/nvim/runtime/lua/vim/lsp/rpc.lua:247>
+          vim.lsp.set_log_level("debug")
+
           local system_name = vim.loop.os_uname().sysname
           local cmd_path = system_name == "Windows_NT" and
               vim.fn.expand("~\\AppData\\local\\nvim-data\\mason\\packages\\omnisharp\\libexec\\OmniSharp.dll") or
