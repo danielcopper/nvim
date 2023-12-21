@@ -26,7 +26,7 @@ return {
         },
         separator_style = "thin", -- "slant" | "thick" | "thin" | { 'any', 'any' },
         -- show_tab_indicators = true,
-        always_show_bufferline = true,
+        always_show_bufferline = false,
         diagnostics = "nvim_lsp",
         -- diagnostics_indicator = function(count, level, diagnostics_dict, context)
         --   local icon = level:match("error") and icons.diagnostics.Error or icons.diagnostics.Warning
