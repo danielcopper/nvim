@@ -6,6 +6,8 @@ return {
     event = "VeryLazy",
     config = function()
       local lazy_status = require("lazy.status")
+      vim.api.nvim_set_hl(0, 'LspClientAttached', { fg = '#b4befe', bg = 'NONE' })
+
       require("lualine").setup({
         options = {
           icons_enabled = true,
@@ -29,15 +31,6 @@ return {
           -- lualine_b = { "branch", "diff", "diagnostics" },
           lualine_c = {
             {
-              "diagnostics",
-              symbols = {
-                Error = icons.diagnostics.Error,
-                Warn = icons.diagnostics.Warning,
-                Hint = icons.diagnostics.Hint,
-                Info = icons.diagnostics.Information,
-              },
-            },
-            {
               "filetype",
               icon_only = true,
               separator = "",
@@ -50,6 +43,15 @@ return {
               "filename",
               path = 1,
               symbols = { modified = icons.ui.ModifiedFile, readonly = "", unnamed = "" },
+            },
+            {
+              "diagnostics",
+              symbols = {
+                Error = icons.diagnostics.Error,
+                Warn = icons.diagnostics.Warning,
+                Hint = icons.diagnostics.Hint,
+                Info = icons.diagnostics.Information,
+              },
             },
           },
           lualine_x = {
@@ -76,24 +78,19 @@ return {
             },
             {
               function()
-                local msg = "LS Inactive"
-                local buf_clients = vim.lsp.get_active_clients()
-                if next(buf_clients) == nil then
-                  if type(msg) == "boolean" or #msg == 0 then
-                    return "LS Inactive"
-                  end
-                end
-                local buf_client_names = {}
+                local active_clients = vim.lsp.get_active_clients()
+                if #active_clients == 0 then return "" end
 
-                for _, client in pairs(buf_clients) do
-                  table.insert(buf_client_names, client.name)
+                local client_names = {}
+
+                for _, client in pairs(active_clients) do
+                  -- Check if the client is attached to the current buffer and highlight if so
+                  local highlight = vim.lsp.buf_is_attached(0, client.id) and "%#LspClientAttached#" or ""
+                  table.insert(client_names, highlight .. client.name .. "%*") -- Reset highlight after the name
                 end
 
-                local unique_client_names = vim.fn.uniq(buf_client_names)
-                local language_servers = table.concat(unique_client_names, ", ")
-
-                return language_servers
-              end
+                return table.concat(client_names, " ")
+              end,
             },
             { "encoding" },
             { "fileformat" },

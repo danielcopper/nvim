@@ -10,7 +10,7 @@ return {
       { "folke/neodev.nvim",                   opts = {} },     -- Enhanced support for Neovim development
       { "williamboman/mason.nvim",             lazy = false },  -- TODO: Test if this lazy = false works as intended (it should always laod mason but not lspconfig)
       "williamboman/mason-lspconfig.nvim",
-      "b0o/schemastore.nvim",                                   -- Validate JSON files
+      "b0o/schemastore.nvim",                                   -- Validate files
     },
     config = function()
       -- neodev setup must be done before lspconfig to enhance Lua dev experience
@@ -87,6 +87,7 @@ return {
 
       mason_lspconfig.setup({
         ensure_installed = {
+          "azure_pipelines_ls",
           "angularls",
           "bashls",
           "cssls",
@@ -115,6 +116,26 @@ return {
             capabilities = capabilities,
             handlers = handlers,
             on_attach = on_attach
+          }
+        end,
+
+        ["azure_pipelines_ls"] = function()
+          require("lspconfig").azure_pipelines_ls.setup {
+            capabilities = capabilities,
+            handlers = handlers,
+            on_attach = on_attach,
+            settings = {
+              yaml = {
+                schemas = {
+                  ["https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json"] = {
+                    "/azure-pipeline*.y*l",
+                    "/*.azure*",
+                    "Azure-Pipelines/**/*.y*l",
+                    "Pipelines/*.y*l",
+                  },
+                },
+              },
+            },
           }
         end,
 
@@ -201,11 +222,14 @@ return {
             capabilities = capabilities,
             on_attach = on_attach,
             handlers = handlers,
-            settins = {
-              yamlls = {
-                schemas = require("schemastore").yaml.schemas(),
-              },
-            },
+            settings = {
+              yaml = {
+                format = {
+                  enable = true,
+                },
+                schemas = require('schemastore').yaml.schemas(),
+              }
+            }
           })
         end,
       })
