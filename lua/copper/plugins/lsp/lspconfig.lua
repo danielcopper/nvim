@@ -100,7 +100,6 @@ return {
           "marksman",
           "omnisharp",
           "powershell_es",
-          "quick_lint_js",
           "sqlls",
           "tsserver",
           "yamlls",

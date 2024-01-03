@@ -3,6 +3,18 @@ return {
     "folke/noice.nvim",
     event = "VeryLazy",
     opts = {
+      views = {
+        cmdline_popup = {
+          border = {
+            style = vim.copper_config.borders,
+            padding = { 1, 1 },
+          },
+          filter_options = {},
+          win_options = {
+            winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
+          },
+        }
+      },
       lsp = {
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
@@ -28,7 +40,7 @@ return {
         command_palette = true,
         long_message_to_split = true,
         inc_rename = true,
-        lsp_doc_border = true,
+        lsp_doc_border = vim.copper_config.borders,
       },
     },
     keys = {

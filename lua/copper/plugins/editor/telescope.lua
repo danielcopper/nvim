@@ -14,6 +14,7 @@ return {
 
       telescope.setup({
         defaults = {
+          borderchars = vim.copper_config.borders == "none" and { " " } or { vim.copper_config.borders },
           dynamic_preview_title = true,
           mappings = {
             i = {
@@ -47,9 +48,11 @@ return {
       telescope.load_extension("fzf") -- don't forget to load the performance improvements
     end,
     keys = {
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" } },
-      { "<leader>fs", "<cmd>Telescope live_grep<cr>",  { desc = "Fuzzy find string in cwd" } },
-      { "<leader>fr", "<cmd>Telescope oldfiles<cr>",   { desc = "Fuzzy find recent files" } },
+      { "<leader>ff", "<cmd>Telescope find_files<cr>",  { desc = "Fuzzy find files in cwd" } },
+      { "<leader>fs", "<cmd>Telescope live_grep<cr>",   { desc = "Fuzzy find string in cwd" } },
+      { "<leader>fr", "<cmd>Telescope oldfiles<cr>",    { desc = "Fuzzy find recent files" } },
+      { "<leader>tb", "<cmd>Telescope buffers<cr>",     { desc = "List all loaded buffers" } },
+      { "<leader>tc", "<cmd>Telescope commands<cr>",    { desc = "Telesecope Commands" } },
       {
         "<leader>td",
         function()
@@ -74,7 +77,6 @@ return {
       { "<leader>tt", "<Cmd>TodoTelescope<CR>",       desc = "Open Todos in Telescope" },
       -- { "<leader>th", "<cmd>Telescope command_history<cr>", desc = "Telescope Command History" },
       { "<leader>th", "<cmd>Telescope helpgrep<cr>",  desc = "Telescope grep nvim documentation" },
-      { "<leader>tc", "<cmd>Telescope commands<cr>",  desc = "Telesecope Commands" },
       { "<leader>tm", "<cmd>Telescope man_pages<cr>", desc = "Telescope Man Pages" },
       {
         "<leader>ts",

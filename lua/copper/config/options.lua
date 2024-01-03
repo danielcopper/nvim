@@ -88,9 +88,9 @@ local options = {
     codelens = true,
   },
   copper_config = { -- My own settings table
-    borders = "rounded",
-    colorscheme = "catppuccin",
-    transparent = true,
+    borders = "none",
+    colorscheme = "monet",
+    transparent = false,
   }
 }
 

@@ -6,12 +6,12 @@ return {
     event = "VeryLazy",
     config = function()
       local lazy_status = require("lazy.status")
-      vim.api.nvim_set_hl(0, 'LspClientAttached', { fg = '#b4befe', bg = 'NONE' })
+      vim.api.nvim_set_hl(0, 'LspClientAttached', { fg = '#b4befe' })
 
       require("lualine").setup({
         options = {
           icons_enabled = true,
-          theme = "auto",
+          theme = vim.copper_config.colorscheme,
           globalstatus = true,
           disabled_filetypes = { statusline = { "lazy", "alpha", "starter" } },
         },
@@ -21,10 +21,6 @@ return {
               "mode",
               icon = icons.ui.Vim,
               separator = { left = "", right = "" },
-              color = {
-                fg = "#1e1e2e",
-                bg = "#b4befe",
-              },
             },
           },
           lualine_b = { "branch" },
@@ -66,7 +62,6 @@ return {
             {
               lazy_status.updates,
               cond = lazy_status.has_updates,
-              color = { fg = "#ff9e64" },
             },
             {
               "diff",
@@ -96,20 +91,17 @@ return {
             { "fileformat" },
           },
           lualine_y = {
-            { "progress", separator = " ",                   padding = { left = 1, right = 0 },           color = { fg = "#1e1e2e", bg = "#eba0ac", }, },
-            { "location", padding = { left = 0, right = 1 }, color = { fg = "#1e1e2e", bg = "#eba0ac", }, },
+            { "progress", separator = " ",                  padding = { left = 1, right = 0 } },
+            { "location", padding = { left = 0, right = 1 } },
           },
           lualine_z = {
             {
               function()
                 return icons.ui.Time .. os.date("%R")
               end,
-              color = { fg = "#1e1e2e", bg = "#f2cdcd", },
             },
           },
         },
-        -- show a simplified lualine for these
-        -- extensions = { "neo-tree", "nvim-tree", "lazy" },
       })
     end,
   },

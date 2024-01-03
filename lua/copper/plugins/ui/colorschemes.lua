@@ -2,7 +2,6 @@ return {
   {
     "rose-pine/neovim",
     name = "rose-pine",
-    lazy = false,
     priority = 1000,
     cond = vim.copper_config.colorscheme == "rose-pine",
     opts = {
@@ -12,7 +11,7 @@ return {
       dark_variant = "main",
       bold_vert_split = false,
       dim_nc_background = false,
-      disable_background = true,
+      disable_background = vim.copper_config.transparent,
       disable_float_background = true,
       disable_italics = true,
 
@@ -70,11 +69,10 @@ return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    lazy = false,
     priority = 1000,
     cond = vim.copper_config.colorscheme == "catppuccin",
     opts = {
-      transparent_background = true,
+      transparent_background = vim.copper_config.transparent,
       show_end_of_buffer = false,
       term_colors = true,
       dim_inactive = {
@@ -154,7 +152,7 @@ return {
       local group = vim.api.nvim_create_augroup("NeoTreeTransparentBackground", { clear = true })
       vim.api.nvim_create_autocmd("VimEnter", {
         group = group,
-        callback = function ()
+        callback = function()
           if vim.copper_config.transparent then
             vim.cmd("highlight NeoTreeNormalNC guibg=NONE ctermbg=NONE")
           end
@@ -165,7 +163,6 @@ return {
 
   {
     "folke/tokyonight.nvim",
-    lazy = false,
     priority = 1000,
     cond = vim.copper_config.colorscheme == "tokyonight",
     opts = {
@@ -173,7 +170,7 @@ return {
       -- or leave it empty to use the default settings
       style = "night",        -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
       light_style = "day",    -- The theme is used when the background is set to light
-      transparent = true,     -- Enable this to disable setting the background color
+      transparent = vim.copper_config.transparent,     -- Enable this to disable setting the background color
       terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
       styles = {
         -- Style to be applied to different syntax groups
@@ -211,7 +208,6 @@ return {
 
   {
     "rebelot/kanagawa.nvim",
-    lazy = false,
     priority = 1000,
     cond = vim.copper_config.colorscheme == "kanagawa",
     opts = {
@@ -222,7 +218,7 @@ return {
       keywordStyle = { italic = true },
       statementStyle = { bold = true },
       typeStyle = {},
-      transparent = true,
+      transparent = vim.copper_config.transparent,
       dimInactive = false,     -- dim inactive window `:h hl-NormalNC`
       terminalColors = true,   -- define vim.g.terminal_color_{0,17}
       variablebuiltinStyle = { italic = true },
@@ -286,7 +282,6 @@ return {
   {
     -- 'sainnhe/everforest',
     "neanias/everforest-nvim",
-    lazy = false,
     priority = 1000,
     cond = vim.copper_config.colorscheme == "everforest",
     opts = {
@@ -313,7 +308,6 @@ return {
 
   {
     "chriskempson/base16-vim",
-    lazy = false,
     priority = 1000,
     cond = vim.copper_config.colorscheme == "base16",
     config = function()
@@ -326,11 +320,10 @@ return {
 
   {
     "kvrohit/rasmus.nvim",
-    lazy = false,
     priority = 1000,
     cond = vim.copper_config.colorscheme == "rasmus",
     config = function()
-      vim.g.rasmus_transparent = true
+      vim.g.rasmus_transparent = vim.copper_config.transparent
       vim.cmd.colorscheme("rasmus")
     end,
   },
@@ -338,11 +331,10 @@ return {
   {
     "fynnfluegge/monet.nvim",
     name = "monet",
-    lazy = false,
     priority = 1000,
     cond = vim.copper_config.colorscheme == "monet",
     opts = {
-      transparent_background = true,
+      transparent_background = vim.copper_config.transparent,
       styles = {
         comments = { "italic" }
       }
@@ -351,5 +343,19 @@ return {
       require("monet").setup(opts)
       vim.cmd.colorscheme("monet")
     end
+  },
+
+  {
+    "askfiy/killer-queen",
+    priority = 100,
+    cond = vim.copper_config.colorscheme == "killer-queen",
+    opts = {
+      -- is_border = true,
+      transparent = vim.copper_config.transparent,
+    },
+    config = function(_, opts)
+      require("killer-queen").setup(opts)
+      vim.cmd([[colorscheme killer-queen]])
+    end,
   },
 }
