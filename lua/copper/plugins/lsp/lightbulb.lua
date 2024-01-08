@@ -8,6 +8,7 @@ return {
     config = function()
       require("nvim-lightbulb").setup({
         autocmd = { enabled = true },
+        priority = 101,
         sign = {
           enabled = true,
           -- Text to show in the sign column.

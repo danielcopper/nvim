@@ -4,22 +4,25 @@ return {
     event = "VeryLazy",
     opts = {
       views = {
-        cmdline_popup = {
-          border = {
-            style = vim.copper_config.borders,
-            padding = { 1, 1 },
-          },
-          filter_options = {},
-          win_options = {
-            winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
-          },
-        }
+        -- cmdline_popup = {
+        --   border = {
+        --     style = vim.copper_config.borders,
+        --     padding = { 1, 1 },
+        --   },
+        --   filter_options = {},
+        --   win_options = {
+        --     winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
+        --   },
+        -- }
       },
       lsp = {
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
           ["cmp.entry.get_documentation"] = true,
+        },
+        hover = {
+          silent = true,
         },
       },
       routes = {
@@ -40,7 +43,7 @@ return {
         command_palette = true,
         long_message_to_split = true,
         inc_rename = true,
-        lsp_doc_border = vim.copper_config.borders,
+        border = vim.copper_config.borders == "none" and false or vim.copper_config.borders,
       },
     },
     keys = {

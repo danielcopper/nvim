@@ -43,6 +43,7 @@ return {
         { source = "diagnostics",      display_name = icons.ui.Diagnostics },
       },
     },
+    open_files_do_not_replace_types = { "terminal", "Trouble", "trouble", "qf", "Outline" },
     default_component_configs = {
       indent = {
         indent_size = 2,
@@ -70,6 +71,7 @@ return {
         -- ["<space>"] = false, -- disable space until we figure out which-key disabling
         ["H"] = "prev_source",
         ["L"] = "next_source",
+        ["<space>"] = "none",
       },
     },
     filesystem = {
@@ -88,11 +90,9 @@ return {
         hide_dotfiles = false,
         hide_gitignored = false,
       },
-      follow_current_file = {
-        enabled = true,
-      },                       -- This will find and focus the file in the active buffer every
-      -- time the current file is changed while the tree is open.
-      group_empty_dirs = true, -- when true, empty folders will be grouped together
+      group_empty_dirs = true,
+      follow_current_file = { enabled = true },
+      use_libuv_file_watcher = true,
     },
     async_directory_scan = "always",
   },

@@ -10,6 +10,7 @@ return {
       "hrsh7th/cmp-nvim-lua",
       "saadparwaiz1/cmp_luasnip",     -- for autocompletion
       "rafamadriz/friendly-snippets", -- collection of useful snippets for different languages
+      "onsails/lspkind.nvim"
     },
     opts = function()
       local cmp = require("cmp")
@@ -52,23 +53,33 @@ return {
         },
 
         formatting = {
-          format = function(_, item)
-            local icons = require("copper.config.icons").kinds
-            if icons[item.kind] then
-              item.kind = icons[item.kind] .. item.kind
-            end
-            return item
+          -- format = function(_, item)
+          --   local icons = require("copper.config.icons").kinds
+          --   if icons[item.kind] then
+          --     item.kind = icons[item.kind] .. item.kind
+          --   end
+          --   return item
+          -- end,
+          fields = { "kind", "abbr", "menu" },
+          format = function(entry, vim_item)
+            local kind = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
+            local strings = vim.split(kind.kind, "%s", { trimempty = true })
+            kind.kind = " " .. (strings[1] or "") .. " "
+            kind.menu = "    (" .. (strings[2] or "") .. ")"
+
+            return kind
           end,
         },
 
         mapping = cmp.mapping.preset.insert({
-          ["<C-j>"] = cmp.mapping.select_next_item(),      -- jump to next suggestion
-          ["<C-k>"] = cmp.mapping.select_prev_item(),      -- jump to previous suggestion
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),          -- scroll through the hover documentation down
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),         -- scroll through the hover documentation up
-          ["<C-Space>"] = cmp.mapping.complete(),          -- show completion suggestions
-          ["<C-c>"] = cmp.mapping.abort(),                 -- close completion suggestions
-          ["<C-e>"] = cmp.mapping.abort(),                 -- close completion suggestions
+          ["<C-j>"] = cmp.mapping.select_next_item(), -- jump to next suggestion
+          ["<C-k>"] = cmp.mapping.select_prev_item(), -- jump to previous suggestion
+          -- NOTE:Set up in noice.lua
+          -- ["<C-f>"] = cmp.mapping.scroll_docs(4),          -- scroll through the hover documentation down
+          -- ["<C-b>"] = cmp.mapping.scroll_docs(-4),         -- scroll through the hover documentation up
+          ["<C-Space>"] = cmp.mapping.complete(),            -- show completion suggestions
+          ["<C-c>"] = cmp.mapping.abort(),                   -- close completion suggestions
+          ["<C-e>"] = cmp.mapping.abort(),                   -- close completion suggestions
           ["<CR>"] = cmp.mapping.confirm({ select = true }), -- apply suggestion (autoselect top suggestion)
           ["<tab>"] = cmp.mapping(function(fallback) if luasnip.jumpable(1) then luasnip.jump(1) else fallback() end end,
             { "i", "s" }),

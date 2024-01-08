@@ -39,8 +39,8 @@ return {
         direction = "float",
         float_opts = {
           border = { "╒", "═", "╕", "│", "╛", "═", "╘", "│" },
-          width = 200,
-          height = 40,
+          width = 250,
+          height = 50,
         },
       })
 
@@ -59,12 +59,12 @@ return {
       vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]]),
 
       -- opening different terminals
-      vim.keymap.set("n", "<leader>t", ":ToggleTerm<CR>"),
-      vim.keymap.set("n", "<leader>t1", ":1ToggleTerm<CR>"),
-      vim.keymap.set("n", "<leader>t2", ":2ToggleTerm<CR>"),
-      vim.keymap.set("n", "<leader>t2", ":2ToggleTerm<CR>"),
-      vim.keymap.set("n", "<leader>ta", ":ToggleTermToggleAll<CR>"),
-      vim.keymap.set("n", "<leader>lg", ":lua Lazygit_toggle()<CR>"),
+      vim.keymap.set("n", "<leader>t", ":ToggleTerm<CR>", { silent = true, desc = "Toggle integrated Terminal" }),
+      vim.keymap.set("n", "<leader>t1", ":1ToggleTerm<CR>", { silent = true, desc = "Toggle integrated Terminal 1" }),
+      vim.keymap.set("n", "<leader>t2", ":2ToggleTerm<CR>", { silent = true, desc = "Toggle integrated Terminal 2" }),
+      vim.keymap.set("n", "<leader>t2", ":3ToggleTerm<CR>", { silent = true, desc = "Toggle integrated Terminal 3" }),
+      vim.keymap.set("n", "<leader>ta", ":ToggleTermToggleAll<CR>", { silent = true, desc = "Toggle all integrated Terminals" }),
+      vim.keymap.set("n", "<leader>lg", ":lua Lazygit_toggle()<CR>", { silent = true, desc = "Toggle lazygit" }),
     },
   },
 }

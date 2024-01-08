@@ -8,13 +8,13 @@ return {
       "hrsh7th/cmp-nvim-lsp",                                   -- Integration with nvim-cmp for LSP-based completions
       { "antosha417/nvim-lsp-file-operations", config = true }, -- File operations through LSP
       { "folke/neodev.nvim",                   opts = {} },     -- Enhanced support for Neovim development
-      { "williamboman/mason.nvim",             lazy = false },  -- TODO: Test if this lazy = false works as intended (it should always laod mason but not lspconfig)
+      "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
-      "b0o/schemastore.nvim",                                   -- Validate files
+      "b0o/schemastore.nvim",
     },
     config = function()
       -- neodev setup must be done before lspconfig to enhance Lua dev experience
-      require("neodev").setup({})
+      require("neodev").setup()
 
       local lspconfig = require("lspconfig")
       local mason = require("mason")
@@ -31,9 +31,9 @@ return {
           { border = vim.copper_config.borders }),
       }
 
-      require('lspconfig.ui.windows').default_options.border = vim.copper_config.borders -- Borders for LspInfo
+      require('lspconfig.ui.windows').default_options.border = vim.copper_config.borders
 
-      -- Defining the icons for diagnostics
+      -- TODO: maybe move to options.lua
       for name, icon in pairs(icons.diagnostics) do
         name = "DiagnosticSign" .. name
         vim.fn.sign_define(name, { text = icon, texthl = name, numhl = "" })
@@ -47,7 +47,17 @@ return {
       -- Enables text folding range capabilities in the LSP (nvim ufo)
       capabilities.textDocument.foldingRange = { dynamicRegistration = false, lineFoldingOnly = true }
 
-      -- Keybindings for attached lsps
+      vim.diagnostic.config({
+        -- Enable or disable updating diagnostics in insert mode
+        update_in_insert = false,
+        underline = false,
+        -- Configure the floating window for diagnostics
+        float = {
+          source = 'always', -- Show the source of the diagnostic
+          border = vim.copper_config.borders,
+        },
+      })
+
       local on_attach = function(_, bufnr)
         local set = vim.keymap.set
         -- Keybinding setup for LSP functions like go-to definition, references, etc.
@@ -55,13 +65,14 @@ return {
           set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
         end
 
+        keybind("<leader>cl", "<cmd>LspInfo<cr>", "Lsp Info")
         keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions")
         keybind("gD", vim.lsp.buf.declaration, "Go to declaration")
         keybind("gr", require("telescope.builtin").lsp_references, "Show LSP references")
         keybind("gi", require("telescope.builtin").lsp_implementations, "Show LSP implementations")
         keybind("gt", require("telescope.builtin").lsp_type_definitions, "Show LSP type definitions")
         keybind("<leader>rn", vim.lsp.buf.rename, "Smart rename")
-        keybind("<leader>vd", function() vim.diagnostic.open_float(nil, { border = "single" }) end,
+        keybind("<leader>vd", function() vim.diagnostic.open_float(nil, { border = vim.copper_config.borders }) end,
           "Show line diagnostics")
         keybind("[d", vim.diagnostic.goto_prev, "Go to previous diagnostic")
         keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")
@@ -71,6 +82,10 @@ return {
           { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" })
         set("n", "<leader>vD", "<cmd>Telescope diagnostics bufnr=0<CR>",
           { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" })
+
+        keybind("<space>wa", vim.lsp.buf.add_workspace_folder, "")
+        keybind("<space>wr", vim.lsp.buf.remove_workspace_folder, "")
+        keybind("<space>wl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, "")
       end
 
       -- SECTION: Server Setups

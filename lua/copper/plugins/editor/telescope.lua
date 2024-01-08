@@ -14,7 +14,6 @@ return {
 
       telescope.setup({
         defaults = {
-          borderchars = vim.copper_config.borders == "none" and { " " } or { vim.copper_config.borders },
           dynamic_preview_title = true,
           mappings = {
             i = {
@@ -53,6 +52,7 @@ return {
       { "<leader>fr", "<cmd>Telescope oldfiles<cr>",    { desc = "Fuzzy find recent files" } },
       { "<leader>tb", "<cmd>Telescope buffers<cr>",     { desc = "List all loaded buffers" } },
       { "<leader>tc", "<cmd>Telescope commands<cr>",    { desc = "Telesecope Commands" } },
+      { "<leader>tC", "<cmd>Telescope colorscheme<cr>", { desc = "Show available colorschemes" } },
       {
         "<leader>td",
         function()
