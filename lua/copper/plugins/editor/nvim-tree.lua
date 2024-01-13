@@ -2,7 +2,7 @@ local icons = require("copper.config.icons")
 
 return {
   "nvim-tree/nvim-tree.lua",
-  enabled = false,
+  enabled = true,
   dependencies = {
     "nvim-tree/nvim-web-devicons",
   },
@@ -29,7 +29,7 @@ return {
     view = {
       adaptive_size = false,
       side = "left",
-      width = 30,
+      width = 40,
       preserve_window_proportions = true,
     },
     filesystem_watchers = {

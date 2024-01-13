@@ -4,8 +4,9 @@ local options = {
   opt = {
     backup = false,            -- controls whether a backup file is created before writing a new version of the file
     clipboard = "unnamedplus", -- allows neovim to sync with the system clipboard
+    -- TODO: decide if i need that here
     -- completeopt = "menu,menuone,noselect", -- defines the completion menu behaviour
-    completeopt = "menu,menuone,preview,noselect",
+    -- completeopt = "menu,menuone,preview,noselect",
     conceallevel = 0,    -- so that `` is visible in markdown files
     confirm = true,      -- Confirm to save changes before exiting modified buffer
     cursorline = true,   -- Enable highlighting of the current line
@@ -49,7 +50,7 @@ local options = {
     sidescrolloff = 8,                                             -- Columns of context
     signcolumn = "yes",                                            -- Always show the signcolumn, otherwise it would shift the text each time
     smartcase = true,                                              -- Don't ignore case with capitals
-    smartindent = true,                                            -- Insert indents automatically
+    -- smartindent = true,                                            -- Insert indents automatically
     softtabstop = 4,
     spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add", -- change the path to spellfile (TODO: needs testing)
     spelllang = { "en", "de" },
@@ -88,7 +89,7 @@ local options = {
     codelens = true,
   },
   copper_config = { -- My own settings table
-    borders = "single",
+    borders = "none",
     colorscheme = "catppuccin",
     transparency = false,
   }

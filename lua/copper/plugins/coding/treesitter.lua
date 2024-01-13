@@ -54,7 +54,7 @@ return {
           cshtml = { "html", "c_sharp" },
         },
       },
-      indent = { enabled = true },
+      indent = { enabled = false },
       matchup = {
         enable = true,
         enable_quotes = true,

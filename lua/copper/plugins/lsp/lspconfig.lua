@@ -60,12 +60,12 @@ return {
 
       local on_attach = function(_, bufnr)
         local set = vim.keymap.set
-        -- Keybinding setup for LSP functions like go-to definition, references, etc.
         local keybind = function(keys, func, desc)
           set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
         end
 
         keybind("<leader>cl", "<cmd>LspInfo<cr>", "Lsp Info")
+        keybind("<leader>cf", function() vim.lsp.buf.format() end, "Quick format the open buffer")
         keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions")
         keybind("gD", vim.lsp.buf.declaration, "Go to declaration")
         keybind("gr", require("telescope.builtin").lsp_references, "Show LSP references")

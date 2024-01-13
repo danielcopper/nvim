@@ -16,15 +16,16 @@ return {
       end
     end,
     -- opts = {
-    --   input = {
-    --     border = vim.copper_config.borders
-    --   },
+    -- --   input = {
+    -- --     border = vim.copper_config.borders
+    -- --   },
     --   select = {
     --     -- telescope = require('telescope.themes').get_ivy({
     --     --   borderchars = vim.copper_config.borders == "none" and { " " } or { vim.copper_config.borders },
     --     -- }),
     --     telescope = require('telescope.themes').get_dropdown({
-    --       borderchars = vim.copper_config.borders == "none" and { " " } or { vim.copper_config.borders },
+    --       -- borderchars = vim.copper_config.borders == "none" and { " " } or { vim.copper_config.borders },
+    --       -- border = false
     --     }),
     --   }
     -- }

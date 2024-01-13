@@ -1,6 +1,8 @@
+-- TODO: enable inlay hints once nvim 0.10 is released.
 return {
   {
     "hrsh7th/nvim-cmp",
+    version = false, -- taken from lazyvim
     event = "InsertEnter",
     dependencies = {
       "L3MON4D3/LuaSnip",             -- the snippet engine
@@ -19,9 +21,7 @@ return {
       -- load vscode style snippets from installed plugins (e.g. friendly-snippets)
       require("luasnip.loaders.from_vscode").lazy_load()
 
-      -- TODO: Make these work and add angular as well https://github.com/rafamadriz/friendly-snippets/tree/main/snippets/frameworks/angular
-      -- whats not working is triggering the snippets with ///. It works if using <C-n> to manually trigger completions.
-      -- friendly-snippets - enable standardized comments snippets
+      -- adds file specific comment snippets
       luasnip.filetype_extend("typescript", { "tsdoc" })
       luasnip.filetype_extend("javascript", { "jsdoc" })
       luasnip.filetype_extend("lua", { "luadoc" })
@@ -31,8 +31,9 @@ return {
         preselect = "item",
 
         completion = {
-          completeopt = "menu,menuone,noinsert",
-          keyword_length = 2,
+          -- completeopt = "menu,menuone,noinsert",
+          completeopt = "menu,menuone",
+          -- keyword_length = 2,
         },
 
         snippet = {
@@ -44,58 +45,77 @@ return {
 
         window = {
           completion = {
-            winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
-            border = vim.copper_config.borders
+            -- winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+            -- winhighlight = "Normal:CmpPmenu,CursorLine:CmpSel,Search:None",
+            winhighlight = "Normal:CmpPmenu,Search:None",
+            -- border = vim.copper_config.borders
+            side_padding = 1
           },
           documentation = {
-            border = vim.copper_config.borders,
+            -- border = vim.copper_config.borders,
+            winhighlight = "Normal:CmpDoc",
           },
         },
 
         formatting = {
-          format = function(_, item)
-            local icons = require("copper.config.icons").kinds
-            if icons[item.kind] then
-              item.kind = icons[item.kind] .. item.kind
-            end
-            return item
-          end,
-          -- fields = { "kind", "abbr", "menu" },
-          -- format = function(entry, vim_item)
-          --   local kind = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
-          --   local strings = vim.split(kind.kind, "%s", { trimempty = true })
-          --   kind.kind = " " .. (strings[1] or "") .. " "
-          --   kind.menu = "    (" .. (strings[2] or "") .. ")"
-          --
-          --   return kind
+          -- format = function(_, item)
+          --   local icons = require("copper.config.icons").kinds
+          --   if icons[item.kind] then
+          --     item.kind = icons[item.kind] .. item.kind
+          --   end
+          --   return item
           -- end,
+          fields = { "kind", "abbr", "menu" },
+          format = function(entry, vim_item)
+            local kind = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
+            local strings = vim.split(kind.kind, "%s", { trimempty = true })
+            kind.kind = " " .. (strings[1] or "") .. " "
+            kind.menu = "    (" .. (strings[2] or "") .. ")"
+
+            return kind
+          end,
         },
 
         mapping = cmp.mapping.preset.insert({
-          ["<C-j>"] = cmp.mapping.select_next_item(), -- jump to next suggestion
-          ["<C-k>"] = cmp.mapping.select_prev_item(), -- jump to previous suggestion
-          -- NOTE:Set up in noice.lua
-          -- ["<C-f>"] = cmp.mapping.scroll_docs(4),          -- scroll through the hover documentation down
-          -- ["<C-b>"] = cmp.mapping.scroll_docs(-4),         -- scroll through the hover documentation up
+          ["<C-j>"] = cmp.mapping.select_next_item(),        -- jump to next suggestion
+          ["<C-k>"] = cmp.mapping.select_prev_item(),        -- jump to previous suggestion
+          ["<C-f>"] = cmp.mapping.scroll_docs(4),            -- scroll through the hover documentation down
+          ["<C-b>"] = cmp.mapping.scroll_docs(-4),           -- scroll through the hover documentation up
           ["<C-Space>"] = cmp.mapping.complete(),            -- show completion suggestions
           ["<C-c>"] = cmp.mapping.abort(),                   -- close completion suggestions
           ["<C-e>"] = cmp.mapping.abort(),                   -- close completion suggestions
           ["<CR>"] = cmp.mapping.confirm({ select = true }), -- apply suggestion (autoselect top suggestion)
-          ["<tab>"] = cmp.mapping(function(fallback) if luasnip.jumpable(1) then luasnip.jump(1) else fallback() end end,
+          ["<tab>"] = cmp.mapping(function(fallback)
+              if luasnip.jumpable(1) then
+                luasnip.jump(1)
+              elseif cmp.visible() then
+                cmp.select_next_item()
+              else
+                fallback()
+              end
+            end,
             { "i", "s" }),
           ["<s-tab>"] = cmp.mapping(
-            function(fallback) if luasnip.jumpable(-1) then luasnip.jump(-1) else fallback() end end, { "i" }),
+            function(fallback)
+              if luasnip.jumpable(-1) then
+                luasnip.jump(-1)
+              elseif cmp.visible() then
+                cmp.select_prev_item()
+              else
+                fallback()
+              end
+            end, { "i" }),
         }),
 
         -- the sources for autocompletion, the order is represented in the suggestions
         sources = cmp.config.sources({
-          { name = "nvim_lua", max_item_count = 30 }, -- nvim_lua automatically handles the enabling in lua files only
-          { name = "nvim_lsp", max_item_count = 30 }, -- LSP related snippets
-          { name = "luasnip",  max_item_count = 15 }, -- snippets
+          { name = "nvim_lua", max_item_count = 20 }, -- nvim_lua automatically handles the enabling in lua files only
+          { name = "nvim_lsp", max_item_count = 20 }, -- LSP related snippets
+          { name = "luasnip",  max_item_count = 10 }, -- snippets
           {
             name = "buffer",
-            max_item_count = 20,
-            keyword_length = 2,
+            max_item_count = 15,
+            -- keyword_length = 2,
             option = {
               keyword_pattern = [[\k\+]],
               -- Enable completion from all visible buffers
@@ -127,13 +147,14 @@ return {
         end,
 
         performance = {
-          max_view_entries = 30,
+          max_view_entries = 50,
         },
 
         experimental = {
           native_menu = false,
           ghost_text = true,
         },
+        sorting = require("cmp.config.default")().sorting
       })
     end,
   },

@@ -15,6 +15,7 @@ return {
       telescope.setup({
         defaults = {
           dynamic_preview_title = true,
+          -- border = false,
           mappings = {
             i = {
               ["<C-j>"] = actions.move_selection_next,                  -- move to next result in list
@@ -43,6 +44,7 @@ return {
         },
       })
 
+      telescope.load_extension("dotnet_user_secrets")
       telescope.load_extension("helpgrep")
       telescope.load_extension("fzf") -- don't forget to load the performance improvements
     end,
@@ -88,6 +90,7 @@ return {
         end,
         desc = "Goto Symbol",
       },
+      { "<leader>tus", "<cmd>Telescope dotnet_user_secrets<cr>", desc = "Telescope list user secrets" },
     },
   },
 }

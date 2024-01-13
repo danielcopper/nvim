@@ -9,6 +9,7 @@ return {
       variant = "auto",
       --- @usage 'main'|'moon'|'dawn'
       dark_variant = "main",
+      dim_inactive_windows = true,
       styles = {
         transparency = vim.copper_config.transparency
       },
@@ -82,7 +83,7 @@ return {
         notify = true,
         telescope = {
           enabled = true,
-          -- style = "nvchad"
+          style = "nvchad"
         },
         which_key = true,
         lsp_trouble = true,
