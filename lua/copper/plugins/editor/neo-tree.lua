@@ -3,7 +3,7 @@ local icons = require("copper.config.icons")
 return {
   "nvim-neo-tree/neo-tree.nvim",
   -- TODO: Reactivate once file following feature is fixed
-  enabled = false,
+  enabled = true,
   cmd = "Neotree",
   dependencies = {
     "mrbjarksen/neo-tree-diagnostics.nvim",

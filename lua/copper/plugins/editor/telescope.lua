@@ -50,11 +50,15 @@ return {
     end,
     keys = {
       { "<leader>ff", "<cmd>Telescope find_files<cr>",  { desc = "Fuzzy find files in cwd" } },
+      { "<leader>tf", "<cmd>Telescope find_files<cr>",  { desc = "Fuzzy find files in cwd" } },
       { "<leader>fs", "<cmd>Telescope live_grep<cr>",   { desc = "Fuzzy find string in cwd" } },
-      { "<leader>fr", "<cmd>Telescope oldfiles<cr>",    { desc = "Fuzzy find recent files" } },
+      { "<leader>ts", "<cmd>Telescope live_grep<cr>",   { desc = "Fuzzy find string in cwd" } },
+      { "<leader>fo", "<cmd>Telescope oldfiles<cr>",    { desc = "Fuzzy find old files" } },
+      { "<leader>to", "<cmd>Telescope oldfiles<cr>",    { desc = "Fuzzy find old files" } },
       { "<leader>tb", "<cmd>Telescope buffers<cr>",     { desc = "List all loaded buffers" } },
       { "<leader>tc", "<cmd>Telescope commands<cr>",    { desc = "Telesecope Commands" } },
       { "<leader>tC", "<cmd>Telescope colorscheme<cr>", { desc = "Show available colorschemes" } },
+      { "<leader>tr", "<cmd>Telescope resume<cr>", { desc = "Resume telescope grep" } },
       {
         "<leader>td",
         function()

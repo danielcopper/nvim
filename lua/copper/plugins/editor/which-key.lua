@@ -17,7 +17,7 @@ return {
         ["<leader>g"] = { name = "+git" },
         ["<leader>q"] = { name = "+quit/session" },
         ["<leader>s"] = { name = "+search" },
-        ["<leader>t"] = { name = "+terminal" },
+        ["<leader>t"] = { name = "+telescope" },
         ["<leader>u"] = { name = "+ui" },
         ["<leader>w"] = { name = "+windows/workspace" },
         ["<leader>x"] = { name = "+diagnostics/quickfix" },

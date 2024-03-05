@@ -25,7 +25,7 @@ return {
           extra_args = {}
         }),
 
-        diagnostics.eslint_d,
+        -- diagnostics.eslint_d,
         diagnostics.markdownlint,
       },
     })
