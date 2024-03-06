@@ -232,6 +232,16 @@ return {
           })
         end,
 
+        ["sqlls"] = function()
+          lspconfig.sqlls.setup({
+            cmd = { "sql-language-server", "up", "--method", "stdio" },
+            capabilities = capabilities,
+            on_attach = on_attach,
+            handlers = handlers,
+            filetypes = { "sql", "mysql", "mdx" }
+          })
+        end,
+
         ["yamlls"] = function()
           require("lspconfig").yamlls.setup({
             capabilities = capabilities,
