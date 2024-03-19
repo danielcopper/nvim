@@ -34,6 +34,9 @@ source <(ng completion script)
 # Git completion
 source /usr/share/git/completion/git-completion.bash
 
+# QMK completion
+source ~/Repos/qmk_firmware/util/qmk_tab_complete.sh
+
 # Command not found
 # Automatically search the official repositories when entering an unrecognized command
 # Need pkgfile to be installed
@@ -47,6 +50,40 @@ alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 source /usr/share/bash-completion/completions/git
 __git_complete dotfiles __git_main
 # complete -F _complete_alias dotfiles
+
+# dotnet completion and Path updates
+export PATH="$PATH:/home/daniel/.dotnet/tools"
+# NOTE: Completion seems to work out of the box but maybe useful for some testing
+# # bash parameter completion for the dotnet CLI -- Version 01
+# _dotnet_bash_complete()
+# {
+#   local word=${COMP_WORDS[COMP_CWORD]}
+#
+#   local completions
+#   completions="$(dotnet complete --position "${COMP_POINT}" "${COMP_LINE}" 2>/dev/null)"
+#   if [ $? -ne 0 ]; then
+#     completions=""
+#   fi
+#
+#   COMPREPLY=( $(compgen -W "$completions" -- "$word") )
+# }
+#
+# complete -f -F _dotnet_bash_complete dotnet
+#
+#
+# # bash parameter completion for the dotnet CLI -- Version 02
+# 
+# function _dotnet_bash_complete()
+# {
+#   local cur="${COMP_WORDS[COMP_CWORD]}" IFS=$'\n' # On Windows you may need to use use IFS=$'\r\n'
+#   local candidates
+#
+#   read -d '' -ra candidates < <(dotnet complete --position "${COMP_POINT}" "${COMP_LINE}" 2>/dev/null)
+#
+#   read -d '' -ra COMPREPLY < <(compgen -W "${candidates[*]:-}" -- "$cur")
+# }
+#
+# complete -f -F _dotnet_bash_complete dotnet
 
 # Starship command prompt. Needs to be at the end of bashrc
 eval "$(starship init bash)"

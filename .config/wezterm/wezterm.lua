@@ -1,6 +1,6 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
-local session_manager = require("session-manager")
+local session_manager = require("wezterm-session-manager/session-manager")
 
 wezterm.on("save_state", function(window, pane) session_manager.save_state(window, pane) end)
 wezterm.on("load_state", function() session_manager.load_state() end)
@@ -109,9 +109,69 @@ config.color_scheme = "Catppuccin Mocha" -- or Macchiato, Frappe, Latte
 -- Font
 config.font = wezterm.font_with_fallback {
   "JetBrainsMono Nerd Font",
-  "VictorMono NF"
+  "IbmPlex",
+  -- "OperatorMono",
+  -- "MapleMono",
+  -- "VictorMono NF"
 }
-config.font_size = 10.0
+config.font_size = 11.0
+
+-- Monaspace:  https://monaspace.githubnext.com/
+-- Based upon, contributed to:  https://gist.github.com/ErebusBat/9744f25f3735c1e0491f6ef7f3a9ddc3
+config.font = wezterm.font(
+  { -- Normal text
+    family = 'Monaspace Neon',
+    harfbuzz_features = { 'calt', 'liga', 'dlig', 'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08' },
+    stretch = 'UltraCondensed', -- This doesn't seem to do anything
+  })
+
+config.font_rules = {
+  { -- Italic
+    intensity = 'Normal',
+    italic = true,
+    font = wezterm.font({
+      -- family = "Monaspace Radon", -- script style
+      family = 'Monaspace Xenon', -- courier-like
+      style = 'Italic',
+    })
+  },
+
+  { -- Bold
+    intensity = 'Bold',
+    italic = false,
+    font = wezterm.font({
+      family = 'Monaspace Krypton',
+      -- weight='ExtraBold',
+      weight = 'Bold',
+    })
+  },
+
+  { -- Bold Italic
+    intensity = 'Bold',
+    italic = true,
+    font = wezterm.font({
+      family = 'Monaspace Xenon',
+      -- family = "Monaspace Radon",
+      style = 'Italic',
+      weight = 'Bold',
+    }
+    )
+  },
+}
+
+-- From: https://stackoverflow.com/a/7470789/5353461
+function merge_tables(t1, t2)
+  for k, v in pairs(t2) do
+    if (type(v) == "table") and (type(t1[k] or false) == "table") then
+      merge_tables(t1[k], t2[k])
+    else
+      t1[k] = v
+    end
+  end
+  return t1
+end
+
+-- config = merge_tables(config, font_config)
 
 -- Window
 config.window_background_opacity = 0.9
@@ -127,6 +187,39 @@ config.window_padding = {
 -- General
 config.scrollback_lines = 3000
 config.default_prog = { "/bin/bash" }
+
+--
+-- Hyperlinks
+--
+
+-- https://wezfurlong.org/wezterm/hyperlinks.html
+
+-- Terminal hyperlinks
+-- https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda
+-- printf '\e]8;;http://example.com\e\\This is a link\e]8;;\e\\\n'
+
+-- Use the defaults as a base.  https://wezfurlong.org/wezterm/config/lua/config/hyperlink_rules.html
+config.hyperlink_rules = wezterm.default_hyperlink_rules()
+
+-- make username/project paths clickable. this implies paths like the following are for github.
+-- ( "nvim-treesitter/nvim-treesitter" | wbthomason/packer.nvim | wez/wezterm | "wez/wezterm.git" )
+-- as long as a full url hyperlink regex exists above this it should not match a full url to
+-- github or gitlab / bitbucket (i.e. https://gitlab.com/user/project.git is still a whole clickable url)
+
+-- Regex syntax:  https://docs.rs/regex/latest/regex/#syntax and https://docs.rs/fancy-regex/latest/fancy_regex/#syntax
+-- Lua's [[ ]] literal strings prevent character [[:classes:]] :(
+-- To avoid "]]] at end, use "[a-z].{0}]]"
+-- https://www.lua.org/pil/2.4.html#:~:text=bracketed%20form%20may%20run%20for%20several%20lines%2C%20may%20nest
+
+table.insert(config.hyperlink_rules, {
+  -- https://github.com/shinnn/github-username-regex  https://stackoverflow.com/a/64147124/5353461
+  regex = [[(^|(?<=[\[(\s'"]))([0-9A-Za-z][-0-9A-Za-z]{0,38})/([A-Za-z0-9_.-]{1,100})((?=[])\s'".!?])|$)]],
+  --  is/good  0valid0/-_.reponname  /bad/start  -bad/username  bad/end!  too/many/parts -bad/username
+  --  [wraped/name] (aa/bb) 'aa/bb' "aa/bb"  end/punct!  end/punct.
+  format = 'https://www.github.com/$2/$3/',
+  -- highlight = 0,  -- highlight this regex match group, use 0 for all
+})
+
 
 -- Tab/Status Bar
 -- disables the 'modern' look of the tab bar
