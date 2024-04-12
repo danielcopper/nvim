@@ -24,6 +24,10 @@ return {
           filetypes = { "css", "scss" },
           extra_args = {}
         }),
+        formatting.prettier.with({
+          filetypes = { "yaml", "yml" },
+          extra_args = {}
+        }),
 
         -- diagnostics.eslint_d,
         diagnostics.markdownlint,

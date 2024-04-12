@@ -33,7 +33,7 @@ return {
         completion = {
           -- completeopt = "menu,menuone,noinsert",
           completeopt = "menu,menuone",
-          -- keyword_length = 2,
+          keyword_length = 2,
         },
 
         snippet = {

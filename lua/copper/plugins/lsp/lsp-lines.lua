@@ -3,6 +3,7 @@ return {
   {
     url = "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
     lazy = true,
+    enabled = true,
     event = { "BufEnter" },
     init = function ()
       -- Disable the plugin in specified filetypes

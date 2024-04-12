@@ -8,8 +8,9 @@ return {
       "hrsh7th/cmp-nvim-lsp",                                   -- Integration with nvim-cmp for LSP-based completions
       { "antosha417/nvim-lsp-file-operations", config = true }, -- File operations through LSP
       { "folke/neodev.nvim",                   opts = {} },     -- Enhanced support for Neovim development
-      "williamboman/mason.nvim",
+      { "williamboman/mason.nvim",             cmd = "Mason" },
       "williamboman/mason-lspconfig.nvim",
+      "Hoffs/omnisharp-extended-lsp.nvim",
       "b0o/schemastore.nvim",
     },
     config = function()
@@ -65,7 +66,7 @@ return {
         end
 
         keybind("<leader>cl", "<cmd>LspInfo<cr>", "Lsp Info")
-        keybind("<leader>cf", function() vim.lsp.buf.format() end, "Quick format the open buffer")
+        keybind("<leader>cf", function() vim.lsp.buf.format({ async = true }) end, "Quick format the open buffer")
         keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions")
         keybind("gD", vim.lsp.buf.declaration, "Go to declaration")
         keybind("gr", require("telescope.builtin").lsp_references, "Show LSP references")
@@ -102,7 +103,7 @@ return {
 
       mason_lspconfig.setup({
         ensure_installed = {
-          "azure_pipelines_ls",
+          -- "azure_pipelines_ls",
           "angularls",
           "bashls",
           "cssls",
@@ -134,24 +135,40 @@ return {
           }
         end,
 
-        ["azure_pipelines_ls"] = function()
-          require("lspconfig").azure_pipelines_ls.setup {
+        -- ["azure_pipelines_ls"] = function()
+        --   require("lspconfig").azure_pipelines_ls.setup {
+        --     capabilities = capabilities,
+        --     handlers = handlers,
+        --     on_attach = on_attach,
+        --     settings = {
+        --       yaml = {
+        --         schemas = {
+        --           ["https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json"] = {
+        --             "/azure-pipeline*.y*l",
+        --             "/*.azure*",
+        --             "Azure-Pipelines/**/*.y*l",
+        --             "Pipelines/*.y*l",
+        --           },
+        --         },
+        --       },
+        --     },
+        --   }
+        -- end,
+
+        ["eslint"] = function()
+          local lspconfig = require('lspconfig')
+          local util = require('lspconfig/util')
+
+          require("lspconfig").eslint.setup({
             capabilities = capabilities,
-            handlers = handlers,
             on_attach = on_attach,
-            settings = {
-              yaml = {
-                schemas = {
-                  ["https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json"] = {
-                    "/azure-pipeline*.y*l",
-                    "/*.azure*",
-                    "Azure-Pipelines/**/*.y*l",
-                    "Pipelines/*.y*l",
-                  },
-                },
-              },
-            },
-          }
+            on_new_config = function(config, new_root_dir)
+              config.settings.workspaceFolder = {
+                uri = vim.uri_from_fname(new_root_dir),
+                name = vim.fn.fnamemodify(new_root_dir, ':t')
+              }
+            end,
+         })
         end,
 
         ["jsonls"] = function()
@@ -219,16 +236,67 @@ return {
           require("lspconfig").omnisharp.setup({
             cmd = { "dotnet", cmd_path },
             capabilities = capabilities,
-            on_attach = on_attach,
+            -- on_attach = on_attach,
+            on_attach = function(client, bufnr)
+              on_attach(client, bufnr)
+
+              local set = vim.keymap.set
+              -- NOTE: Omnisharp seems to have trouble with async formatting so this is here until i find a better solution or rework my lsp setup completely
+              set("n", "<leader>cf", function() vim.lsp.buf.format() end, { desc = "Quick format the open buffer" })
+              -- set("n", "gd", "<cmd>lua require('omnisharp_extended').lsp_definition()<CR>",
+              --   { buffer = bufnr, desc = "OmniSharp LSP definition", noremap = true, silent = true })
+              -- set("n", "gr", "<cmd>lua require('omnisharp_extended').lsp_references()<CR>",
+              --   { buffer = bufnr, desc = "OmniSharp LSP references", noremap = true, silent = true })
+              -- set("n", "gi", "<cmd>lua require('omnisharp_extended').lsp_implementation()<CR>",
+              --   { buffer = bufnr, desc = "OmniSharp LSP implementation", noremap = true, silent = true })
+
+              -- Optional: If using Telescope and prefer its integration, you could replace the above with these
+              set("n", "gd", "<cmd>lua require('omnisharp_extended').telescope_lsp_definition()<CR>",
+                { buffer = bufnr, desc = "OmniSharp LSP definition with Telescope", noremap = true, silent = true })
+              set("n", "gr", "<cmd>lua require('omnisharp_extended').telescope_lsp_references()<CR>",
+                { buffer = bufnr, desc = "OmniSharp LSP references with Telescope", noremap = true, silent = true })
+              set("n", "gi", "<cmd>lua require('omnisharp_extended').telescope_lsp_implementation()<CR>",
+                { buffer = bufnr, desc = "OmniSharp LSP implementation with Telescope", noremap = true, silent = true })
+            end,
             handlers = handlers,
-            enable_editorconfig_support = true,
-            enable_ms_build_load_projects_on_demand = false,
-            enable_roslyn_analyzers = true,
-            organize_imports_on_format = true,
-            enable_import_completion = true,
-            sdk_include_prereleases = true,
-            analyze_open_documents_only = false,
-            filetypes = { 'cs', 'csproj', 'sln' },
+            settings = {
+              FormattingOptions = {
+                -- Enables support for reading code style, naming convention and analyzer
+                -- settings from .editorconfig.
+                EnableEditorConfigSupport = true,
+                -- Specifies whether 'using' directives should be grouped and sorted during
+                -- document formatting.
+                OrganizeImports = true,
+              },
+              MsBuild = {
+                -- If true, MSBuild project system will only load projects for files that
+                -- were opened in the editor. This setting is useful for big C# codebases
+                -- and allows for faster initialization of code navigation features only
+                -- for projects that are relevant to code that is being edited. With this
+                -- setting enabled OmniSharp may load fewer projects and may thus display
+                -- incomplete reference lists for symbols.
+                LoadProjectsOnDemand = nil,
+              },
+              RoslynExtensionsOptions = {
+                -- Enables support for roslyn analyzers, code fixes and rulesets.
+                EnableAnalyzersSupport = true,
+                -- Enables support for showing unimported types and unimported extension
+                -- methods in completion lists. When committed, the appropriate using
+                -- directive will be added at the top of the current file. This option can
+                -- have a negative impact on initial completion responsiveness,
+                -- particularly for the first few completion sessions after opening a
+                -- solution.
+                EnableImportCompletion = true,
+                -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
+                -- true
+                AnalyzeOpenDocumentsOnly = nil,
+              },
+              Sdk = {
+                -- Specifies whether to include preview versions of the .NET SDK when
+                -- determining which version to use for project loading.
+                IncludePrereleases = true,
+              },
+            },
           })
         end,
 
@@ -243,6 +311,15 @@ return {
         end,
 
         ["yamlls"] = function()
+          local schemas = require('schemastore').yaml.schemas()
+          schemas["https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json"] = {
+            "*.azure*",
+            "azure-pipeline*.y*l",
+            "Azure-Pipelines/**/*.y*l",
+            "Pipelines/**/*.y*l",
+            "pipelines/**/*.y*l",
+          }
+
           require("lspconfig").yamlls.setup({
             capabilities = capabilities,
             on_attach = on_attach,
@@ -252,7 +329,7 @@ return {
                 format = {
                   enable = true,
                 },
-                schemas = require('schemastore').yaml.schemas(),
+                schemas = schemas,
               }
             }
           })
