@@ -48,11 +48,11 @@ return {
             -- winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
             -- winhighlight = "Normal:CmpPmenu,CursorLine:CmpSel,Search:None",
             winhighlight = "Normal:CmpPmenu,Search:None",
-            -- border = vim.copper_config.borders
+            border = vim.copper_config.borders,
             side_padding = 1
           },
           documentation = {
-            -- border = vim.copper_config.borders,
+            border = vim.copper_config.borders,
             winhighlight = "Normal:CmpDoc",
           },
         },
@@ -110,7 +110,15 @@ return {
         -- the sources for autocompletion, the order is represented in the suggestions
         sources = cmp.config.sources({
           { name = "nvim_lua", max_item_count = 20 }, -- nvim_lua automatically handles the enabling in lua files only
-          { name = "nvim_lsp", max_item_count = 20 }, -- LSP related snippets
+          {
+            name = "nvim_lsp",
+            max_item_count = 20,
+            option = {
+              markdown_oxide = {
+                keyword_pattern = [[\(\k\| \|\/\|#\)\+]]
+              }
+            }
+          },                                          -- LSP related snippets
           { name = "luasnip",  max_item_count = 10 }, -- snippets
           {
             name = "buffer",

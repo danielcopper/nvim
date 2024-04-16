@@ -94,7 +94,8 @@ return {
       },
       group_empty_dirs = true,
       follow_current_file = { enabled = true },
-      use_libuv_file_watcher = true,
+      -- NOTE: Breaks deleting files in windows
+      use_libuv_file_watcher = vim.loop.os_uname().sysname ~= "Windows_NT",
     },
     async_directory_scan = "always",
   },

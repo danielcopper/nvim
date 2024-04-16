@@ -57,17 +57,17 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- TODO: Check if helpful
 vim.api.nvim_create_autocmd("FileType", {
-    desc = "Disable foldcolumn",
-    group = augroup("adjust_foldcolumn"),
-    pattern = {
-        "neotest-summary",
-        "dap-repl",
-        "NeogitCommitMessage",
-        "NeogitCommitView",
-        "NeogitPopup",
-        "NeogitStatus",
-    },
-    callback = function() vim.opt_local.foldcolumn = "0" end,
+  desc = "Disable foldcolumn",
+  group = augroup("adjust_foldcolumn"),
+  pattern = {
+    "neotest-summary",
+    "dap-repl",
+    "NeogitCommitMessage",
+    "NeogitCommitView",
+    "NeogitPopup",
+    "NeogitStatus",
+  },
+  callback = function() vim.opt_local.foldcolumn = "0" end,
 })
 
 -- close some stuff with q

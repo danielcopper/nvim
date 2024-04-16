@@ -47,6 +47,8 @@ return {
       capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
       -- Enables text folding range capabilities in the LSP (nvim ufo)
       capabilities.textDocument.foldingRange = { dynamicRegistration = false, lineFoldingOnly = true }
+      -- Enable (broadcasting) snippet capability for completion
+      capabilities.textDocument.completion.completionItem.snippetSupport = true
 
       vim.diagnostic.config({
         -- Enable or disable updating diagnostics in insert mode
@@ -87,6 +89,16 @@ return {
         keybind("<space>wa", vim.lsp.buf.add_workspace_folder, "")
         keybind("<space>wr", vim.lsp.buf.remove_workspace_folder, "")
         keybind("<space>wl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, "")
+
+        -- Taken from markdown oxide
+        -- refresh codelens on TextChanged and InsertLeave as well
+        vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'CursorHold', 'LspAttach' }, {
+          buffer = bufnr,
+          callback = vim.lsp.codelens.refresh,
+        })
+
+        -- trigger codelens refresh
+        vim.api.nvim_exec_autocmds('User', { pattern = 'LspAttached' })
       end
 
       -- SECTION: Server Setups
@@ -114,6 +126,7 @@ return {
           "jsonls",
           "lemminx",
           "lua_ls",
+          "markdown_oxide",
           "marksman",
           "omnisharp",
           "powershell_es",
@@ -168,7 +181,18 @@ return {
                 name = vim.fn.fnamemodify(new_root_dir, ':t')
               }
             end,
-         })
+          })
+        end,
+
+        ["html"] = function()
+          lspconfig.html.setup({
+            capabilities = capabilities,
+            handlers = handlers,
+            on_attach = on_attach,
+            init_options = {
+              provideFormatter = false
+            }
+          })
         end,
 
         ["jsonls"] = function()
@@ -212,6 +236,18 @@ return {
                 },
               },
             },
+          })
+        end,
+
+        ["markdown_oxide"] = function()
+          -- local custom_capabilities= capabilities
+          -- custom_capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
+
+          lspconfig.markdown_oxide.setup({
+            capabilities = capabilities,                                         -- ensure that capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
+            on_attach = on_attach,
+            handlers = handlers,
+            root_dir = lspconfig.util.root_pattern('.git', vim.fn.getcwd()),     -- this is a temp fix for an error in the lspconfig for this LS
           })
         end,
 
