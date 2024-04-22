@@ -12,6 +12,11 @@ return {
       "williamboman/mason-lspconfig.nvim",
       "Hoffs/omnisharp-extended-lsp.nvim",
       "b0o/schemastore.nvim",
+      -- {
+      --   'creativenull/efmls-configs-nvim',
+      --   version = 'v1.x.x', -- version is optional, but recommended
+      --   dependencies = { 'neovim/nvim-lspconfig' },
+      -- }
     },
     config = function()
       -- neodev setup must be done before lspconfig to enhance Lua dev experience
@@ -120,6 +125,8 @@ return {
           "bashls",
           "cssls",
           "cssmodules_ls",
+          "docker_compose_language_service",
+          "efm",
           "emmet_language_server",
           "eslint",
           "html",
@@ -168,11 +175,114 @@ return {
         --   }
         -- end,
 
-        ["eslint"] = function()
-          local lspconfig = require('lspconfig')
-          local util = require('lspconfig/util')
+        -- ["efm"] = function()
+        --   local sqlfluff = require('efmls-configs.linters.sqlfluff')
+        --   local languages = {
+        --     sql = { sqlfluff }
+        --   }
+        --   local efmls_config = {
+        --     filetypes = vim.tbl_keys(languages),
+        --     settings = {
+        --       rootMarkers = { '.git/' },
+        --       languages = languages,
+        --     },
+        --     init_options = {
+        --       documentFormatting = true,
+        --       documentRangeFormatting = true,
+        --     },
+        --   }
+        --
+        --   lspconfig.efm.setup(vim.tbl_extend('force', efmls_config, {
+        --     capabilities = capabilities,
+        --     handlers = handlers,
+        --     on_attach = on_attach,
+        --   }))
+        -- end,
+        -- ["efm"] = function()
+        --   lspconfig.efm.setup {
+        --     capabilities = capabilities,
+        --     handlers = handlers,
+        --     on_attach = on_attach,
+        --     init_options = { documentFormatting = true },
+        --     filetypes = { "sql" },
+        --     settings = {
+        --       rootMarkers = { ".git/", "." },
+        --       languages = {
+        --         sql = {
+        --           {
+        --             lintCommand = "sqlfluff lint --dialect=tsql --format=json -",
+        --             lintStdin = true,
+        --             lintIgnoreExitCode = true,
+        --             lintFormats = { "%f:%l:%c: %t%n%m" },
+        --             formatCommand = "sqlfluff fix --force --dialect=tsql -",
+        --             formatStdin = true
+        --           },
+        --         },
+        --       },
+        --     },
+        --   }
+        -- end,
+        --
+        -- ["efm"] = function()
+        --   lspconfig.efm.setup {
+        --     init_options = { documentFormatting = true },
+        --     filetypes = { "sql" },
+        --     settings = {
+        --       rootMarkers = { ".git/", "." },
+        --       languages = {
+        --         sql = {
+        --           {
+        --             -- Define the lint command and other settings based on the provided metadata
+        --             lintCommand = "sqlfluff lint --dialect=ansi --format=github-annotation-native --annotation-level=warning --nocolor --disable-progress-bar ${INPUT}",
+        --             lintIgnoreExitCode = true,
+        --             lintStdin = false,
+        --             lintFormats = {
+        --               "::notice title=SQLFluff,file=%f,line=%l,col=%c::%m",
+        --               "::warning title=SQLFluff,file=%f,line=%l,col=%c::%m",
+        --               "::error title=SQLFluff,file=%f,line=%l,col=%c::%m",
+        --             },
+        --           }
+        --         }
+        --       }
+        --     },
+        --     capabilities = capabilities,
+        --     on_attach = on_attach,
+        --     handlers = handlers
+        --   }
+        -- end,
 
-          require("lspconfig").eslint.setup({
+        -- ["efm"] = function()
+        --   local sqlfluff_settings = {
+        --     lintCommand =
+        --     "sqlfluff lint --dialect=ansi --format=github-annotation-native --nocolor --disable-progress-bar ${INPUT}",
+        --     lintIgnoreExitCode = true,
+        --     lintStdin = true,
+        --     lintFormats = {
+        --       "::notice file=%f,line=%l,col=%c::%m",
+        --       "::warning file=%f,line=%l,col=%c::%m",
+        --       "::error file=%f,line=%l,col=%c::%m",
+        --     },
+        --     formatCommand = "sqlfluff fix --dialect=tsql --force -",
+        --     formatStdin = true
+        --   }
+        --
+        --   lspconfig.efm.setup {
+        --     init_options = { documentFormatting = true, documentRangeFormatting = true },
+        --     filetypes = { "sql" },
+        --     settings = {
+        --       rootMarkers = { ".git/", "." },
+        --       languages = {
+        --         sql = { sqlfluff_settings }
+        --       },
+        --     },
+        --     capabilities = capabilities,
+        --     handlers = handlers,
+        --     on_attach = on_attach
+        --   }
+        -- end,
+
+        ["eslint"] = function()
+          lspconfig.eslint.setup({
             capabilities = capabilities,
             on_attach = on_attach,
             on_new_config = function(config, new_root_dir)
@@ -240,14 +350,15 @@ return {
         end,
 
         ["markdown_oxide"] = function()
+          -- Throws errors despite being recommende by the author - https://github.com/Feel-ix-343/markdown-oxide
           -- local custom_capabilities= capabilities
           -- custom_capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
 
           lspconfig.markdown_oxide.setup({
-            capabilities = capabilities,                                         -- ensure that capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
+            capabilities = capabilities, -- ensure that capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
             on_attach = on_attach,
             handlers = handlers,
-            root_dir = lspconfig.util.root_pattern('.git', vim.fn.getcwd()),     -- this is a temp fix for an error in the lspconfig for this LS
+            root_dir = lspconfig.util.root_pattern('.git', vim.fn.getcwd()), -- this is a temp fix for an error in the lspconfig for this LS
           })
         end,
 

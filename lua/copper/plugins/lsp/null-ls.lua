@@ -12,9 +12,14 @@ return {
     local diagnostics = null_ls.builtins.diagnostics
     local hover = null_ls.builtins.hover
 
+    vim.keymap.set("n", "<leader>cf", ":lua vim.lsp.buf.format({ async = true })<CR>",
+      { desc = "Quick format the open buffer" })
+
     null_ls.setup({
+      debug = true,
       -- add package.json as additional identifier for root (for typescript monorepos)
       root_dir = null_ls_utils.root_pattern(".null-ls-root", "Makefile", ".git", "package.json"),
+      timeout = 20000, -- ms
       sources = {
         -- formatting.stylua, -- lua formatter
         formatting.prettier.with({
@@ -35,24 +40,30 @@ return {
         -- formatting.markdownlint,
         formatting.prettier.with({
           filetypes = { "markdown" },
-          extra_args = { "--print-width", "80", "--prose-wrap", "always" },
+          extra_args = { "--print-width", "120", "--prose-wrap", "always" },
         }),
         formatting.prettier.with({
           filetypes = { "yaml", "yml" },
           extra_args = {}
         }),
         formatting.sqlfluff.with({
-          extra_args = { "--dialect", "tsql" },
+          extra_args = {
+            "--dialect", "tsql",
+            "--exclude-rules", "RF06,LT01",
+            -- "--rules", "L003:line_length=120"
+          },
         }),
 
         -- diagnostics.eslint_d, -- deprecated
         diagnostics.editorconfig_checker,
         diagnostics.gitlint,
-        diagnostics.markdownlint,
-        diagnostics.sqlfluff.with({
-          -- extra_args = { "--dialect", "postgres" },         -- change to your dialect
-          extra_args = { "--dialect", "tsql" },
+        diagnostics.markdownlint.with({
+          extra_args = { "--config", '{ "MD013": { "line_length": 120 } }' }           -- Presuming ability to pass config directly
         }),
+        -- diagnostics.sqlfluff.with({
+        --   -- extra_args = { "--dialect", "postgres" },         -- change to your dialect
+        --   extra_args = { "--dialect", "tsql" },
+        -- }),
         diagnostics.yamllint,
 
         -- NOTE: Not sure if this actually works
