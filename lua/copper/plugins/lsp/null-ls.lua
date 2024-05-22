@@ -16,7 +16,7 @@ return {
       { desc = "Quick format the open buffer" })
 
     null_ls.setup({
-      debug = true,
+      -- debug = true,
       -- add package.json as additional identifier for root (for typescript monorepos)
       root_dir = null_ls_utils.root_pattern(".null-ls-root", "Makefile", ".git", "package.json"),
       timeout = 20000, -- ms
@@ -46,6 +46,10 @@ return {
           filetypes = { "yaml", "yml" },
           extra_args = {}
         }),
+        -- formatting.shellharden, -- TODO: needs reading up and configuring properly so it does not introduce issues
+        formatting.shfmt.with({
+          extra_args = { "-i", "2", "-ci", "-bn" } -- Configure shfmt with options: indent 2 spaces, switch cases to indent, binary operators to start of line
+        }),
         formatting.sqlfluff.with({
           extra_args = {
             "--dialect", "tsql",
@@ -58,13 +62,15 @@ return {
         diagnostics.editorconfig_checker,
         diagnostics.gitlint,
         diagnostics.markdownlint.with({
-          extra_args = { "--config", '{ "MD013": { "line_length": 120 } }' }           -- Presuming ability to pass config directly
+          extra_args = { "--config", vim.fn.stdpath("config") .. "/.markdownlint.json" } -- Point to the config file in Neovim config directory
         }),
-        -- diagnostics.sqlfluff.with({
-        --   -- extra_args = { "--dialect", "postgres" },         -- change to your dialect
-        --   extra_args = { "--dialect", "tsql" },
-        -- }),
-        diagnostics.yamllint,
+        diagnostics.sqlfluff.with({
+          -- extra_args = { "--dialect", "postgres" },         -- change to your dialect
+          extra_args = { "--dialect", "tsql" },
+        }),
+        diagnostics.yamllint.with({
+          extra_args = { "-d", "{extends: default, rules: {line-length: {max: 120}}}" }
+        }),
 
         -- NOTE: Not sure if this actually works
         -- Shows the first available definition for the current word under the cursor.

@@ -1,11 +1,11 @@
 -- Garbage collector that stops inactive LSP clients to free RAM
 return {
   "zeioth/garbage-day.nvim",
-  event = "BufReadPost",
+  dependencies = "neovim/nvim-lspconfig",
+  event = "VeryLazy",
   opts = {
     grace_period = 60 * 15,
-    excluded_filetypes = { "java", "markdown", },
-    stop_invisible = false,
+    excluded_lsp_clients = { "omnisharp" },
     notifications = true
   }
 }

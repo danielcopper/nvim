@@ -65,7 +65,15 @@ return {
       },
       modified = { symbol = icons.ui.ModifiedFile },
       git_status = { symbols = icons.git },
-      diagnostics = { symbols = icons.diagnostics },
+      -- diagnostics = { symbols = icons.diagnostics },
+      diagnostics = {
+        symbols = {
+          hint = icons.diagnostics.Hint,
+          info = icons.diagnostics.Info,
+          warn = icons.diagnostics.Warn,
+          error = icons.diagnostics.Error
+        }
+      },
     },
     window = {
       width = 40,

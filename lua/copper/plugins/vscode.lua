@@ -4,7 +4,6 @@ end
 
 local enabled = {
   "lazy.nvim",
-  "numToStr/Comment.nvim",
   "nvim-treesitter",
   "nvim-treesitter-textobjects",
 }

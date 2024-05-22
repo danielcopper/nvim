@@ -2,12 +2,6 @@ local icons = require("copper.config.icons")
 
 return {
   {
-    "numToStr/Comment.nvim",
-    event = { "BufEnter" },
-    config = true,
-  },
-
-  {
     "folke/todo-comments.nvim",
     cmd = { "TodoTrouble", "TodoTelescope" },
     event = "BufReadPost",

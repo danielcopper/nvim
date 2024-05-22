@@ -1,5 +1,6 @@
 return {
   "rest-nvim/rest.nvim",
+  enabled = false,
   -- TODO: find out why this does not work
   -- build = ":TSInstall http json",
   dependencies = { { "nvim-lua/plenary.nvim" } },

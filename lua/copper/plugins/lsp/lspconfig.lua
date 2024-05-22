@@ -10,7 +10,15 @@ return {
       { "folke/neodev.nvim",                   opts = {} },     -- Enhanced support for Neovim development
       { "williamboman/mason.nvim",             cmd = "Mason" },
       "williamboman/mason-lspconfig.nvim",
+
       "Hoffs/omnisharp-extended-lsp.nvim",
+      -- "iabdelkareem/csharp.nvim",
+      -- "Tastyep/structlog.nvim", -- Optional, but highly recommended for debugging
+      -- "mfussenegger/nvim-dap",
+
+      -- "pmizio/typescript-tools.nvim",
+      "joeveiga/ng.nvim",
+
       "b0o/schemastore.nvim",
       -- {
       --   'creativenull/efmls-configs-nvim',
@@ -55,6 +63,13 @@ return {
       -- Enable (broadcasting) snippet capability for completion
       capabilities.textDocument.completion.completionItem.snippetSupport = true
 
+      local markdown_oxide_capabilities = capabilities
+      markdown_oxide_capabilities.workspace = {
+        didChangeWatchedFiles = {
+          dynamicRegistration = true,
+        },
+      }
+
       vim.diagnostic.config({
         -- Enable or disable updating diagnostics in insert mode
         update_in_insert = false,
@@ -97,13 +112,21 @@ return {
 
         -- Taken from markdown oxide
         -- refresh codelens on TextChanged and InsertLeave as well
-        vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'CursorHold', 'LspAttach' }, {
-          buffer = bufnr,
-          callback = vim.lsp.codelens.refresh,
-        })
+        -- TODO: error on 0.10
+        -- vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'CursorHold', 'LspAttach' }, {
+        --   buffer = bufnr,
+        --   callback = vim.lsp.codelens.refresh,
+        -- })
 
         -- trigger codelens refresh
-        vim.api.nvim_exec_autocmds('User', { pattern = 'LspAttached' })
+        -- vim.api.nvim_exec_autocmds('User', { pattern = 'LspAttached' })
+
+        -- TODO: gives error currently on 0.10
+        -- local ng_opts = { noremap = true, silent = true }
+        -- local ng = require("ng");
+        -- vim.keymap.set("n", "<leader>at", ng.goto_template_for_component({ reuse_window = true }), ng_opts)
+        -- vim.keymap.set("n", "<leader>ac", ng.goto_component_with_template_file({ reuse_window = true }), ng_opts)
+        -- vim.keymap.set("n", "<leader>aT", ng.get_template_tcb, ng_opts)
       end
 
       -- SECTION: Server Setups
@@ -133,7 +156,9 @@ return {
           "jsonls",
           "lemminx",
           "lua_ls",
-          "markdown_oxide",
+          -- "markdown_oxide", -- NOTE: currently not working on windows
+          -- fow now use:
+          -- :MasonInstall --target=win_x86 markdown-oxide
           "marksman",
           "omnisharp",
           "powershell_es",
@@ -175,6 +200,7 @@ return {
         --   }
         -- end,
 
+        -- TODO: needs work.
         -- ["efm"] = function()
         --   local sqlfluff = require('efmls-configs.linters.sqlfluff')
         --   local languages = {
@@ -191,95 +217,6 @@ return {
         --       documentRangeFormatting = true,
         --     },
         --   }
-        --
-        --   lspconfig.efm.setup(vim.tbl_extend('force', efmls_config, {
-        --     capabilities = capabilities,
-        --     handlers = handlers,
-        --     on_attach = on_attach,
-        --   }))
-        -- end,
-        -- ["efm"] = function()
-        --   lspconfig.efm.setup {
-        --     capabilities = capabilities,
-        --     handlers = handlers,
-        --     on_attach = on_attach,
-        --     init_options = { documentFormatting = true },
-        --     filetypes = { "sql" },
-        --     settings = {
-        --       rootMarkers = { ".git/", "." },
-        --       languages = {
-        --         sql = {
-        --           {
-        --             lintCommand = "sqlfluff lint --dialect=tsql --format=json -",
-        --             lintStdin = true,
-        --             lintIgnoreExitCode = true,
-        --             lintFormats = { "%f:%l:%c: %t%n%m" },
-        --             formatCommand = "sqlfluff fix --force --dialect=tsql -",
-        --             formatStdin = true
-        --           },
-        --         },
-        --       },
-        --     },
-        --   }
-        -- end,
-        --
-        -- ["efm"] = function()
-        --   lspconfig.efm.setup {
-        --     init_options = { documentFormatting = true },
-        --     filetypes = { "sql" },
-        --     settings = {
-        --       rootMarkers = { ".git/", "." },
-        --       languages = {
-        --         sql = {
-        --           {
-        --             -- Define the lint command and other settings based on the provided metadata
-        --             lintCommand = "sqlfluff lint --dialect=ansi --format=github-annotation-native --annotation-level=warning --nocolor --disable-progress-bar ${INPUT}",
-        --             lintIgnoreExitCode = true,
-        --             lintStdin = false,
-        --             lintFormats = {
-        --               "::notice title=SQLFluff,file=%f,line=%l,col=%c::%m",
-        --               "::warning title=SQLFluff,file=%f,line=%l,col=%c::%m",
-        --               "::error title=SQLFluff,file=%f,line=%l,col=%c::%m",
-        --             },
-        --           }
-        --         }
-        --       }
-        --     },
-        --     capabilities = capabilities,
-        --     on_attach = on_attach,
-        --     handlers = handlers
-        --   }
-        -- end,
-
-        -- ["efm"] = function()
-        --   local sqlfluff_settings = {
-        --     lintCommand =
-        --     "sqlfluff lint --dialect=ansi --format=github-annotation-native --nocolor --disable-progress-bar ${INPUT}",
-        --     lintIgnoreExitCode = true,
-        --     lintStdin = true,
-        --     lintFormats = {
-        --       "::notice file=%f,line=%l,col=%c::%m",
-        --       "::warning file=%f,line=%l,col=%c::%m",
-        --       "::error file=%f,line=%l,col=%c::%m",
-        --     },
-        --     formatCommand = "sqlfluff fix --dialect=tsql --force -",
-        --     formatStdin = true
-        --   }
-        --
-        --   lspconfig.efm.setup {
-        --     init_options = { documentFormatting = true, documentRangeFormatting = true },
-        --     filetypes = { "sql" },
-        --     settings = {
-        --       rootMarkers = { ".git/", "." },
-        --       languages = {
-        --         sql = { sqlfluff_settings }
-        --       },
-        --     },
-        --     capabilities = capabilities,
-        --     handlers = handlers,
-        --     on_attach = on_attach
-        --   }
-        -- end,
 
         ["eslint"] = function()
           lspconfig.eslint.setup({
@@ -330,6 +267,10 @@ return {
                 diagnostics = {
                   globals = { "vim" }
                 },
+                codelens = true,
+                doc = {
+                  privateName = { "^_" },
+                },
                 format = {
                   defaultConfig = {
                     indent_style = "space",
@@ -350,12 +291,8 @@ return {
         end,
 
         ["markdown_oxide"] = function()
-          -- Throws errors despite being recommende by the author - https://github.com/Feel-ix-343/markdown-oxide
-          -- local custom_capabilities= capabilities
-          -- custom_capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
-
           lspconfig.markdown_oxide.setup({
-            capabilities = capabilities, -- ensure that capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
+            capabilities = markdown_oxide_capabilities, -- ensure that capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
             on_attach = on_attach,
             handlers = handlers,
             root_dir = lspconfig.util.root_pattern('.git', vim.fn.getcwd()), -- this is a temp fix for an error in the lspconfig for this LS
@@ -482,6 +419,42 @@ return {
           })
         end,
       })
+
+      --   require("csharp").setup({
+      --     -- These are the default values
+      --     lsp = {
+      --       -- When set to false, csharp.nvim won't launch omnisharp automatically.
+      --       enable = true,
+      --       -- When set, csharp.nvim won't install omnisharp automatically. Instead, the omnisharp instance in the cmd_path will be used.
+      --       cmd_path = nil,
+      --       -- The default timeout when communicating with omnisharp
+      --       default_timeout = 1000,
+      --       -- Settings that'll be passed to the omnisharp server
+      --       enable_editor_config_support = true,
+      --       organize_imports = true,
+      --       load_projects_on_demand = false,
+      --       enable_analyzers_support = true,
+      --       enable_import_completion = true,
+      --       include_prerelease_sdks = true,
+      --       analyze_open_documents_only = false,
+      --       enable_package_auto_restore = true,
+      --       -- Launches omnisharp in debug mode
+      --       debug = false,
+      --       -- The capabilities to pass to the omnisharp server
+      --       capabilities = capabilities,
+      --       -- on_attach function that'll be called when the LSP is attached to a buffer
+      --       on_attach = on_attach
+      --     },
+      --     logging = {
+      --       -- The minimum log level.
+      --       level = "INFO",
+      --     },
+      --     dap = {
+      --       -- When set, csharp.nvim won't launch install and debugger automatically. Instead, it'll use the debug adapter specified.
+      --       --- @type string?
+      --       adapter_name = nil,
+      --     }
+      --   })
     end,
   },
 }
