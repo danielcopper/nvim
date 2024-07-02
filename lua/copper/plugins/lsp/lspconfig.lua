@@ -20,11 +20,6 @@ return {
       "joeveiga/ng.nvim",
 
       "b0o/schemastore.nvim",
-      -- {
-      --   'creativenull/efmls-configs-nvim',
-      --   version = 'v1.x.x', -- version is optional, but recommended
-      --   dependencies = { 'neovim/nvim-lspconfig' },
-      -- }
     },
     config = function()
       -- neodev setup must be done before lspconfig to enhance Lua dev experience
@@ -148,8 +143,8 @@ return {
           "bashls",
           "cssls",
           "cssmodules_ls",
+          "dockerls",
           "docker_compose_language_service",
-          "efm",
           "emmet_language_server",
           "eslint",
           "html",
@@ -180,43 +175,38 @@ return {
           }
         end,
 
-        -- ["azure_pipelines_ls"] = function()
-        --   require("lspconfig").azure_pipelines_ls.setup {
-        --     capabilities = capabilities,
-        --     handlers = handlers,
-        --     on_attach = on_attach,
-        --     settings = {
-        --       yaml = {
-        --         schemas = {
-        --           ["https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json"] = {
-        --             "/azure-pipeline*.y*l",
-        --             "/*.azure*",
-        --             "Azure-Pipelines/**/*.y*l",
-        --             "Pipelines/*.y*l",
-        --           },
-        --         },
-        --       },
-        --     },
-        --   }
-        -- end,
-
-        -- TODO: needs work.
-        -- ["efm"] = function()
-        --   local sqlfluff = require('efmls-configs.linters.sqlfluff')
-        --   local languages = {
-        --     sql = { sqlfluff }
-        --   }
-        --   local efmls_config = {
-        --     filetypes = vim.tbl_keys(languages),
-        --     settings = {
-        --       rootMarkers = { '.git/' },
-        --       languages = languages,
-        --     },
-        --     init_options = {
-        --       documentFormatting = true,
-        --       documentRangeFormatting = true,
-        --     },
-        --   }
+        ["azure_pipelines_ls"] = function()
+          lspconfig.azure_pipelines_ls.setup {
+            capabilities = capabilities,
+            handlers = handlers,
+            on_attach = on_attach,
+            root_dir = function(fname)
+              return lspconfig.util.root_pattern(
+                '.azure*',               -- Matches any file starting with '.azure'
+                'azure-pipeline*.y*l',   -- Matches any file starting with 'azure-pipeline' and having an extension like .yaml or .yml
+                'Azure-Pipelines/*.y*l', -- Matches any .yaml or .yml file in the 'Azure-Pipelines' directory
+                'Pipelines/*.y*l',       -- Matches any .yaml or .yml file in the 'Pipelines' directory
+                '.git',                  -- Matches the .git directory
+                'Pipelines/**/*.y*l',    -- Matches any .yaml or .yml file in 'Pipelines' and any of its subdirectories
+                'pipelines/**/*.y*l'     -- Matches any .yaml or .yml file in 'pipelines' and any of its subdirectories
+              )(fname) or vim.fn.getcwd()
+            end,
+            settings = {
+              yaml = {
+                schemas = {
+                  ["https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json"] = {
+                    ".azure*",               -- Matches any file starting with '.azure'
+                    "azure-pipeline*.y*l",   -- Matches any file starting with 'azure-pipeline' and having an extension like .yaml or .yml
+                    "Azure-Pipelines/*.y*l", -- Matches any .yaml or .yml file in the 'Azure-Pipelines' directory
+                    "Pipelines/*.y*l",       -- Matches any .yaml or .yml file in the 'Pipelines' directory
+                    "Pipelines/**/*.y*l",    -- Matches any .yaml or .yml file in 'Pipelines' and any of its subdirectories
+                    "pipelines/**/*.y*l"     -- Matches any .yaml or .yml file in 'pipelines' and any of its subdirectories
+                  },
+                },
+              },
+            },
+          }
+        end,
 
         ["eslint"] = function()
           lspconfig.eslint.setup({
@@ -317,31 +307,38 @@ return {
               vim.fn.expand("~\\AppData\\local\\nvim-data\\mason\\packages\\omnisharp\\libexec\\OmniSharp.dll") or
               vim.fn.expand("~/.local/share/nvim/mason/packages/omnisharp/libexec/OmniSharp.dll")
 
+          local function omnisharp_on_attach(client, bufnr)
+            on_attach(client, bufnr)
+
+            local set = vim.keymap.set
+            -- NOTE: Omnisharp seems to have trouble with async formatting so this is here until i find a better solution or rework my lsp setup completely
+            set("n", "<leader>cf", function() vim.lsp.buf.format() end, { desc = "Quick format the open buffer" })
+            -- set("n", "gd", "<cmd>lua require('omnisharp_extended').lsp_definition()<CR>",
+            --   { buffer = bufnr, desc = "OmniSharp LSP definition", noremap = true, silent = true })
+            -- set("n", "gD", "<cmd>lua require('omnisharp_extended').lsp_type_definition()<CR>",
+            --   { buffer = bufnr, desc = "OmniSharp LSP type definition", noremap = true, silent = true })
+            -- set("n", "gr", "<cmd>lua require('omnisharp_extended').lsp_references()<CR>",
+            --   { buffer = bufnr, desc = "OmniSharp LSP references", noremap = true, silent = true })
+            -- set("n", "gi", "<cmd>lua require('omnisharp_extended').lsp_implementation()<CR>",
+            --   { buffer = bufnr, desc = "OmniSharp LSP implementation", noremap = true, silent = true })
+
+            -- Optional: If using Telescope and prefer its integration, you could replace the above with these
+            set("n", "gd",
+              "<cmd>lua require('omnisharp_extended').telescope_lsp_definition({ jump_type = 'vsplit' })<CR>",
+              { buffer = bufnr, desc = "OmniSharp LSP definition with Telescope", noremap = true, silent = true })
+            set("n", "gD", "<cmd>lua require('omnisharp_extended').telescope_lsp_type_definition()<CR>",
+              { buffer = bufnr, desc = "OmniSharp LSP type definition with Telescope", noremap = true, silent = true })
+            set("n", "gr", "<cmd>lua require('omnisharp_extended').telescope_lsp_references()<CR>",
+              { buffer = bufnr, desc = "OmniSharp LSP references with Telescope", noremap = true, silent = true })
+            set("n", "gi", "<cmd>lua require('omnisharp_extended').telescope_lsp_implementation()<CR>",
+              { buffer = bufnr, desc = "OmniSharp LSP implementation with Telescope", noremap = true, silent = true })
+          end
+
           require("lspconfig").omnisharp.setup({
             cmd = { "dotnet", cmd_path },
             capabilities = capabilities,
             -- on_attach = on_attach,
-            on_attach = function(client, bufnr)
-              on_attach(client, bufnr)
-
-              local set = vim.keymap.set
-              -- NOTE: Omnisharp seems to have trouble with async formatting so this is here until i find a better solution or rework my lsp setup completely
-              set("n", "<leader>cf", function() vim.lsp.buf.format() end, { desc = "Quick format the open buffer" })
-              -- set("n", "gd", "<cmd>lua require('omnisharp_extended').lsp_definition()<CR>",
-              --   { buffer = bufnr, desc = "OmniSharp LSP definition", noremap = true, silent = true })
-              -- set("n", "gr", "<cmd>lua require('omnisharp_extended').lsp_references()<CR>",
-              --   { buffer = bufnr, desc = "OmniSharp LSP references", noremap = true, silent = true })
-              -- set("n", "gi", "<cmd>lua require('omnisharp_extended').lsp_implementation()<CR>",
-              --   { buffer = bufnr, desc = "OmniSharp LSP implementation", noremap = true, silent = true })
-
-              -- Optional: If using Telescope and prefer its integration, you could replace the above with these
-              set("n", "gd", "<cmd>lua require('omnisharp_extended').telescope_lsp_definition()<CR>",
-                { buffer = bufnr, desc = "OmniSharp LSP definition with Telescope", noremap = true, silent = true })
-              set("n", "gr", "<cmd>lua require('omnisharp_extended').telescope_lsp_references()<CR>",
-                { buffer = bufnr, desc = "OmniSharp LSP references with Telescope", noremap = true, silent = true })
-              set("n", "gi", "<cmd>lua require('omnisharp_extended').telescope_lsp_implementation()<CR>",
-                { buffer = bufnr, desc = "OmniSharp LSP implementation with Telescope", noremap = true, silent = true })
-            end,
+            on_attach = omnisharp_on_attach,
             handlers = handlers,
             settings = {
               FormattingOptions = {
@@ -374,6 +371,8 @@ return {
                 -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
                 -- true
                 AnalyzeOpenDocumentsOnly = nil,
+                -- TODO: not sure if this works, check here: https://github.com/Hoffs/omnisharp-extended-lsp.nvim
+                EnableDecompilationSupport = true,
               },
               Sdk = {
                 -- Specifies whether to include preview versions of the .NET SDK when
@@ -396,13 +395,13 @@ return {
 
         ["yamlls"] = function()
           local schemas = require('schemastore').yaml.schemas()
-          schemas["https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json"] = {
-            "*.azure*",
-            "azure-pipeline*.y*l",
-            "Azure-Pipelines/**/*.y*l",
-            "Pipelines/**/*.y*l",
-            "pipelines/**/*.y*l",
-          }
+          -- schemas["https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json"] = {
+          --   "*.azure*",
+          --   "azure-pipeline*.y*l",
+          --   "Azure-Pipelines/**/*.y*l",
+          --   "Pipelines/**/*.y*l",
+          --   "pipelines/**/*.y*l",
+          -- }
 
           require("lspconfig").yamlls.setup({
             capabilities = capabilities,

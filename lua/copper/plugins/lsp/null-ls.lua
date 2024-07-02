@@ -4,6 +4,7 @@ return {
   dependencies = {
     "jay-babu/mason-null-ls.nvim",
   },
+  ft = { "css", "scss", "html", "markdown", "yaml", "yml", "sql", "sh" },
   config = function()
     local null_ls = require("null-ls")
     local null_ls_utils = require("null-ls.utils")
@@ -76,7 +77,7 @@ return {
         -- Shows the first available definition for the current word under the cursor.
         hover.dictionary,
         -- Shows the value for the current environment variable under the cursor. sh dosbatch and ps1
-        hover.printenv
+        -- hover.printenv
       },
     })
   end,
