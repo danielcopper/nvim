@@ -60,7 +60,7 @@ return {
         }),
 
         -- diagnostics.eslint_d, -- deprecated
-        diagnostics.editorconfig_checker,
+        -- diagnostics.editorconfig_checker,
         diagnostics.gitlint,
         diagnostics.markdownlint.with({
           extra_args = { "--config", vim.fn.stdpath("config") .. "/.markdownlint.json" } -- Point to the config file in Neovim config directory

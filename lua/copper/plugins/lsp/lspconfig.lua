@@ -157,7 +157,7 @@ return {
           "marksman",
           "omnisharp",
           "powershell_es",
-          "sqlls",
+          -- "sqlls",
           "tsserver",
           "yamlls",
         },
@@ -383,15 +383,16 @@ return {
           })
         end,
 
-        ["sqlls"] = function()
-          lspconfig.sqlls.setup({
-            cmd = { "sql-language-server", "up", "--method", "stdio" },
-            capabilities = capabilities,
-            on_attach = on_attach,
-            handlers = handlers,
-            filetypes = { "sql", "mysql", "mdx" }
-          })
-        end,
+        -- ["sqlls"] = function()
+        --   lspconfig.sqlls.setup({
+        --     cmd = { "sql-language-server", "up", "--method", "stdio" },
+        --     capabilities = capabilities,
+        --     on_attach = on_attach,
+        --     handlers = handlers,
+        --     filetypes = { "sql", "mysql", "mdx" },
+        --     root_dir = lspconfig.util.root_pattern('.git', vim.fn.getcwd()), -- this is a temp fix for an error in the lspconfig for this LS
+        --   })
+        -- end,
 
         ["yamlls"] = function()
           local schemas = require('schemastore').yaml.schemas()
