@@ -69,6 +69,12 @@ return {
     },
   },
 
+  {
+    "numToStr/Comment.nvim",
+    event = { "BufEnter" },
+    config = true
+  },
+
   -- allows generating block comments like jsdoc
   {
     "danymat/neogen",
