@@ -1,4 +1,3 @@
--- TODO: enable inlay hints once nvim 0.10 is released.
 return {
   {
     "hrsh7th/nvim-cmp",

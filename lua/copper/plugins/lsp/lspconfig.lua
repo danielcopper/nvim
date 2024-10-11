@@ -151,14 +151,14 @@ return {
           "jsonls",
           "lemminx",
           "lua_ls",
-          -- "markdown_oxide", -- NOTE: currently not working on windows
+          "markdown_oxide",
           -- fow now use:
           -- :MasonInstall --target=win_x86 markdown-oxide
           "marksman",
           "omnisharp",
           "powershell_es",
           -- "sqlls",
-          "tsserver",
+          "ts_ls",
           "yamlls",
         },
       })
@@ -332,6 +332,15 @@ return {
               { buffer = bufnr, desc = "OmniSharp LSP references with Telescope", noremap = true, silent = true })
             set("n", "gi", "<cmd>lua require('omnisharp_extended').telescope_lsp_implementation()<CR>",
               { buffer = bufnr, desc = "OmniSharp LSP implementation with Telescope", noremap = true, silent = true })
+
+            vim.diagnostic.config({
+              underline = {
+                severity = { max = vim.diagnostic.severity.INFO }
+              },
+              virtual_text = {
+                severity = { min = vim.diagnostic.severity.WARN }
+              }
+            })
           end
 
           require("lspconfig").omnisharp.setup({

@@ -4,7 +4,7 @@ return {
     branch = "0.1.x",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }, -- for better sorting performance
+      -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }, -- for better sorting performance
       "catgoose/telescope-helpgrep.nvim"
     },
     cmd = "Telescope",
@@ -46,7 +46,7 @@ return {
 
       telescope.load_extension("dotnet_user_secrets")
       telescope.load_extension("helpgrep")
-      telescope.load_extension("fzf") -- don't forget to load the performance improvements
+      -- telescope.load_extension("fzf") -- don't forget to load the performance improvements
     end,
     keys = {
       { "<leader>ff", "<cmd>Telescope find_files<cr>",  { desc = "Fuzzy find files in cwd" } },
