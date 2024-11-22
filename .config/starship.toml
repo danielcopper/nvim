@@ -1,47 +1,178 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Change the default prompt format
+# format = """\
+# [╭╴](238)$os \
+# $all[╰─](238)$character"""
+
+format = """
+[](surface0)\
+$os\
+$username\
+[](bg:peach fg:surface0)\
+$directory\
+[](fg:peach bg:green)\
+$git_branch\
+$git_status\
+[](fg:green bg:teal)\
+$c\
+$rust\
+$golang\
+$nodejs\
+$php\
+$java\
+$kotlin\
+$haskell\
+$python\
+$dotnet\
+[](fg:teal bg:blue)\
+$docker_context\
+[](fg:blue bg:purple)\
+$time\
+[ ](fg:purple)\
+$line_break$character"""
+
 # Sets user-defined palette
 palette = "catppuccin_mocha"
 
-# Change the default prompt format
-format = """\
-[╭╴](238)$os \
-$all[╰─](238)$character"""
-
 [character]
 # Note the use of Catppuccin color 'maroon'
-success_symbol = "[[ ](green) ❯](maroon)"
+# success_symbol = "[[ ](green) ❯](maroon)"
 # success_symbol = "[[ ](green) ❯](maroon)"
 # success_symbol = "[[ ](green) ❯](maroon)"
-error_symbol = "[[ ](red) ❯](red)"
-vimcmd_symbol = "[❮](green)"
+# error_symbol = "[[ ](red) ❯](red)"
+# vimcmd_symbol = "[❮](green)"
+success_symbol = '[](bold fg:green)'
+error_symbol = '[](bold fg:red)'
+vimcmd_symbol = '[](bold fg:creen)'
+vimcmd_replace_one_symbol = '[](bold fg:purple)'
+vimcmd_replace_symbol = '[](bold fg:purple)'
+vimcmd_visual_symbol = '[](bold fg:lavender)'
 
 [directory]
-truncation_length = 4
+# truncation_length = 4
 # Catppuccin 'lavender'
-style = "bold lavender"
+# style = "bold lavender"
+style = "fg:mantle bg:peach"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Repos" = "󰲋 "
 
 [username]
 show_always = true
+style_user = "bg:surface0 fg:text"
+style_root = "bg:surface0 fg:text"
+format = '[ $user ]($style)'
 
 [os]
-format ='[$symbol](bold white)'   
+# format ='[$symbol](bold white)'
+style = "bg:surface0 fg:text"
 disabled = false
 
 [os.symbols]
-Windows = " "
-Arch = "󰣇 "
-Ubuntu = " "
+# Windows = " "
+# Arch = "󰣇 "
+# Ubuntu = " "
+Windows = "󰍲"
+Ubuntu = "󰕈"
+SUSE = ""
+Raspbian = "󰐿"
+Mint = "󰣭"
+Macos = ""
+Manjaro = ""
+Linux = "󰌽"
+Gentoo = "󰣨"
+Fedora = "󰣛"
+Alpine = ""
+Amazon = ""
+Android = ""
+Arch = "󰣇"
+Artix = "󰣇"
+CentOS = ""
+Debian = "󰣚"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
 
 [git_branch]
 symbol = ' '
+style = "bg:teal"
+format = '[[ $symbol $branch ](fg:base bg:green)]($style)'
+
+[git_status]
+style = "bg:teal"
+format = '[[($all_status$ahead_behind )](fg:base bg:green)]($style)'
 
 [git_commit]
+style = "bg:teal"
 tag_symbol = '  '
+
+[c]
+symbol = " "
+style = "bg:teal"
+format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
+
+[dotnet]
+# symbol = ""
+style = "bg:teal"
+format = 'via [$symbol($version )( 󰓾 $tfm )]($style)'
+
+[golang]
+symbol = ""
+style = "bg:teal"
+format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
+
+[php]
+symbol = ""
+style = "bg:teal"
+format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
+
+[java]
+symbol = " "
+style = "bg:teal"
+format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
+
+[kotlin]
+symbol = ""
+style = "bg:teal"
+format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
 
 [lua]
 symbol = '  '
+style = "bg:teal"
+format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
 
-[dotnet]
-format = 'via [$symbol($version )( 󰓾 $tfm )]($style)'
+[haskell]
+symbol = ""
+style = "bg:teal"
+format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:teal"
+format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
+
+[python]
+symbol = ""
+style = "bg:teal"
+format = '[[ $symbol( $version) ](fg:base bg:teal)]($style)'
+
+[docker_context]
+symbol = ""
+style = "bg:mantle"
+format = '[[ $symbol( $context) ](fg:#83a598 bg:color_bg3)]($style)'
+
+[time]
+disabled = false
+time_format = "%R"
+style = "bg:peach"
+format = '[[  $time ](fg:mantle bg:purple)]($style)'
 
 # palette tables should be last in the config ⚓️
 [palettes.catppuccin_macchiato]
