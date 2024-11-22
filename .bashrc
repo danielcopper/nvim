@@ -20,6 +20,14 @@ export TERM='xterm-256color'
 export EDITOR='nvim'
 export VISUAL='nvim'
 
+# Enable Proton ESYNC and FSYNC for Wine/Proton gaming
+# Improves compatibility and performance in Steam games with Proton.
+# Some games may behave better with these disabled, so adjust if issues occur.
+export PROTON_NO_ESYNC=0
+export PROTON_NO_FSYNC=0
+
+export TERMINAL="wezterm"
+
 # Bash
 # complete commmands
 #complete -c man which
@@ -35,7 +43,7 @@ source <(ng completion script)
 source /usr/share/git/completion/git-completion.bash
 
 # QMK completion
-source ~/Repos/qmk_firmware/util/qmk_tab_complete.sh
+#source ~/Repos/qmk_firmware/util/qmk_tab_complete.sh
 
 # Command not found
 # Automatically search the official repositories when entering an unrecognized command
@@ -44,6 +52,10 @@ source ~/Repos/qmk_firmware/util/qmk_tab_complete.sh
 source /usr/share/doc/pkgfile/command-not-found.bash
 
 # Aliases
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias ip='ip -color=auto'
+alias diff='diff --color=auto'
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # complete dotfiles alias git commands

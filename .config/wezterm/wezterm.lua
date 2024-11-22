@@ -1,6 +1,6 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
-local session_manager = require("wezterm-session-manager/session-manager")
+-- local session_manager = require("wezterm-session-manager/session-manager")
 
 wezterm.on("save_state", function(window, pane) session_manager.save_state(window, pane) end)
 wezterm.on("load_state", function() session_manager.load_state() end)
@@ -175,7 +175,7 @@ end
 
 -- Window
 config.window_background_opacity = 0.9
-config.window_decorations = "RESIZE" -- removes close, minimize and so on
+-- config.window_decorations = "RESIZE" -- removes close, minimize and so on
 config.window_close_confirmation = "AlwaysPrompt"
 config.window_padding = {
   top = 5,
