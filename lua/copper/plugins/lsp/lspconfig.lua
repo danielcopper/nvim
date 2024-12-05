@@ -10,8 +10,9 @@ return {
       { "folke/neodev.nvim",                   opts = {} },     -- Enhanced support for Neovim development
       { "williamboman/mason.nvim",             cmd = "Mason" },
       "williamboman/mason-lspconfig.nvim",
+      'WhoIsSethDaniel/mason-tool-installer.nvim',
 
-      "Hoffs/omnisharp-extended-lsp.nvim",
+      -- "Hoffs/omnisharp-extended-lsp.nvim",
       -- "iabdelkareem/csharp.nvim",
       -- "Tastyep/structlog.nvim", -- Optional, but highly recommended for debugging
       -- "mfussenegger/nvim-dap",
@@ -20,6 +21,7 @@ return {
       "joeveiga/ng.nvim",
 
       "b0o/schemastore.nvim",
+      { "seblj/roslyn.nvim", config = true }
     },
     config = function()
       -- neodev setup must be done before lspconfig to enhance Lua dev experience
@@ -76,53 +78,132 @@ return {
         },
       })
 
-      local on_attach = function(_, bufnr)
-        local set = vim.keymap.set
-        local keybind = function(keys, func, desc)
-          set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
-        end
+      -- local on_attach = function(_, bufnr)
+      --   local set = vim.keymap.set
+      --   local keybind = function(keys, func, desc)
+      --     set("n", keys, func, { buffer = bufnr, desc = desc, noremap = true, silent = true })
+      --   end
+      --
+      --   keybind("<leader>cl", "<cmd>LspInfo<cr>", "Lsp Info")
+      --   keybind("<leader>cf", function() vim.lsp.buf.format({ async = true }) end, "Quick format the open buffer")
+      --   keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions")
+      --   keybind("gD", vim.lsp.buf.declaration, "Go to declaration")
+      --   keybind("gr", require("telescope.builtin").lsp_references, "Show LSP references")
+      --   keybind("gi", require("telescope.builtin").lsp_implementations, "Show LSP implementations")
+      --   keybind("gt", require("telescope.builtin").lsp_type_definitions, "Show LSP type definitions")
+      --   keybind("<leader>rn", vim.lsp.buf.rename, "Smart rename")
+      --   keybind("<leader>vd", function() vim.diagnostic.open_float(nil, { border = vim.copper_config.borders }) end,
+      --     "Show line diagnostics")
+      --   keybind("[d", vim.diagnostic.goto_prev, "Go to previous diagnostic")
+      --   keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")
+      --   keybind("K", vim.lsp.buf.hover, "Show documentation for what is under the cursor")
+      --   keybind("<leader>rs", ":LspRestart<CR>", "Restart LSP")
+      --   set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action,
+      --     { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" })
+      --   set("n", "<leader>vD", "<cmd>Telescope diagnostics bufnr=0<CR>",
+      --     { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" })
+      --
+      --   keybind("<space>wa", vim.lsp.buf.add_workspace_folder, "")
+      --   keybind("<space>wr", vim.lsp.buf.remove_workspace_folder, "")
+      --   keybind("<space>wl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, "")
+      --
+      --   -- Taken from markdown oxide
+      --   -- refresh codelens on TextChanged and InsertLeave as well
+      --   -- TODO: error on 0.10
+      --   -- vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'CursorHold', 'LspAttach' }, {
+      --   --   buffer = bufnr,
+      --   --   callback = vim.lsp.codelens.refresh,
+      --   -- })
+      --
+      --   -- trigger codelens refresh
+      --   -- vim.api.nvim_exec_autocmds('User', { pattern = 'LspAttached' })
+      --
+      --   -- TODO: gives error currently on 0.10
+      --   -- local ng_opts = { noremap = true, silent = true }
+      --   -- local ng = require("ng");
+      --   -- vim.keymap.set("n", "<leader>at", ng.goto_template_for_component({ reuse_window = true }), ng_opts)
+      --   -- vim.keymap.set("n", "<leader>ac", ng.goto_component_with_template_file({ reuse_window = true }), ng_opts)
+      --   -- vim.keymap.set("n", "<leader>aT", ng.get_template_tcb, ng_opts)
+      -- end
 
-        keybind("<leader>cl", "<cmd>LspInfo<cr>", "Lsp Info")
-        keybind("<leader>cf", function() vim.lsp.buf.format({ async = true }) end, "Quick format the open buffer")
-        keybind("gd", require("telescope.builtin").lsp_definitions, "Show LSP definitions")
-        keybind("gD", vim.lsp.buf.declaration, "Go to declaration")
-        keybind("gr", require("telescope.builtin").lsp_references, "Show LSP references")
-        keybind("gi", require("telescope.builtin").lsp_implementations, "Show LSP implementations")
-        keybind("gt", require("telescope.builtin").lsp_type_definitions, "Show LSP type definitions")
-        keybind("<leader>rn", vim.lsp.buf.rename, "Smart rename")
-        keybind("<leader>vd", function() vim.diagnostic.open_float(nil, { border = vim.copper_config.borders }) end,
-          "Show line diagnostics")
-        keybind("[d", vim.diagnostic.goto_prev, "Go to previous diagnostic")
-        keybind("]d", vim.diagnostic.goto_next, "Go to next diagnostic")
-        keybind("K", vim.lsp.buf.hover, "Show documentation for what is under the cursor")
-        keybind("<leader>rs", ":LspRestart<CR>", "Restart LSP")
-        set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action,
-          { buffer = bufnr, noremap = true, silent = true, desc = "See available code actions" })
-        set("n", "<leader>vD", "<cmd>Telescope diagnostics bufnr=0<CR>",
-          { buffer = bufnr, noremap = true, silent = true, desc = "Show buffer diagnostics" })
+      -- autocommand becuase the local function did break roslyn functionality.
+      -- TODO: rework nvim config files. this is evolving into the opposite of simple and efficient
+      -- Create a group for the autocommand
+      vim.api.nvim_create_augroup("DefaultLspAttach", { clear = true })
+      -- Define the autocommand for LspAttach
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = "DefaultLspAttach",
+        callback = function(args)
+          local bufnr = args.buf     -- Get the buffer number for the attached LSP
+          local set = vim.keymap.set -- Alias for key mapping
 
-        keybind("<space>wa", vim.lsp.buf.add_workspace_folder, "")
-        keybind("<space>wr", vim.lsp.buf.remove_workspace_folder, "")
-        keybind("<space>wl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, "")
+          -- Helper function for creating buffer-local keymaps
+          local keymap = function(mode, lhs, rhs, opts)
+            opts = vim.tbl_extend("force", { buffer = bufnr, silent = true, noremap = true }, opts or {})
+            set(mode, lhs, rhs, opts)
+          end
 
-        -- Taken from markdown oxide
-        -- refresh codelens on TextChanged and InsertLeave as well
-        -- TODO: error on 0.10
-        -- vim.api.nvim_create_autocmd({ 'TextChanged', 'InsertLeave', 'CursorHold', 'LspAttach' }, {
-        --   buffer = bufnr,
-        --   callback = vim.lsp.codelens.refresh,
-        -- })
+          keymap("n", "<leader>cl", "<cmd>LspInfo<cr>", { desc = "Lsp Info" })
+          keymap("n", "<leader>cf", function() vim.lsp.buf.format({ async = true }) end,
+            { desc = "Quick format the open buffer" })
+          keymap("n", "gd", function()
+            require("telescope.builtin").lsp_definitions()
+          end, { desc = "Show LSP definitions" })
+          keymap("n", "gD", function()
+            vim.lsp.buf.declaration()
+          end, { desc = "Go to declaration" })
+          keymap("n", "gr", function()
+            require("telescope.builtin").lsp_references()
+          end, { desc = "Show LSP references" })
+          keymap("n", "gi", function()
+            require("telescope.builtin").lsp_implementations()
+          end, { desc = "Show LSP implementations" })
+          keymap("n", "gt", function()
+            require("telescope.builtin").lsp_type_definitions()
+          end, { desc = "Show LSP type definitions" })
+          keymap("n", "<leader>rn", function()
+            vim.lsp.buf.rename()
+          end, { desc = "Smart rename" })
+          keymap("n", "<leader>vd", function()
+            vim.diagnostic.open_float(nil, { border = vim.copper_config.borders })
+          end, { desc = "Show line diagnostics" })
+          keymap("n", "[d", function()
+            vim.diagnostic.goto_prev()
+          end, { desc = "Go to previous diagnostic" })
+          keymap("n", "]d", function()
+            vim.diagnostic.goto_next()
+          end, { desc = "Go to next diagnostic" })
+          keymap("n", "K", function()
+            vim.lsp.buf.hover()
+          end, { desc = "Show documentation for what is under the cursor" })
+          keymap("n", "<leader>rs", "<cmd>LspRestart<CR>", { desc = "Restart LSP" })
+          keymap({ "n", "v" }, "<leader>ca", function()
+            vim.lsp.buf.code_action()
+          end, { desc = "See available code actions" })
+          keymap("n", "<leader>vD", "<cmd>Telescope diagnostics bufnr=0<CR>", { desc = "Show buffer diagnostics" })
 
-        -- trigger codelens refresh
-        -- vim.api.nvim_exec_autocmds('User', { pattern = 'LspAttached' })
+          keymap("n", "<space>wa", function()
+            vim.lsp.buf.add_workspace_folder()
+          end, { desc = "Add workspace folder" })
+          keymap("n", "<space>wr", function()
+            vim.lsp.buf.remove_workspace_folder()
+          end, { desc = "Remove workspace folder" })
+          keymap("n", "<space>wl", function()
+            print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+          end, { desc = "List workspace folders" })
 
-        -- TODO: gives error currently on 0.10
-        -- local ng_opts = { noremap = true, silent = true }
-        -- local ng = require("ng");
-        -- vim.keymap.set("n", "<leader>at", ng.goto_template_for_component({ reuse_window = true }), ng_opts)
-        -- vim.keymap.set("n", "<leader>ac", ng.goto_component_with_template_file({ reuse_window = true }), ng_opts)
-        -- vim.keymap.set("n", "<leader>aT", ng.get_template_tcb, ng_opts)
-      end
+          -- TODO: needs fixing
+          -- Refresh codelens (if supported)
+          -- local client = vim.lsp.get_client_by_id(args.data.client_id)
+          -- if client and client.server_capabilities.codeLensProvider then
+          --   vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+          --     group = vim.api.nvim_create_augroup("LspCodelensRefresh", { clear = true }),
+          --     buffer = bufnr,
+          --     callback = vim.lsp.codelens.refresh,
+          --   })
+          -- end
+        end,
+      })
 
       -- SECTION: Server Setups
       mason.setup({
@@ -155,7 +236,7 @@ return {
           -- fow now use:
           -- :MasonInstall --target=win_x86 markdown-oxide
           "marksman",
-          "omnisharp",
+          -- "omnisharp",
           "powershell_es",
           -- "sqlls",
           "ts_ls",
@@ -171,7 +252,6 @@ return {
           lspconfig[server_name].setup {
             capabilities = capabilities,
             handlers = handlers,
-            on_attach = on_attach
           }
         end,
 
@@ -179,7 +259,6 @@ return {
           lspconfig.azure_pipelines_ls.setup {
             capabilities = capabilities,
             handlers = handlers,
-            on_attach = on_attach,
             root_dir = function(fname)
               return lspconfig.util.root_pattern(
                 '.azure*',               -- Matches any file starting with '.azure'
@@ -211,7 +290,6 @@ return {
         ["eslint"] = function()
           lspconfig.eslint.setup({
             capabilities = capabilities,
-            on_attach = on_attach,
             on_new_config = function(config, new_root_dir)
               config.settings.workspaceFolder = {
                 uri = vim.uri_from_fname(new_root_dir),
@@ -225,7 +303,6 @@ return {
           lspconfig.html.setup({
             capabilities = capabilities,
             handlers = handlers,
-            on_attach = on_attach,
             init_options = {
               provideFormatter = false
             }
@@ -236,7 +313,6 @@ return {
           lspconfig.jsonls.setup({
             capabilities = capabilities,
             handlers = handlers,
-            on_attach = on_attach,
             settings = {
               json = {
                 schemas = require("schemastore").json.schemas(),
@@ -250,7 +326,6 @@ return {
         ["lua_ls"] = function()
           lspconfig.lua_ls.setup({
             capabilities = capabilities,
-            on_attach = on_attach,
             handlers = handlers,
             settings = {
               Lua = {
@@ -282,8 +357,7 @@ return {
 
         ["markdown_oxide"] = function()
           lspconfig.markdown_oxide.setup({
-            capabilities = markdown_oxide_capabilities, -- ensure that capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
-            on_attach = on_attach,
+            capabilities = markdown_oxide_capabilities,                      -- ensure that capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = true
             handlers = handlers,
             root_dir = lspconfig.util.root_pattern('.git', vim.fn.getcwd()), -- this is a temp fix for an error in the lspconfig for this LS
           })
@@ -292,7 +366,6 @@ return {
         ["powershell_es"] = function()
           lspconfig.powershell_es.setup({
             capabilities = capabilities,
-            on_attach = on_attach,
             handlers = handlers,
             bundle_path = vim.fn.stdpath("data") .. "/mason/packages/powershell-editor-services",
             init_options = {
@@ -301,96 +374,93 @@ return {
           })
         end,
 
-        ["omnisharp"] = function()
-          local system_name = vim.loop.os_uname().sysname
-          local cmd_path = system_name == "Windows_NT" and
-              vim.fn.expand("~\\AppData\\local\\nvim-data\\mason\\packages\\omnisharp\\libexec\\OmniSharp.dll") or
-              vim.fn.expand("~/.local/share/nvim/mason/packages/omnisharp/libexec/OmniSharp.dll")
-
-          local function omnisharp_on_attach(client, bufnr)
-            on_attach(client, bufnr)
-
-            local set = vim.keymap.set
-            -- NOTE: Omnisharp seems to have trouble with async formatting so this is here until i find a better solution or rework my lsp setup completely
-            set("n", "<leader>cf", function() vim.lsp.buf.format() end, { desc = "Quick format the open buffer" })
-            -- set("n", "gd", "<cmd>lua require('omnisharp_extended').lsp_definition()<CR>",
-            --   { buffer = bufnr, desc = "OmniSharp LSP definition", noremap = true, silent = true })
-            -- set("n", "gD", "<cmd>lua require('omnisharp_extended').lsp_type_definition()<CR>",
-            --   { buffer = bufnr, desc = "OmniSharp LSP type definition", noremap = true, silent = true })
-            -- set("n", "gr", "<cmd>lua require('omnisharp_extended').lsp_references()<CR>",
-            --   { buffer = bufnr, desc = "OmniSharp LSP references", noremap = true, silent = true })
-            -- set("n", "gi", "<cmd>lua require('omnisharp_extended').lsp_implementation()<CR>",
-            --   { buffer = bufnr, desc = "OmniSharp LSP implementation", noremap = true, silent = true })
-
-            -- Optional: If using Telescope and prefer its integration, you could replace the above with these
-            set("n", "gd",
-              "<cmd>lua require('omnisharp_extended').telescope_lsp_definition({ jump_type = 'vsplit' })<CR>",
-              { buffer = bufnr, desc = "OmniSharp LSP definition with Telescope", noremap = true, silent = true })
-            set("n", "gD", "<cmd>lua require('omnisharp_extended').telescope_lsp_type_definition()<CR>",
-              { buffer = bufnr, desc = "OmniSharp LSP type definition with Telescope", noremap = true, silent = true })
-            set("n", "gr", "<cmd>lua require('omnisharp_extended').telescope_lsp_references()<CR>",
-              { buffer = bufnr, desc = "OmniSharp LSP references with Telescope", noremap = true, silent = true })
-            set("n", "gi", "<cmd>lua require('omnisharp_extended').telescope_lsp_implementation()<CR>",
-              { buffer = bufnr, desc = "OmniSharp LSP implementation with Telescope", noremap = true, silent = true })
-
-            vim.diagnostic.config({
-              underline = {
-                severity = { max = vim.diagnostic.severity.INFO }
-              },
-              virtual_text = {
-                severity = { min = vim.diagnostic.severity.WARN }
-              }
-            })
-          end
-
-          require("lspconfig").omnisharp.setup({
-            cmd = { "dotnet", cmd_path },
-            capabilities = capabilities,
-            -- on_attach = on_attach,
-            on_attach = omnisharp_on_attach,
-            handlers = handlers,
-            settings = {
-              FormattingOptions = {
-                -- Enables support for reading code style, naming convention and analyzer
-                -- settings from .editorconfig.
-                EnableEditorConfigSupport = true,
-                -- Specifies whether 'using' directives should be grouped and sorted during
-                -- document formatting.
-                OrganizeImports = true,
-              },
-              MsBuild = {
-                -- If true, MSBuild project system will only load projects for files that
-                -- were opened in the editor. This setting is useful for big C# codebases
-                -- and allows for faster initialization of code navigation features only
-                -- for projects that are relevant to code that is being edited. With this
-                -- setting enabled OmniSharp may load fewer projects and may thus display
-                -- incomplete reference lists for symbols.
-                LoadProjectsOnDemand = nil,
-              },
-              RoslynExtensionsOptions = {
-                -- Enables support for roslyn analyzers, code fixes and rulesets.
-                EnableAnalyzersSupport = true,
-                -- Enables support for showing unimported types and unimported extension
-                -- methods in completion lists. When committed, the appropriate using
-                -- directive will be added at the top of the current file. This option can
-                -- have a negative impact on initial completion responsiveness,
-                -- particularly for the first few completion sessions after opening a
-                -- solution.
-                EnableImportCompletion = true,
-                -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
-                -- true
-                AnalyzeOpenDocumentsOnly = nil,
-                -- TODO: not sure if this works, check here: https://github.com/Hoffs/omnisharp-extended-lsp.nvim
-                EnableDecompilationSupport = true,
-              },
-              Sdk = {
-                -- Specifies whether to include preview versions of the .NET SDK when
-                -- determining which version to use for project loading.
-                IncludePrereleases = true,
-              },
-            },
-          })
-        end,
+        -- ["omnisharp"] = function()
+        --   local system_name = vim.loop.os_uname().sysname
+        --   local cmd_path = system_name == "Windows_NT" and
+        --       vim.fn.expand("~\\AppData\\local\\nvim-data\\mason\\packages\\omnisharp\\libexec\\OmniSharp.dll") or
+        --       vim.fn.expand("~/.local/share/nvim/mason/packages/omnisharp/libexec/OmniSharp.dll")
+        --
+        --   local function omnisharp_on_attach(client, bufnr)
+        --     on_attach(client, bufnr)
+        --
+        --     local set = vim.keymap.set
+        --     -- NOTE: Omnisharp seems to have trouble with async formatting so this is here until i find a better solution or rework my lsp setup completely
+        --     set("n", "<leader>cf", function() vim.lsp.buf.format() end, { desc = "Quick format the open buffer" })
+        --     -- set("n", "gd", "<cmd>lua require('omnisharp_extended').lsp_definition()<CR>",
+        --     --   { buffer = bufnr, desc = "OmniSharp LSP definition", noremap = true, silent = true })
+        --     -- set("n", "gD", "<cmd>lua require('omnisharp_extended').lsp_type_definition()<CR>",
+        --     --   { buffer = bufnr, desc = "OmniSharp LSP type definition", noremap = true, silent = true })
+        --     -- set("n", "gr", "<cmd>lua require('omnisharp_extended').lsp_references()<CR>",
+        --     --   { buffer = bufnr, desc = "OmniSharp LSP references", noremap = true, silent = true })
+        --     -- set("n", "gi", "<cmd>lua require('omnisharp_extended').lsp_implementation()<CR>",
+        --     --   { buffer = bufnr, desc = "OmniSharp LSP implementation", noremap = true, silent = true })
+        --
+        --     -- Optional: If using Telescope and prefer its integration, you could replace the above with these
+        --     set("n", "gd",
+        --       "<cmd>lua require('omnisharp_extended').telescope_lsp_definition({ jump_type = 'vsplit' })<CR>",
+        --       { buffer = bufnr, desc = "OmniSharp LSP definition with Telescope", noremap = true, silent = true })
+        --     set("n", "gD", "<cmd>lua require('omnisharp_extended').telescope_lsp_type_definition()<CR>",
+        --       { buffer = bufnr, desc = "OmniSharp LSP type definition with Telescope", noremap = true, silent = true })
+        --     set("n", "gr", "<cmd>lua require('omnisharp_extended').telescope_lsp_references()<CR>",
+        --       { buffer = bufnr, desc = "OmniSharp LSP references with Telescope", noremap = true, silent = true })
+        --     set("n", "gi", "<cmd>lua require('omnisharp_extended').telescope_lsp_implementation()<CR>",
+        --       { buffer = bufnr, desc = "OmniSharp LSP implementation with Telescope", noremap = true, silent = true })
+        --
+        --     vim.diagnostic.config({
+        --       virtual_text = {
+        --         severity = { min = vim.diagnostic.severity.WARN }
+        --       }
+        --     })
+        --   end
+        --
+        --   require("lspconfig").omnisharp.setup({
+        --     cmd = { "dotnet", cmd_path },
+        --     capabilities = capabilities,
+        --     -- on_attach = on_attach,
+        --     on_attach = omnisharp_on_attach,
+        --     handlers = handlers,
+        --     settings = {
+        --       FormattingOptions = {
+        --         -- Enables support for reading code style, naming convention and analyzer
+        --         -- settings from .editorconfig.
+        --         EnableEditorConfigSupport = true,
+        --         -- Specifies whether 'using' directives should be grouped and sorted during
+        --         -- document formatting.
+        --         OrganizeImports = true,
+        --       },
+        --       MsBuild = {
+        --         -- If true, MSBuild project system will only load projects for files that
+        --         -- were opened in the editor. This setting is useful for big C# codebases
+        --         -- and allows for faster initialization of code navigation features only
+        --         -- for projects that are relevant to code that is being edited. With this
+        --         -- setting enabled OmniSharp may load fewer projects and may thus display
+        --         -- incomplete reference lists for symbols.
+        --         LoadProjectsOnDemand = nil,
+        --       },
+        --       RoslynExtensionsOptions = {
+        --         -- Enables support for roslyn analyzers, code fixes and rulesets.
+        --         EnableAnalyzersSupport = true,
+        --         -- Enables support for showing unimported types and unimported extension
+        --         -- methods in completion lists. When committed, the appropriate using
+        --         -- directive will be added at the top of the current file. This option can
+        --         -- have a negative impact on initial completion responsiveness,
+        --         -- particularly for the first few completion sessions after opening a
+        --         -- solution.
+        --         EnableImportCompletion = true,
+        --         -- Only run analyzers against open files when 'enableRoslynAnalyzers' is
+        --         -- true
+        --         AnalyzeOpenDocumentsOnly = nil,
+        --         -- TODO: not sure if this works, check here: https://github.com/Hoffs/omnisharp-extended-lsp.nvim
+        --         EnableDecompilationSupport = true,
+        --       },
+        --       Sdk = {
+        --         -- Specifies whether to include preview versions of the .NET SDK when
+        --         -- determining which version to use for project loading.
+        --         IncludePrereleases = true,
+        --       },
+        --     },
+        --   })
+        -- end,
 
         -- ["sqlls"] = function()
         --   lspconfig.sqlls.setup({
@@ -415,7 +485,6 @@ return {
 
           require("lspconfig").yamlls.setup({
             capabilities = capabilities,
-            on_attach = on_attach,
             handlers = handlers,
             settings = {
               yaml = {
@@ -427,6 +496,26 @@ return {
             }
           })
         end,
+
+
+        ["roslyn"] = function()
+          lspconfig.roslyn.setup({
+            capabilities = capabilities,
+            handlers = handlers,
+            root_dir = lspconfig.util.root_pattern(".git", vim.fn.getcwd()), -- Adjust root detection as needed
+            init_options = {                                                 -- Add any specific Roslyn options here if required
+              enableEditorConfigSupport = true,                              -- Example: editor config support
+            },
+          })
+        end,
+
+        --
+        --
+        -- require("roslyn").setup({
+        --   server = {
+        --     capabilities = capabilities,
+        --   },
+        -- })
       })
 
       --   require("csharp").setup({
@@ -451,8 +540,6 @@ return {
       --       debug = false,
       --       -- The capabilities to pass to the omnisharp server
       --       capabilities = capabilities,
-      --       -- on_attach function that'll be called when the LSP is attached to a buffer
-      --       on_attach = on_attach
       --     },
       --     logging = {
       --       -- The minimum log level.

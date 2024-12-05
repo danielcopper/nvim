@@ -8,12 +8,12 @@ local enabled = {
   "nvim-treesitter-textobjects",
 }
 
-local Config = require("lazy.core.config")
-Config.options.checker.enabled = false
-Config.options.change_detection.enabled = false
-Config.options.defaults.cond = function(plugin)
-  return vim.tbl_contains(enabled, plugin.name) or plugin.vscode
-end
+-- local Config = require("copper.config")
+-- Config.options.checker.enabled = false
+-- Config.options.change_detection.enabled = false
+-- Config.options.defaults.cond = function(plugin)
+--   return vim.tbl_contains(enabled, plugin.name) or plugin.vscode
+-- end
 
 -- Add some vscode specific keymaps
 vim.api.nvim_create_autocmd("User", {

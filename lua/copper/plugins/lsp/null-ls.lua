@@ -41,7 +41,7 @@ return {
         -- formatting.markdownlint,
         formatting.prettier.with({
           filetypes = { "markdown" },
-          extra_args = { "--print-width", "120", "--prose-wrap", "always" },
+          -- extra_args = { "--print-width", "120", "--prose-wrap", "always" },
         }),
         formatting.prettier.with({
           filetypes = { "yaml", "yml" },
@@ -54,8 +54,9 @@ return {
         formatting.sqlfluff.with({
           extra_args = {
             "--dialect", "tsql",
-            "--exclude-rules", "RF06,LT01",
-            -- "--rules", "L003:line_length=120"
+            -- "--exclude-rules", "LT01,RF06,L039",             -- Exclude long lines, reserved keywords, quoted identifier issues
+            -- "--rules", "L003:line_length=120",
+            -- "--rules", "LT01:align_with_spaces=True"
           },
         }),
 
@@ -67,7 +68,10 @@ return {
         }),
         diagnostics.sqlfluff.with({
           -- extra_args = { "--dialect", "postgres" },         -- change to your dialect
-          extra_args = { "--dialect", "tsql" },
+          extra_args = {
+            "--dialect", "tsql",
+            "--exclude-rules", "LT01",
+          },
         }),
         diagnostics.yamllint.with({
           extra_args = { "-d", "{extends: default, rules: {line-length: {max: 120}}}" }

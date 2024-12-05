@@ -13,11 +13,11 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   spec = {
-    { import = "copper.plugins.coding" },
-    { import = "copper.plugins.debugging" },
-    { import = "copper.plugins.editor" },
-    { import = "copper.plugins.lsp" },
-    { import = "copper.plugins.ui" },
+    { import = "copper.plugins.coding", cond = not vim.g.vscode },
+    { import = "copper.plugins.debugging", cond = not vim.g.vscode },
+    { import = "copper.plugins.editor", cond = not vim.g.vscode },
+    { import = "copper.plugins.lsp", cond = not vim.g.vscode },
+    { import = "copper.plugins.ui", cond = not vim.g.vscode },
     { import = "copper.plugins.vscode" },
   },
   ui = {

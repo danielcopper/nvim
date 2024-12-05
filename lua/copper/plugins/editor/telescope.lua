@@ -4,7 +4,7 @@ return {
     branch = "0.1.x",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }, -- for better sorting performance
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }, -- for better sorting performance
       "catgoose/telescope-helpgrep.nvim"
     },
     cmd = "Telescope",

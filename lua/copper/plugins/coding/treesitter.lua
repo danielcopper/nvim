@@ -49,18 +49,13 @@ return {
         "xml",
         "yaml",
       },
-      sync_install = true,
+      sync_install = false,
       auto_install = true,
       autotag = { enable = true },
       context_commentstring = { enable = true, enable_autocmd = false },
       ignore_install = {},
       highlight = {
         enable = true,
-        -- TODO: Test around for Razor files
-        -- Custom file type configuration
-        additional_vim_regex_highlighting = {
-          cshtml = { "html", "c_sharp" },
-        },
       },
       indent = { enabled = false },
       matchup = {
