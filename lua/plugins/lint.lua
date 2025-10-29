@@ -16,7 +16,7 @@ return {
       javascriptreact = { "eslint_d" },
       typescriptreact = { "eslint_d" },
       python = { "pylint" },
-      lua = { "luacheck" },
+      -- lua = { "luacheck" }, -- Disabled: lua_ls LSP already provides diagnostics
       markdown = { "markdownlint" },
       yaml = { "yamllint" },
       json = { "jsonlint" },
@@ -29,7 +29,7 @@ return {
     local linters_to_install = {
       "eslint_d",
       "pylint",
-      "luacheck",
+      -- "luacheck", -- Disabled: lua_ls LSP already provides diagnostics
       "markdownlint",
       "shellcheck",
       "hadolint",
