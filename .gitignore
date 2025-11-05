@@ -1,0 +1,5 @@
+# Environment variables (contains secrets)
+.env
+
+# Plugin lockfile (auto-generated)
+lazy-lock.json

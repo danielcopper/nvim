@@ -31,6 +31,8 @@ return {
       "pylint",
       -- "luacheck", -- Disabled: lua_ls LSP already provides diagnostics
       "markdownlint",
+      "yamllint",
+      "jsonlint",
       "shellcheck",
       "hadolint",
     }

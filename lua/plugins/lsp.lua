@@ -116,13 +116,30 @@ return {
             },
 
             yamlls = {
+                capabilities = require('blink.cmp').get_lsp_capabilities(),
                 settings = {
                     yaml = {
                         schemaStore = {
                             enable = false,
                             url = "",
                         },
-                        schemas = require("schemastore").yaml.schemas(),
+                        schemas = require("schemastore").yaml.schemas({
+                            replace = {
+                                ["Azure Pipelines"] = {
+                                    description = "Azure Pipelines (custom paths)",
+                                    fileMatch = {
+                                        "azure-pipeline*.y*ml",
+                                        "azure-pipeline*.y*l",
+                                        "**/Pipelines/**/*.yml",
+                                        "**/Pipelines/**/*.yaml",
+                                        "**/pipelines/**/*.yml",
+                                        "**/pipelines/**/*.yaml",
+                                    },
+                                    name = "Azure Pipelines",
+                                    url = "https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json",
+                                },
+                            },
+                        }),
                     },
                 },
             },

@@ -27,21 +27,29 @@ return {
     end, desc = "Toggle AI Thinking Mode" },
     { "<leader>ap", function()
       -- Toggle between chat and agentic mode by changing adapter
-      local codecompanion = require("codecompanion")
-      local config = codecompanion.config
+      local ok, CodeCompanion = pcall(require, "codecompanion")
+      if not ok then
+        vim.notify("CodeCompanion not loaded yet", vim.log.levels.WARN)
+        return
+      end
 
-      -- Check if we're using acp adapter
-      local using_acp = config.strategies.chat.adapter == "claude_code"
+      -- Get the current chat
+      local chat = CodeCompanion.last_chat()
+      if not chat then
+        vim.notify("No active chat. Open a chat first with <leader>ac", vim.log.levels.WARN)
+        return
+      end
 
-      if using_acp then
+      -- Check current adapter and toggle
+      local current_adapter = chat.adapter.name
+
+      if current_adapter == "claude_code" then
         -- Switch to regular anthropic
-        config.strategies.chat.adapter = "anthropic"
-        config.strategies.inline.adapter = "anthropic"
+        chat:change_adapter("anthropic")
         vim.notify("Switched to Chat mode (Anthropic)", vim.log.levels.INFO)
       else
         -- Switch to claude_code (agentic)
-        config.strategies.chat.adapter = "claude_code"
-        config.strategies.inline.adapter = "claude_code"
+        chat:change_adapter("claude_code")
         vim.notify("Switched to Agentic mode (Claude Code)", vim.log.levels.INFO)
       end
     end, desc = "Toggle AI Plan/Act Mode" },
