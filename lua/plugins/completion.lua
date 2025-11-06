@@ -17,10 +17,10 @@ return {
       ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
       ["<C-e>"] = { "hide", "fallback" },
 
-      -- Accept completion with Tab, Enter, or Ctrl+Y
+      -- Accept completion with Enter or Ctrl+Y only
       ["<C-y>"] = { "select_and_accept" },
       ["<CR>"] = { "accept", "fallback" },
-      ["<Tab>"] = { "snippet_forward", "select_and_accept", "fallback" },
+      ["<Tab>"] = { "snippet_forward", "fallback" },
       ["<S-Tab>"] = { "snippet_backward", "fallback" },
 
       -- Navigate completion menu

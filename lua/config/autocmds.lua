@@ -4,13 +4,13 @@ local function augroup(name)
   return vim.api.nvim_create_augroup("config_" .. name, { clear = true })
 end
 
--- Highlight when yanking text
-vim.api.nvim_create_autocmd("TextYankPost", {
-  group = augroup("highlight_yank"),
-  callback = function()
-    vim.highlight.on_yank({ timeout = 200 })
-  end,
-})
+-- Highlight when yanking text (disabled in favor of tiny-glimmer.nvim)
+-- vim.api.nvim_create_autocmd("TextYankPost", {
+--   group = augroup("highlight_yank"),
+--   callback = function()
+--     vim.highlight.on_yank({ timeout = 200 })
+--   end,
+-- })
 
 -- Restore cursor position
 vim.api.nvim_create_autocmd("BufReadPost", {
