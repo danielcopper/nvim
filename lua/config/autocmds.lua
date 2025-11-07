@@ -1,5 +1,3 @@
--- Autocommands
-
 local function augroup(name)
   return vim.api.nvim_create_augroup("config_" .. name, { clear = true })
 end
@@ -8,18 +6,21 @@ end
 -- vim.api.nvim_create_autocmd("TextYankPost", {
 --   group = augroup("highlight_yank"),
 --   callback = function()
---     vim.highlight.on_yank({ timeout = 200 })
+--     vim.highlight.on_yank({ timeout = 200, visual = true })
 --   end,
 -- })
 
--- Restore cursor position
+-- Restore cursor position with centering
 vim.api.nvim_create_autocmd("BufReadPost", {
   group = augroup("restore_cursor"),
-  callback = function()
-    local mark = vim.api.nvim_buf_get_mark(0, '"')
-    local lcount = vim.api.nvim_buf_line_count(0)
-    if mark[1] > 0 and mark[1] <= lcount then
-      pcall(vim.api.nvim_win_set_cursor, 0, mark)
+  callback = function(args)
+    local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
+    local line_count = vim.api.nvim_buf_line_count(args.buf)
+    if mark[1] > 0 and mark[1] <= line_count then
+      vim.api.nvim_win_set_cursor(0, mark)
+      vim.schedule(function()
+        vim.cmd("normal! zz")
+      end)
     end
   end,
 })
@@ -30,14 +31,10 @@ vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
   command = "checktime",
 })
 
--- Resize splits when window is resized
+-- Auto resize splits when window is resized
 vim.api.nvim_create_autocmd("VimResized", {
   group = augroup("resize_splits"),
-  callback = function()
-    local current_tab = vim.fn.tabpagenr()
-    vim.cmd("tabdo wincmd =")
-    vim.cmd("tabnext " .. current_tab)
-  end,
+  command = "wincmd =",
 })
 
 -- Enable spell and wrap for text files
@@ -60,13 +57,34 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Start terminal in insert mode
-vim.api.nvim_create_autocmd("TermOpen", {
-  group = augroup("terminal"),
+-- Open help in vertical split
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("vertical_help"),
+  pattern = "help",
+  command = "wincmd L",
+})
+
+-- Syntax highlighting for dotenv files
+vim.api.nvim_create_autocmd("BufRead", {
+  group = augroup("dotenv_ft"),
+  pattern = { ".env", ".env.*" },
   callback = function()
-    vim.opt_local.number = false
-    vim.opt_local.relativenumber = false
-    vim.cmd("startinsert")
+    vim.bo.filetype = "dosini"
+  end,
+})
+
+-- Show cursorline only in active window
+vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
+  group = augroup("active_cursorline"),
+  callback = function()
+    vim.opt_local.cursorline = true
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
+  group = augroup("active_cursorline"),
+  callback = function()
+    vim.opt_local.cursorline = false
   end,
 })
 
@@ -74,24 +92,20 @@ vim.api.nvim_create_autocmd("TermOpen", {
 vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
   group = augroup("delete_empty_buffer"),
   callback = function(args)
-    -- Don't run if we're opening the initial buffer
     if args.file == "" then
       return
     end
 
     vim.schedule(function()
-      -- Get all buffers
       local buffers = vim.api.nvim_list_bufs()
       local valid_buffers = 0
 
-      -- Count valid buffers (with content)
       for _, buf in ipairs(buffers) do
         if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_name(buf) ~= "" then
           valid_buffers = valid_buffers + 1
         end
       end
 
-      -- Only clean up if we have at least one valid buffer
       if valid_buffers > 0 then
         for _, buf in ipairs(buffers) do
           if vim.api.nvim_buf_is_valid(buf) then
@@ -99,7 +113,6 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
             local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
             local modified = vim.api.nvim_buf_get_option(buf, "modified")
 
-            -- Check if buffer is empty, unnamed, or just a directory
             if (name == "" or name == "." or vim.fn.isdirectory(name) == 1) and buftype == "" and not modified then
               local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
               local char_count = 0
@@ -107,7 +120,6 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
                 char_count = char_count + #line
               end
 
-              -- Delete if truly empty (only whitespace/empty lines)
               if char_count == 0 then
                 pcall(vim.api.nvim_buf_delete, buf, { force = true })
               end
@@ -118,4 +130,3 @@ vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
     end)
   end,
 })
-

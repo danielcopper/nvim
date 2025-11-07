@@ -22,7 +22,7 @@ return {
       { "z", group = "fold" },
     },
     win = {
-      border = "rounded",
+      border = "none",
     },
     icons = {
       mappings = true,

@@ -1,5 +1,3 @@
--- Keymaps (Leader: Space, Local Leader: \)
-
 local keymap = vim.keymap.set
 
 -- Window navigation
@@ -15,8 +13,9 @@ keymap("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window
 keymap("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 
 -- Better scrolling (keep cursor centered)
-keymap("n", "<C-d>", "<C-d>zz", { desc = "Scroll down and center" })
-keymap("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
+-- NOTE: These are handled as long as mini.animate is enabled
+-- keymap("n", "<C-d>", "<C-d>zz", { desc = "Scroll down and center" })
+-- keymap("n", "<C-u>", "<C-u>zz", { desc = "Scroll up and center" })
 keymap("n", "n", "nzzzv", { desc = "Next search result (centered)" })
 keymap("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
 
@@ -65,5 +64,20 @@ keymap("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
 -- Disable Ex mode
 keymap("n", "Q", "<nop>")
 
--- Terminal mode: easier exit
-keymap("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+-- Theme controls
+keymap("n", "<leader>ut", function()
+  vim.g.transparent_bg = not vim.g.transparent_bg
+  vim.cmd("colorscheme catppuccin")
+  vim.notify("Transparency: " .. (vim.g.transparent_bg and "ON" or "OFF"))
+end, { desc = "Toggle transparency" })
+
+keymap("n", "<leader>uf", function()
+  local flavors = { "latte", "frappe", "macchiato", "mocha" }
+  vim.ui.select(flavors, { prompt = "Select flavor:" }, function(choice)
+    if choice then
+      vim.g.catppuccin_flavor = choice
+      vim.cmd("colorscheme catppuccin")
+      vim.notify("Flavor: " .. choice)
+    end
+  end)
+end, { desc = "Select theme flavor" })
