@@ -1,5 +1,11 @@
 return {
   "echasnovski/mini.animate",
   event = "VeryLazy",
-  opts = {},
+  config = function()
+    require("mini.animate").setup({
+      -- scroll = {
+      --   timing = require("mini.animate").gen_timing.linear({ duration = 50, unit = "total" }),
+      -- },
+    })
+  end,
 }

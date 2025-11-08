@@ -13,6 +13,7 @@ return {
       end,
     },
   },
+  lazy = false,
   cmd = "Telescope",
   keys = {
     -- Files
@@ -40,6 +41,7 @@ return {
 
     telescope.setup({
       defaults = {
+        borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
         prompt_prefix = "   ",
         selection_caret = " ",
         entry_prefix = " ",

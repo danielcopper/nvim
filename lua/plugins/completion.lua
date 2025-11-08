@@ -1,85 +1,138 @@
--- Blink.cmp: Fast, modern completion engine
-
 return {
-  "saghen/blink.cmp",
-  version = "1.*",
-  dependencies = {
-    "rafamadriz/friendly-snippets",
-  },
+  "hrsh7th/nvim-cmp",
   event = "InsertEnter",
-
-  ---@module 'blink.cmp'
-  ---@type blink.cmp.Config
-  opts = {
-    -- Custom keymaps: Tab, Enter, and Ctrl+Y all confirm selections
-    keymap = {
-      preset = "none",
-      ["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
-      ["<C-e>"] = { "hide", "fallback" },
-
-      -- Accept completion with Enter or Ctrl+Y only
-      ["<C-y>"] = { "select_and_accept" },
-      ["<CR>"] = { "accept", "fallback" },
-      ["<Tab>"] = { "snippet_forward", "fallback" },
-      ["<S-Tab>"] = { "snippet_backward", "fallback" },
-
-      -- Navigate completion menu
-      ["<Up>"] = { "select_prev", "fallback" },
-      ["<Down>"] = { "select_next", "fallback" },
-      ["<C-p>"] = { "select_prev", "fallback" },
-      ["<C-n>"] = { "select_next", "fallback" },
-      ["<C-k>"] = { "select_prev", "fallback" },
-      ["<C-j>"] = { "select_next", "fallback" },
-
-      -- Scroll documentation
-      ["<C-b>"] = { "scroll_documentation_up", "fallback" },
-      ["<C-f>"] = { "scroll_documentation_down", "fallback" },
+  dependencies = {
+    -- Snippet engine
+    {
+      "L3MON4D3/LuaSnip",
+      build = "make install_jsregexp",
+      dependencies = { "rafamadriz/friendly-snippets" },
+      config = function()
+        require("luasnip.loaders.from_vscode").lazy_load()
+      end,
     },
 
-    appearance = {
-      use_nvim_cmp_as_default = true,
-      nerd_font_variant = "mono",
-    },
+    -- Completion sources
+    "hrsh7th/cmp-nvim-lsp",
+    "hrsh7th/cmp-buffer",
+    "hrsh7th/cmp-path",
+    "saadparwaiz1/cmp_luasnip",
 
-    completion = {
-      list = {
-        selection = { preselect = true, auto_insert = true },
-      },
-      accept = {
-        auto_brackets = {
-          enabled = true,
-        },
-      },
-      menu = {
-        border = "rounded",
-        draw = {
-          columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind" } },
-        },
-      },
-      documentation = {
-        auto_show = true,
-        auto_show_delay_ms = 200,
-        window = {
-          border = "rounded",
-        },
-      },
-    },
-
-    sources = {
-      default = { "lsp", "path", "snippets", "buffer" },
-    },
-
-    cmdline = {
-      sources = {},
-    },
-
-    signature = {
-      enabled = true,
-      window = {
-        border = "rounded",
-      },
-    },
+    -- Autopairs integration
+    "windwp/nvim-autopairs",
   },
 
-  opts_extend = { "sources.default" },
+  config = function()
+    local cmp = require("cmp")
+    local luasnip = require("luasnip")
+
+    -- Autopairs integration
+    local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+    cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+
+    cmp.setup({
+      snippet = {
+        expand = function(args)
+          luasnip.lsp_expand(args.body)
+        end,
+      },
+
+      mapping = cmp.mapping.preset.insert({
+        -- Accept completion with Enter or Ctrl+Y
+        ["<CR>"] = cmp.mapping.confirm({ select = false }),
+        ["<C-y>"] = cmp.mapping.confirm({ select = true }),
+
+        -- Navigate completion menu
+        ["<C-p>"] = cmp.mapping.select_prev_item(),
+        ["<C-n>"] = cmp.mapping.select_next_item(),
+        ["<C-k>"] = cmp.mapping.select_prev_item(),
+        ["<C-j>"] = cmp.mapping.select_next_item(),
+        ["<Up>"] = cmp.mapping.select_prev_item(),
+        ["<Down>"] = cmp.mapping.select_next_item(),
+
+        -- Scroll documentation
+        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+        ["<C-f>"] = cmp.mapping.scroll_docs(4),
+
+        -- Toggle completion
+        ["<C-Space>"] = cmp.mapping.complete(),
+        ["<C-e>"] = cmp.mapping.abort(),
+
+        -- Snippet navigation
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if luasnip.jumpable(1) then
+            luasnip.jump(1)
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
+          if luasnip.jumpable(-1) then
+            luasnip.jump(-1)
+          else
+            fallback()
+          end
+        end, { "i", "s" }),
+      }),
+
+      sources = cmp.config.sources({
+        { name = "nvim_lsp" },
+        { name = "luasnip" },
+        { name = "path" },
+        { name = "buffer" },
+      }),
+
+      window = {
+        completion = cmp.config.window.bordered({
+          border = "single",
+          winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
+        }),
+        documentation = cmp.config.window.bordered({
+          border = "single",
+          winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+        }),
+      },
+
+      formatting = {
+        fields = { "kind", "abbr", "menu" },
+        format = function(_, item)
+          local icons = {
+            Text = "󰉿",
+            Method = "󰆧",
+            Function = "󰊕",
+            Constructor = "",
+            Field = "󰜢",
+            Variable = "󰀫",
+            Class = "󰠱",
+            Interface = "",
+            Module = "",
+            Property = "󰜢",
+            Unit = "󰑭",
+            Value = "󰎠",
+            Enum = "",
+            Keyword = "󰌋",
+            Snippet = "",
+            Color = "󰏘",
+            File = "󰈙",
+            Reference = "󰈇",
+            Folder = "󰉋",
+            EnumMember = "",
+            Constant = "󰏿",
+            Struct = "󰙅",
+            Event = "",
+            Operator = "󰆕",
+            TypeParameter = "",
+          }
+          local kind_name = item.kind
+          item.kind = " " .. (icons[kind_name] or "") .. " "
+          item.menu = "    " .. (kind_name or "")
+          return item
+        end,
+      },
+
+      experimental = {
+        ghost_text = false,
+      },
+    })
+  end,
 }

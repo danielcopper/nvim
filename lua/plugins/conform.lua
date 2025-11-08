@@ -1,5 +1,3 @@
--- Conform: Formatting with LSP and external formatters
-
 return {
   "stevearc/conform.nvim",
   event = { "BufReadPre", "BufNewFile" },

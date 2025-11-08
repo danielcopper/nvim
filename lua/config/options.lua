@@ -19,6 +19,7 @@ opt.scrolloff = 8
 opt.sidescrolloff = 8
 opt.list = true
 opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+opt.winborder = "single"
 
 -- Indentation
 opt.expandtab = true

@@ -30,6 +30,26 @@ return {
           { "filename", path = 1 }, -- 0: filename, 1: relative path, 2: absolute path
         },
         lualine_x = {
+          {
+            function()
+              local buf_clients = vim.lsp.get_clients({ buffer = 0 })
+              if next(buf_clients) == nil then
+                return ""
+              end
+
+              local client_names = {}
+              for _, client in pairs(buf_clients) do
+                table.insert(client_names, client.name)
+              end
+
+              if vim.o.columns > 100 then
+                return " " .. table.concat(client_names, " | ")
+              else
+                return " LSP"
+              end
+            end,
+            color = { gui = "bold" },
+          },
           { "encoding" },
           { "fileformat" },
         },

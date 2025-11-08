@@ -5,6 +5,7 @@ return {
   event = "VeryLazy",
   dependencies = {
     "MunifTanjim/nui.nvim",
+    "rcarriga/nvim-notify",
   },
   opts = {
     lsp = {
@@ -22,9 +23,7 @@ return {
         enabled = true,
       },
       progress = {
-        enabled = true,
-        format = "lsp_progress",
-        format_done = "lsp_progress_done",
+        enabled = false, -- Using fidget.nvim for LSP progress
       },
     },
     -- Presets for easier configuration
@@ -41,33 +40,21 @@ return {
         filter = {
           event = "notify",
         },
-        view = "notify", -- Route notifications to snacks
-      },
-      {
-        -- Show LSP progress in mini view (bottom right corner)
-        filter = {
-          event = "lsp",
-          kind = "progress",
-        },
-        opts = { skip = false },
-        view = "mini",
+        view = "notify", -- Route notifications to nvim-notify
       },
     },
     -- Views configuration
     views = {
-      cmdline_popup = {
-        border = {
-          style = "rounded",
-        },
-      },
       hover = {
         border = {
-          style = "rounded",
+          style = "single",
+          padding = { 0, 1 },
         },
       },
       signature = {
         border = {
-          style = "rounded",
+          style = "single",
+          padding = { 0, 1 },
         },
       },
     },

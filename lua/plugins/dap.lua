@@ -9,23 +9,21 @@ return {
   },
   keys = {
     { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle breakpoint" },
-    { "<leader>dc", function() require("dap").continue() end, desc = "Continue" },
-    { "<leader>dC", function() require("dap").run_to_cursor() end, desc = "Run to cursor" },
-    { "<leader>ds", function() require("dap").step_over() end, desc = "Step over" },
-    { "<leader>di", function() require("dap").step_into() end, desc = "Step into" },
-    { "<leader>do", function() require("dap").step_out() end, desc = "Step out" },
-    { "<leader>dt", function() require("dap").terminate() end, desc = "Terminate" },
-    { "<leader>du", function() require("dapui").toggle() end, desc = "Toggle DAP UI" },
+    { "<leader>dc", function() require("dap").continue() end,          desc = "Continue" },
+    { "<leader>dC", function() require("dap").run_to_cursor() end,     desc = "Run to cursor" },
+    { "<leader>ds", function() require("dap").step_over() end,         desc = "Step over" },
+    { "<leader>di", function() require("dap").step_into() end,         desc = "Step into" },
+    { "<leader>do", function() require("dap").step_out() end,          desc = "Step out" },
+    { "<leader>dt", function() require("dap").terminate() end,         desc = "Terminate" },
+    { "<leader>du", function() require("dapui").toggle() end,          desc = "Toggle DAP UI" },
 
-    -- Standard IDE debugging keybindings
-    { "<F5>", function() require("dap").continue() end, desc = "Debug: Start/Continue" },
-    { "<F10>", function() require("dap").step_over() end, desc = "Debug: Step over" },
-    { "<F11>", function() require("dap").step_into() end, desc = "Debug: Step into" },
-    { "<S-F11>", function() require("dap").step_out() end, desc = "Debug: Step out" },
+    { "<F5>",       function() require("dap").continue() end,          desc = "Debug: Start/Continue" },
+    { "<F10>",      function() require("dap").step_over() end,         desc = "Debug: Step over" },
+    { "<F11>",      function() require("dap").step_into() end,         desc = "Debug: Step into" },
+    { "<S-F11>",    function() require("dap").step_out() end,          desc = "Debug: Step out" },
   },
 
   init = function()
-    -- Define signs immediately (before DAP fully loads)
     vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DiagnosticError", linehl = "", numhl = "" })
     vim.fn.sign_define("DapBreakpointCondition", { text = "", texthl = "DiagnosticWarn", linehl = "", numhl = "" })
     vim.fn.sign_define("DapBreakpointRejected", { text = "", texthl = "DiagnosticInfo", linehl = "", numhl = "" })
@@ -37,34 +35,32 @@ return {
     local dap = require("dap")
     local dapui = require("dapui")
 
-    -- Setup DAP UI
     dapui.setup({
       layouts = {
         {
           elements = {
-            { id = "scopes", size = 0.25 },
+            { id = "scopes",      size = 0.25 },
             { id = "breakpoints", size = 0.25 },
-            { id = "stacks", size = 0.25 },
-            { id = "watches", size = 0.25 },
+            { id = "stacks",      size = 0.25 },
+            { id = "watches",     size = 0.25 },
           },
           size = 40,
           position = "left",
         },
         {
           elements = {
-            { id = "repl", size = 0.5 },
+            { id = "repl",    size = 0.5 },
             { id = "console", size = 0.5 },
           },
           size = 10,
           position = "bottom",
         },
       },
-      floating = {
-        border = "rounded",
-      },
+      -- floating = {
+      --   border = "rounded",
+      -- },
     })
 
-    -- Auto-open/close DAP UI
     dap.listeners.after.event_initialized["dapui_config"] = function()
       dapui.open()
     end
@@ -75,7 +71,6 @@ return {
       dapui.close()
     end
 
-    -- Auto-install netcoredbg via Mason
     local function ensure_netcoredbg_installed()
       local mason_registry = require("mason-registry")
 
@@ -96,7 +91,6 @@ return {
       end
     end
 
-    -- Wait for Mason registry to load
     local mason_registry = require("mason-registry")
     if mason_registry.refresh then
       mason_registry.refresh(ensure_netcoredbg_installed)
@@ -104,7 +98,6 @@ return {
       ensure_netcoredbg_installed()
     end
 
-    -- .NET Core debugger configuration
     dap.adapters.coreclr = {
       type = "executable",
       command = vim.fn.stdpath("data") .. "/mason/bin/netcoredbg",
@@ -117,7 +110,6 @@ return {
       args = { "--interpreter=vscode" },
     }
 
-    -- .NET Core configurations
     dap.configurations.cs = {
       {
         type = "coreclr",

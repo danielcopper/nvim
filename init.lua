@@ -1,4 +1,10 @@
+-- TODO:
+-- theming system
+-- lsp integration improvements in lualine
+--  - doenst work properly when restargin lsp
+--  - should have a cog symbol in front and maybe slightly colored
 -- Load environment variables from .env file (for codecompanion API keys)
+-- color preview
 local function load_env()
   local env_file = vim.fn.stdpath("config") .. "/.env"
   if vim.fn.filereadable(env_file) == 1 then
@@ -47,7 +53,7 @@ require("lazy").setup({
     install = { colorscheme = { "catppuccin", "habamax" } },
     checker = { enabled = true, notify = false },
     change_detection = { enabled = true, notify = false },
-    ui = { border = "rounded" },
+    -- ui = { border = "rounded" },
 })
 
 -- Load keymaps and autocmds
