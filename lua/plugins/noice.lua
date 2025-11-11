@@ -7,7 +7,9 @@ return {
     "MunifTanjim/nui.nvim",
     "rcarriga/nvim-notify",
   },
-  opts = {
+  opts = function()
+    local theme_config = require("copper.theme.config")
+    return {
     lsp = {
       -- Override markdown rendering so that **cmp** and other plugins use **Treesitter**
       override = {
@@ -43,20 +45,21 @@ return {
         view = "notify", -- Route notifications to nvim-notify
       },
     },
-    -- Views configuration
-    views = {
-      hover = {
-        border = {
-          style = "single",
-          padding = { 0, 1 },
+      -- Views configuration
+      views = {
+        hover = {
+          border = {
+            style = theme_config.borders,
+            padding = theme_config.padding,
+          },
+        },
+        signature = {
+          border = {
+            style = theme_config.borders,
+            padding = theme_config.padding,
+          },
         },
       },
-      signature = {
-        border = {
-          style = "single",
-          padding = { 0, 1 },
-        },
-      },
-    },
-  },
+    }
+  end,
 }

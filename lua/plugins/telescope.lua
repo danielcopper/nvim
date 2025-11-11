@@ -38,10 +38,11 @@ return {
   config = function()
     local telescope = require("telescope")
     local actions = require("telescope.actions")
+    local theme_config = require("copper.theme.config")
 
     telescope.setup({
       defaults = {
-        borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+        borderchars = theme_config.get_border_chars(),
         prompt_prefix = "   ",
         selection_caret = " ",
         entry_prefix = " ",

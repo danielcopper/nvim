@@ -10,6 +10,9 @@ return {
   },
 
   config = function()
+    local theme_config = require("copper.theme.config")
+    local icons = require("copper.theme.icons")
+
     -- Diagnostic configuration
     vim.diagnostic.config({
       update_in_insert = false,
@@ -20,15 +23,15 @@ return {
         current_line = true,
       },
       float = {
-        border = "rounded",
+        border = theme_config.borders,
         source = "always",
       },
       signs = {
         text = {
-          [vim.diagnostic.severity.ERROR] = "󰅚",
-          [vim.diagnostic.severity.WARN] = "󰀪",
-          [vim.diagnostic.severity.HINT] = "󰌶",
-          [vim.diagnostic.severity.INFO] = "",
+          [vim.diagnostic.severity.ERROR] = icons.diagnostics.Error,
+          [vim.diagnostic.severity.WARN] = icons.diagnostics.Warn,
+          [vim.diagnostic.severity.HINT] = icons.diagnostics.Hint,
+          [vim.diagnostic.severity.INFO] = icons.diagnostics.Info,
         },
       },
     })

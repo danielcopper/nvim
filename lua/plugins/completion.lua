@@ -25,6 +25,8 @@ return {
   config = function()
     local cmp = require("cmp")
     local luasnip = require("luasnip")
+    local theme_config = require("copper.theme.config")
+    local icons = require("copper.theme.icons")
 
     -- Autopairs integration
     local cmp_autopairs = require("nvim-autopairs.completion.cmp")
@@ -84,11 +86,11 @@ return {
 
       window = {
         completion = cmp.config.window.bordered({
-          border = "single",
+          border = theme_config.borders,
           winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
         }),
         documentation = cmp.config.window.bordered({
-          border = "single",
+          border = theme_config.borders,
           winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
         }),
       },
@@ -96,35 +98,8 @@ return {
       formatting = {
         fields = { "kind", "abbr", "menu" },
         format = function(_, item)
-          local icons = {
-            Text = "󰉿",
-            Method = "󰆧",
-            Function = "󰊕",
-            Constructor = "",
-            Field = "󰜢",
-            Variable = "󰀫",
-            Class = "󰠱",
-            Interface = "",
-            Module = "",
-            Property = "󰜢",
-            Unit = "󰑭",
-            Value = "󰎠",
-            Enum = "",
-            Keyword = "󰌋",
-            Snippet = "",
-            Color = "󰏘",
-            File = "󰈙",
-            Reference = "󰈇",
-            Folder = "󰉋",
-            EnumMember = "",
-            Constant = "󰏿",
-            Struct = "󰙅",
-            Event = "",
-            Operator = "󰆕",
-            TypeParameter = "",
-          }
           local kind_name = item.kind
-          item.kind = " " .. (icons[kind_name] or "") .. " "
+          item.kind = " " .. (icons.kinds[kind_name] or "") .. " "
           item.menu = "    " .. (kind_name or "")
           return item
         end,

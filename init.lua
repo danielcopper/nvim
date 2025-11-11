@@ -59,3 +59,60 @@ require("lazy").setup({
 -- Load keymaps and autocmds
 require("config.keymaps")
 require("config.autocmds")
+
+-- Initialize theme system
+require("copper.theme").setup()
+
+-- Theme management user commands
+vim.api.nvim_create_user_command("ThemeBorders", function(opts)
+  require("copper.theme.config").set("borders", opts.args)
+end, {
+  nargs = 1,
+  complete = function()
+    return { "none", "single", "rounded", "double" }
+  end,
+  desc = "Set border style (none|single|rounded|double)",
+})
+
+vim.api.nvim_create_user_command("ThemeReload", function()
+  require("copper.theme").reload()
+end, {
+  desc = "Manually reload theme system",
+})
+
+vim.api.nvim_create_user_command("ThemeInfo", function()
+  local config = require("copper.theme.config")
+  local colors = require("copper.theme").get_colors()
+
+  print("=== Theme Info ===")
+  print("Colorscheme: " .. (vim.g.colors_name or "none"))
+  print("Border style: " .. config.borders)
+  print("Transparency: " .. tostring(config.transparency))
+  print("\nColors:")
+  for k, v in pairs(colors) do
+    print(string.format("  %s = %s", k, v))
+  end
+end, {
+  desc = "Show current theme information",
+})
+
+vim.api.nvim_create_user_command("ThemeToggleBorders", function()
+  local config = require("copper.theme.config")
+  local styles = { "none", "single", "rounded", "double" }
+  local current_index = 1
+
+  for i, style in ipairs(styles) do
+    if style == config.borders then
+      current_index = i
+      break
+    end
+  end
+
+  local next_index = (current_index % #styles) + 1
+  local next_style = styles[next_index]
+
+  config.set("borders", next_style)
+  vim.notify("Borders: " .. next_style, vim.log.levels.INFO)
+end, {
+  desc = "Cycle through border styles",
+})
