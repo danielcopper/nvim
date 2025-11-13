@@ -8,7 +8,9 @@ return {
     "rcarriga/nvim-notify",
   },
   opts = function()
-    local theme_config = require("copper.theme.config")
+    local harmony = require("harmony")
+    local config = harmony.get_config()
+
     return {
     lsp = {
       -- Override markdown rendering so that **cmp** and other plugins use **Treesitter**
@@ -45,18 +47,18 @@ return {
         view = "notify", -- Route notifications to nvim-notify
       },
     },
-      -- Views configuration
+        -- Views configuration
       views = {
         hover = {
           border = {
-            style = theme_config.borders,
-            padding = theme_config.padding,
+            style = harmony.border(),
+            padding = { config.padding.top, config.padding.right },
           },
         },
         signature = {
           border = {
-            style = theme_config.borders,
-            padding = theme_config.padding,
+            style = harmony.border(),
+            padding = { config.padding.top, config.padding.right },
           },
         },
       },

@@ -38,22 +38,9 @@ return {
         },
         custom_highlights = function(colors)
           return {
-            FloatBorder = { fg = colors.blue },
             CursorLineNr = { fg = colors.peach, style = { "bold" } },
             Comment = { fg = colors.overlay2, style = { "italic" } },
-
-            -- Telescope NvChad-style with subtle backgrounds and toned down borders
-            TelescopePromptNormal = { bg = colors.surface0 },
-            TelescopePromptBorder = { bg = colors.surface0, fg = colors.surface0 },
-            TelescopePromptTitle = { bg = colors.surface0, fg = colors.surface0 },
-
-            TelescopeResultsNormal = { bg = colors.mantle },
-            TelescopeResultsBorder = { bg = colors.mantle, fg = colors.mantle },
-            TelescopeResultsTitle = { bg = colors.mantle, fg = colors.mantle },
-
-            TelescopePreviewNormal = { bg = colors.crust },
-            TelescopePreviewBorder = { bg = colors.crust, fg = colors.crust },
-            TelescopePreviewTitle = { bg = colors.crust, fg = colors.crust },
+            -- Telescope highlights are now handled by harmony
           }
         end,
       }
@@ -61,8 +48,7 @@ return {
     config = function(_, opts)
       if config.colorscheme == "catppuccin" then
         require("catppuccin").setup(opts)
-        vim.cmd.colorscheme("catppuccin")
-        -- vim.g.border_style = config.borders
+        -- Colorscheme loading is now handled by harmony
       end
     end,
   },
@@ -75,8 +61,7 @@ return {
     config = function(_, opts)
       if config.colorscheme == "kanso" then
         require("kanso").setup(opts)
-        vim.cmd.colorscheme("kanso")
-        -- vim.g.border_style = config.borders
+        -- Colorscheme loading is now handled by harmony
       end
     end,
   },

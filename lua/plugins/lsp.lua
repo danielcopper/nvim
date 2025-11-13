@@ -10,8 +10,7 @@ return {
   },
 
   config = function()
-    local theme_config = require("copper.theme.config")
-    local icons = require("copper.theme.icons")
+    local harmony = require("harmony")
 
     -- Diagnostic configuration
     vim.diagnostic.config({
@@ -23,17 +22,10 @@ return {
         current_line = true,
       },
       float = {
-        border = theme_config.borders,
+        border = harmony.border(),
         source = "always",
       },
-      signs = {
-        text = {
-          [vim.diagnostic.severity.ERROR] = icons.diagnostics.Error,
-          [vim.diagnostic.severity.WARN] = icons.diagnostics.Warn,
-          [vim.diagnostic.severity.HINT] = icons.diagnostics.Hint,
-          [vim.diagnostic.severity.INFO] = icons.diagnostics.Info,
-        },
-      },
+      signs = harmony.diagnostic_signs(),
     })
 
     -- LSP floating windows are handled by noice.nvim

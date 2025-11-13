@@ -19,14 +19,6 @@ opt.scrolloff = 8
 opt.sidescrolloff = 8
 opt.list = true
 opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
--- Global window border (set by theme system)
--- Note: This is set at runtime by copper.theme, but we initialize it here
-vim.schedule(function()
-  local ok, theme_config = pcall(require, "copper.theme.config")
-  if ok then
-    opt.winborder = theme_config.borders
-  end
-end)
 
 -- Indentation
 opt.expandtab = true

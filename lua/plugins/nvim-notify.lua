@@ -6,19 +6,18 @@ return {
     { "<leader>un", function() require("notify").dismiss({ silent = true, pending = true }) end, desc = "Dismiss All Notifications" },
     { "<leader>n", "<cmd>Telescope notify<cr>", desc = "Notification History" },
   },
-  opts = {
-    stages = "fade_in_slide_out",
-  },
-  config = function(_, opts)
-    local theme_config = require("copper.theme.config")
+  config = function()
+    local harmony = require("harmony")
 
-    -- Set border based on theme system
-    opts.render = "compact"
-    opts.border = theme_config.borders
+    local opts = {
+      stages = "fade_in_slide_out",
+      render = "compact",
+      border = harmony.border(),
+    }
 
     -- Set background color for borderless mode
-    if theme_config.borders == "none" then
-      local colors = require("copper.theme").get_colors()
+    if harmony.border() == "none" then
+      local colors = harmony.get_colors()
       opts.background_colour = colors.bg_dark
     end
 

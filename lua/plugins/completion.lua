@@ -25,8 +25,7 @@ return {
   config = function()
     local cmp = require("cmp")
     local luasnip = require("luasnip")
-    local theme_config = require("copper.theme.config")
-    local icons = require("copper.theme.icons")
+    local harmony = require("harmony")
 
     -- Autopairs integration
     local cmp_autopairs = require("nvim-autopairs.completion.cmp")
@@ -84,25 +83,11 @@ return {
         { name = "buffer" },
       }),
 
-      window = {
-        completion = cmp.config.window.bordered({
-          border = theme_config.borders,
-          winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:PmenuSel,Search:None",
-        }),
-        documentation = cmp.config.window.bordered({
-          border = theme_config.borders,
-          winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
-        }),
-      },
+      window = harmony.cmp_window(),
 
       formatting = {
         fields = { "kind", "abbr", "menu" },
-        format = function(_, item)
-          local kind_name = item.kind
-          item.kind = " " .. (icons.kinds[kind_name] or "") .. " "
-          item.menu = "    " .. (kind_name or "")
-          return item
-        end,
+        format = harmony.format_cmp_item,
       },
 
       experimental = {

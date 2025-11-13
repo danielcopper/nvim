@@ -38,11 +38,11 @@ return {
   config = function()
     local telescope = require("telescope")
     local actions = require("telescope.actions")
-    local theme_config = require("copper.theme.config")
+    local harmony = require("harmony")
 
     telescope.setup({
       defaults = {
-        borderchars = theme_config.get_border_chars(),
+        borderchars = harmony.telescope_borderchars(),
         prompt_prefix = "   ",
         selection_caret = " ",
         entry_prefix = " ",
