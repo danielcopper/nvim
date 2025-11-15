@@ -7,6 +7,12 @@ return {
     },
     opts = {
       config = {
+        root_dir = function(fname)
+          local util = require("lspconfig.util")
+          -- Prefer .slnx (new format) over .sln (old format)
+          return util.root_pattern("*.slnx", "*.sln", "*.csproj", ".git")(fname)
+            or util.find_git_ancestor(fname)
+        end,
         handlers = {
           -- Fix for noice.nvim: ensure progress messages have a token field
           ["$/progress"] = function(err, result, ctx, config)

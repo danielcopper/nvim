@@ -18,18 +18,19 @@ return {
   keys = {
     -- Files
     { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-    { "<leader>fr", "<cmd>Telescope oldfiles<cr>", desc = "Recent files" },
-    { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Find buffers" },
+    { "<leader>fo", "<cmd>Telescope oldfiles<cr>", desc = "Old/recent files" },
+    { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
 
     -- Search
-    { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Grep in project" },
-    { "<leader>fw", "<cmd>Telescope grep_string<cr>", desc = "Find word under cursor" },
+    { "<leader>fs", "<cmd>Telescope live_grep<cr>", desc = "Search (grep)" },
+    { "<leader>fw", "<cmd>Telescope grep_string<cr>", desc = "Word under cursor" },
 
     -- Vim
     { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help tags" },
     { "<leader>fk", "<cmd>Telescope keymaps<cr>", desc = "Keymaps" },
     { "<leader>fc", "<cmd>Telescope commands<cr>", desc = "Commands" },
     { "<leader>fd", "<cmd>Telescope diagnostics<cr>", desc = "Diagnostics" },
+    { "<leader>fz", "<cmd>Telescope spell_suggest<cr>", desc = "Spell suggest" },
 
     -- Resume last picker
     { "<leader>f.", "<cmd>Telescope resume<cr>", desc = "Resume last picker" },

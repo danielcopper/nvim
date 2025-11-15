@@ -44,13 +44,8 @@ opt.splitbelow = true
 opt.confirm = true
 
 -- Completion
-opt.completeopt = "menu,menuone,noselect"
+opt.completeopt = "menu,menuone"
 opt.pumheight = 10
-
--- Folding
-opt.foldcolumn = "0"
-opt.foldlevel = 99
-opt.foldlevelstart = 99
 
 -- Formatting (jcroqlnt: see :help fo-table)
 opt.formatoptions = "jcroqlnt"
