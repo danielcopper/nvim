@@ -7,6 +7,7 @@ return {
     preset = "modern",
     delay = 500,
     spec = {
+      { "<leader>a", group = "ai/claude" },
       { "<leader>b", group = "buffer" },
       { "<leader>c", group = "code" },
       { "<leader>f", group = "find/file" },

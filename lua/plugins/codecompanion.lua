@@ -1,5 +1,6 @@
 return {
   "olimorris/codecompanion.nvim",
+  enabled = false, -- Disabled in favor of coder/claudecode.nvim
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-treesitter/nvim-treesitter",
