@@ -1,8 +1,8 @@
 -- Harmony: Centralized theme and UI management system
 
 return {
-  dir = "~/Repos/nvim-harmony",
-  -- "danielcopper/nvim-harmony",
+  -- dir = "~/Repos/nvim-harmony",
+  "danielcopper/nvim-harmony",
   name = "harmony",
   lazy = false,
   priority = 1000, -- Load early to ensure harmony loads before themed plugins

@@ -53,7 +53,7 @@ require("lazy").setup({
       { import = "harmony.specs" }, -- Auto-configuration for harmony theming
     },
     install = { colorscheme = { "catppuccin", "habamax" } },
-    checker = { enabled = true, notify = false },
+    checker = { enabled = true, notify = true },
     change_detection = { enabled = true, notify = false },
     -- ui = { border = "rounded" },
 })
