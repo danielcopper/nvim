@@ -53,6 +53,12 @@ opt.formatoptions = "jcroqlnt"
 -- Spell check
 opt.spelllang = { "en", "de" }
 
+-- Folding (for nvim-ufo)
+opt.foldcolumn = "0"
+opt.foldlevel = 99
+opt.foldlevelstart = 99
+opt.foldenable = true
+
 -- Session options
 opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
 

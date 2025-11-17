@@ -48,7 +48,10 @@ require("config.options")
 
 -- Setup plugins
 require("lazy").setup({
-    spec = { { import = "plugins" } },
+    spec = {
+      { import = "plugins" },
+      { import = "harmony.specs" }, -- Auto-configuration for harmony theming
+    },
     install = { colorscheme = { "catppuccin", "habamax" } },
     checker = { enabled = true, notify = false },
     change_detection = { enabled = true, notify = false },

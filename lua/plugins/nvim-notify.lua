@@ -7,21 +7,7 @@ return {
     { "<leader>n", "<cmd>Telescope notify<cr>", desc = "Notification History" },
   },
   config = function()
-    local harmony = require("harmony")
-
-    local opts = {
-      stages = "fade_in_slide_out",
-      render = "compact",
-      border = harmony.border(),
-    }
-
-    -- Set background color for borderless mode
-    if harmony.border() == "none" then
-      local colors = harmony.get_colors()
-      opts.background_colour = colors.bg_dark
-    end
-
-    require("notify").setup(opts)
+    require("notify").setup()
     vim.notify = require("notify")
   end,
 }

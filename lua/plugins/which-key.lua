@@ -21,9 +21,7 @@ return {
       { "g", group = "goto" },
       { "z", group = "fold" },
     },
-    win = {
-      border = "none",
-    },
+    -- Window border configured automatically by harmony
     icons = {
       mappings = true,
       keys = {

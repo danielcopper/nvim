@@ -7,11 +7,7 @@ return {
     "MunifTanjim/nui.nvim",
     "rcarriga/nvim-notify",
   },
-  opts = function()
-    local harmony = require("harmony")
-    local config = harmony.get_config()
-
-    return {
+  opts = {
     lsp = {
       -- Override markdown rendering so that **cmp** and other plugins use **Treesitter**
       override = {
@@ -36,7 +32,7 @@ return {
       command_palette = true,        -- Position the cmdline and popupmenu together
       long_message_to_split = true,  -- Long messages sent to split
       inc_rename = false,            -- Not using inc_rename.nvim
-      lsp_doc_border = true,         -- Add border to hover and signature help
+      -- lsp_doc_border = true,         -- Add border to hover and signature help
     },
     -- Routes for message handling
     routes = {
@@ -47,21 +43,5 @@ return {
         view = "notify", -- Route notifications to nvim-notify
       },
     },
-        -- Views configuration
-      views = {
-        hover = {
-          border = {
-            style = harmony.border(),
-            padding = { config.padding.top, config.padding.right },
-          },
-        },
-        signature = {
-          border = {
-            style = harmony.border(),
-            padding = { config.padding.top, config.padding.right },
-          },
-        },
-      },
-    }
-  end,
+  },
 }

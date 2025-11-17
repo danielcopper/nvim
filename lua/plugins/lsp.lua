@@ -10,9 +10,7 @@ return {
   },
 
   config = function()
-    local harmony = require("harmony")
-
-    -- Diagnostic configuration
+    -- Diagnostic configuration (borders and signs handled by harmony.builtins)
     vim.diagnostic.config({
       update_in_insert = false,
       underline = true,
@@ -22,10 +20,8 @@ return {
         current_line = true,
       },
       float = {
-        border = harmony.border(),
         source = "always",
       },
-      signs = harmony.diagnostic_signs(),
     })
 
     -- LSP floating windows are handled by noice.nvim

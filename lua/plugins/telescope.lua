@@ -13,41 +13,31 @@ return {
       end,
     },
   },
-  lazy = false,
-  cmd = "Telescope",
   keys = {
     -- Files
-    { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-    { "<leader>fo", "<cmd>Telescope oldfiles<cr>", desc = "Old/recent files" },
-    { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
+    { "<leader>ff", "<cmd>Telescope find_files<cr>",    desc = "Find files" },
+    { "<leader>fo", "<cmd>Telescope oldfiles<cr>",      desc = "Old/recent files" },
+    { "<leader>fb", "<cmd>Telescope buffers<cr>",       desc = "Buffers" },
 
     -- Search
-    { "<leader>fs", "<cmd>Telescope live_grep<cr>", desc = "Search (grep)" },
-    { "<leader>fw", "<cmd>Telescope grep_string<cr>", desc = "Word under cursor" },
+    { "<leader>fs", "<cmd>Telescope live_grep<cr>",     desc = "Search (grep)" },
+    { "<leader>fw", "<cmd>Telescope grep_string<cr>",   desc = "Word under cursor" },
 
     -- Vim
-    { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help tags" },
-    { "<leader>fk", "<cmd>Telescope keymaps<cr>", desc = "Keymaps" },
-    { "<leader>fc", "<cmd>Telescope commands<cr>", desc = "Commands" },
-    { "<leader>fd", "<cmd>Telescope diagnostics<cr>", desc = "Diagnostics" },
+    { "<leader>fh", "<cmd>Telescope help_tags<cr>",     desc = "Help tags" },
+    { "<leader>fk", "<cmd>Telescope keymaps<cr>",       desc = "Keymaps" },
+    { "<leader>fc", "<cmd>Telescope commands<cr>",      desc = "Commands" },
+    { "<leader>fd", "<cmd>Telescope diagnostics<cr>",   desc = "Diagnostics" },
     { "<leader>fz", "<cmd>Telescope spell_suggest<cr>", desc = "Spell suggest" },
 
     -- Resume last picker
-    { "<leader>f.", "<cmd>Telescope resume<cr>", desc = "Resume last picker" },
+    { "<leader>f.", "<cmd>Telescope resume<cr>",        desc = "Resume last picker" },
   },
-
-  config = function()
-    local telescope = require("telescope")
+  opts = function()
     local actions = require("telescope.actions")
-    local harmony = require("harmony")
 
-    telescope.setup({
+    return {
       defaults = {
-        borderchars = harmony.telescope_borderchars(),
-        prompt_prefix = "   ",
-        selection_caret = " ",
-        entry_prefix = " ",
-
         sorting_strategy = "ascending",
         layout_strategy = "horizontal",
         layout_config = {
@@ -60,6 +50,7 @@ return {
         },
 
         path_display = { "smart" },
+        dynamic_preview_title = true, -- Show filename in preview title
 
         mappings = {
           i = {
@@ -108,8 +99,34 @@ return {
           sort_lastused = true,
           sort_mru = true,
         },
+        -- LSP pickers with better path display
+        lsp_references = {
+          path_display = { "truncate" }, -- Show more of the path
+          show_line = true,
+          fname_width = 50, -- Adjust filename column width
+        },
+        lsp_definitions = {
+          path_display = { "truncate" },
+          show_line = true,
+          fname_width = 50,
+        },
+        lsp_implementations = {
+          path_display = { "truncate" },
+          show_line = true,
+          fname_width = 50,
+        },
+        lsp_type_definitions = {
+          path_display = { "truncate" },
+          show_line = true,
+          fname_width = 50,
+        },
       },
-    })
+    }
+  end,
+  config = function(_, opts)
+    local telescope = require("telescope")
+
+    telescope.setup(opts)
 
     -- Load fzf extension for better performance
     pcall(telescope.load_extension, "fzf")

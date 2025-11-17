@@ -13,12 +13,6 @@ return {
       "github:mason-org/mason-registry",
       "github:crashdummyy/mason-registry",
     },
-    ui = {
-      icons = {
-        package_installed = "✓",
-        package_pending = "➜",
-        package_uninstalled = "✗",
-      },
-    },
+    -- UI icons and border configured automatically by harmony
   },
 }

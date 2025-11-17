@@ -25,7 +25,6 @@ return {
   config = function()
     local cmp = require("cmp")
     local luasnip = require("luasnip")
-    local harmony = require("harmony")
 
     -- Autopairs integration
     local cmp_autopairs = require("nvim-autopairs.completion.cmp")
@@ -86,13 +85,6 @@ return {
         { name = "path" },
         { name = "buffer" },
       }),
-
-      window = harmony.cmp_window(),
-
-      formatting = {
-        fields = { "kind", "abbr", "menu" },
-        format = harmony.format_cmp_item,
-      },
 
       experimental = {
         ghost_text = false,

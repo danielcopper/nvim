@@ -31,7 +31,7 @@ return {
           noice = true,
           notify = true,
           nvimtree = true,
-          telescope = { enabled = true },
+          telescope = { enabled = false }, -- Disabled - handled by harmony
           treesitter = true,
           treesitter_context = true,
           which_key = true,
