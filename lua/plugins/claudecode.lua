@@ -98,14 +98,15 @@ return {
             mode = "t",
             desc = "Move to upper window",
           },
-          nav_down = {
-            "<C-j>",
-            function()
-              vim.cmd("wincmd j")
-            end,
-            mode = "t",
-            desc = "Move to lower window",
-          },
+          -- Disabled: User needs <C-j> for newline, rarely have windows below
+          -- nav_down = {
+          --   "<C-j>",
+          --   function()
+          --     vim.cmd("wincmd j")
+          --   end,
+          --   mode = "t",
+          --   desc = "Move to lower window",
+          -- },
         },
       },
     },
@@ -114,7 +115,7 @@ return {
     diff = {
       auto_close_on_accept = true,
       vertical_split = true,
-      open_in_current_tab = false, -- Open diff in new tab for clean 2-split view
+      open_in_current_tab = false, -- Open in new tab to avoid cluttering split layouts
     },
 
     -- Working directory (uses git root by default)
