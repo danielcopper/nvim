@@ -158,6 +158,7 @@ return {
       emmet_language_server = {},
       eslint = {},
       powershell_es = {},
+      lemminx = {}, -- XML Language Server
     }
 
     -- Configure and enable each server
