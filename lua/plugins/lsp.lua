@@ -10,17 +10,29 @@ return {
   },
 
   config = function()
-    -- Diagnostic configuration (borders and signs handled by harmony.builtins)
+    -- Diagnostic configuration
+    local icons = require("config.theme.icons")
+    local helpers = require("config.theme.helpers")
+
     vim.diagnostic.config({
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = icons.diagnostics.error,
+          [vim.diagnostic.severity.WARN] = icons.diagnostics.warn,
+          [vim.diagnostic.severity.INFO] = icons.diagnostics.info,
+          [vim.diagnostic.severity.HINT] = icons.diagnostics.hint,
+        },
+      },
+      float = {
+        border = helpers.get_border(),
+        source = true,
+      },
       update_in_insert = false,
       underline = true,
       severity_sort = true,
       virtual_text = false,
       virtual_lines = {
         current_line = true,
-      },
-      float = {
-        source = "always",
       },
     })
 

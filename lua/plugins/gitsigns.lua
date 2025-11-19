@@ -11,7 +11,6 @@ return {
       delay = 500,
     },
     current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
-    -- Git signs configured automatically by harmony
     on_attach = function(bufnr)
       local gs = package.loaded.gitsigns
 

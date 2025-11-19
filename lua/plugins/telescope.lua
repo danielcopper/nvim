@@ -1,5 +1,8 @@
 -- Telescope: Fuzzy finder for files, text, and more
 
+local helpers = require("config.theme.helpers")
+local icons = require("config.theme.icons")
+
 return {
   "nvim-telescope/telescope.nvim",
   branch = "0.1.x",
@@ -38,6 +41,13 @@ return {
 
     return {
       defaults = {
+        -- Theme values
+        borderchars = helpers.get_telescope_borderchars(),
+        prompt_prefix = icons.ui.search .. " ",
+        selection_caret = icons.ui.arrow_right .. " ",
+        entry_prefix = "  ",
+
+        -- Functional config
         sorting_strategy = "ascending",
         layout_strategy = "horizontal",
         layout_config = {

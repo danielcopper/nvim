@@ -1,68 +1,61 @@
-local config = {
-  colorscheme = "catppuccin",
-  flavor = vim.g.catppuccin_flavor or "mocha",
-  transparent = vim.g.transparent_bg or false,
-  -- borders = "rounded",
-}
+local settings = require("config.theme.settings")
 
 return {
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    lazy = config.colorscheme ~= "catppuccin",
+    lazy = false,
     priority = 1000,
-    opts = function()
-      return {
-        flavour = config.flavor,
-        transparent_background = config.transparent,
-        integrations = {
-          alpha = true,
-          barbecue = { dim_dirname = true, bold_basename = true, dim_context = false },
-          cmp = true,
-          dap = true,
-          dap_ui = true,
-          flash = true,
-          gitsigns = true,
-          illuminate = true,
-          lsp_trouble = true,
-          markdown = true,
-          mason = true,
-          mini = true,
-          noice = true,
-          notify = true,
-          nvimtree = true,
-          telescope = { enabled = false }, -- Disabled - handled by harmony
-          treesitter = true,
-          treesitter_context = true,
-          which_key = true,
+    enabled = settings.colorscheme.name == "catppuccin",
+    config = function()
+      require("catppuccin").setup({
+        flavour = settings.colorscheme.variant or "mocha",
+        dim_inactive = {
+          enabled = settings.dim_inactive,
         },
-        custom_highlights = function(colors)
-          return {
-            CursorLineNr = { fg = colors.peach, style = { "bold" } },
-            Comment = { fg = colors.overlay2, style = { "italic" } },
-            -- Telescope highlights are now handled by harmony
-          }
-        end,
-      }
+      })
+      vim.cmd.colorscheme("catppuccin")
     end,
-    config = function(_, opts)
-      if config.colorscheme == "catppuccin" then
-        require("catppuccin").setup(opts)
-        -- Colorscheme loading is now handled by harmony
-      end
+  },
+
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    lazy = false,
+    priority = 1000,
+    enabled = settings.colorscheme.name == "rose-pine",
+    config = function()
+      require("rose-pine").setup({
+        variant = settings.colorscheme.variant or "main",
+        dim_inactive_windows = settings.dim_inactive,
+      })
+      vim.cmd.colorscheme("rose-pine")
+    end,
+  },
+
+  {
+    "rebelot/kanagawa.nvim",
+    name = "kanagawa",
+    lazy = false,
+    priority = 1000,
+    enabled = settings.colorscheme.name == "kanagawa",
+    config = function()
+      require("kanagawa").setup({
+        theme = settings.colorscheme.variant or "wave",
+        dimInactive = settings.dim_inactive,
+      })
+      vim.cmd.colorscheme("kanagawa")
     end,
   },
 
   {
     "webhooked/kanso.nvim",
-    lazy = config.colorscheme ~= "kanso",
+    name = "kanso",
+    lazy = false,
     priority = 1000,
-    opts = {},
-    config = function(_, opts)
-      if config.colorscheme == "kanso" then
-        require("kanso").setup(opts)
-        -- Colorscheme loading is now handled by harmony
-      end
+    enabled = settings.colorscheme.name == "kanso",
+    config = function()
+      vim.cmd.colorscheme("kanso")
     end,
   },
 }

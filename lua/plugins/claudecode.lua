@@ -114,7 +114,7 @@ return {
     diff = {
       auto_close_on_accept = true,
       vertical_split = true,
-      open_in_current_tab = true,
+      open_in_current_tab = false, -- Open diff in new tab for clean 2-split view
     },
 
     -- Working directory (uses git root by default)

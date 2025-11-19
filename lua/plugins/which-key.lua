@@ -1,26 +1,38 @@
 -- Which-key: Show keybindings in a popup
 
+local helpers = require("config.theme.helpers")
+local icons = require("config.theme.icons")
+
 return {
   "folke/which-key.nvim",
   event = "VeryLazy",
-  opts = {
-    preset = "modern",
+  opts = function()
+    return {
+      win = {
+        border = helpers.get_border(),
+      },
+      preset = "modern",
     delay = 500,
     spec = {
-      { "<leader>a", group = "ai/claude" },
-      { "<leader>b", group = "buffer" },
-      { "<leader>c", group = "code" },
-      { "<leader>f", group = "find/file" },
-      { "<leader>g", group = "git" },
-      { "<leader>n", group = "notifications" },
-      { "<leader>r", group = "rename" },
-      { "<leader>u", group = "ui/toggle" },
-      { "<leader>v", group = "view" },
-      { "<leader>x", group = "diagnostics/quickfix" },
+      { "<leader>a", group = "ai/claude", icon = { icon = icons.ui.ai, color = "azure" } },
+      { "<leader>b", group = "buffer", icon = { icon = icons.ui.buffer, color = "cyan" } },
+      { "<leader>c", group = "code", icon = { icon = icons.ui.code, color = "orange" } },
+      { "<leader>f", group = "find/file", icon = { icon = icons.ui.find, color = "green" } },
+      { "<leader>g", group = "git", icon = { icon = icons.git.branch, color = "purple" } },
+      { "<leader>n", group = "notifications", icon = { icon = icons.ui.notifications, color = "blue" } },
+      { "<leader>r", group = "rename", icon = { icon = icons.ui.rename, color = "yellow" } },
+      { "<leader>u", group = "ui/toggle", icon = { icon = icons.ui.toggle, color = "cyan" } },
+      { "<leader>v", group = "view", icon = { icon = icons.ui.view, color = "blue" } },
+      { "<leader>x", group = "diagnostics/quickfix", icon = { icon = icons.diagnostics.error, color = "red" } },
       { "[", group = "prev" },
       { "]", group = "next" },
       { "g", group = "goto" },
       { "z", group = "fold" },
+      { "q", icon = { icon = icons.ui.close, color = "red" } },
+      { "y", icon = { icon = icons.ui.yank, color = "yellow" } },
+      { "d", icon = { icon = icons.ui.delete, color = "red" } },
+      { "s", icon = { icon = icons.ui.surround, color = "orange" } },
+      { "t", icon = { icon = icons.ui.terminal, color = "cyan" } },
     },
     -- Window border configured automatically by harmony
     icons = {
@@ -40,7 +52,8 @@ return {
         M = "󰘵 ",
       },
     },
-  },
+    }
+  end,
   keys = {
     {
       "<leader>?",

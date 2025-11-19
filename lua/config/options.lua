@@ -17,8 +17,11 @@ opt.showmode = false
 opt.wrap = false
 opt.scrolloff = 8
 opt.sidescrolloff = 8
+
+-- Whitespace and separators
+-- TODO: use theme.icons.
 opt.list = true
-opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+opt.listchars = { tab = "→ ", trail = "·", extends = "›", precedes = "‹", nbsp = "␣" }
 
 -- Indentation
 opt.expandtab = true

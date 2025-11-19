@@ -1,5 +1,7 @@
 -- Trouble: Pretty diagnostics, references, and more
 
+local icons = require("config.theme.icons")
+
 return {
   "folke/trouble.nvim",
   cmd = "Trouble",
@@ -42,6 +44,16 @@ return {
         auto_close = false,
       },
     },
-    -- Icons configured automatically by harmony
+    icons = {
+      indent = {
+        middle = "├╴",
+        last = "└╴",
+        top = "│ ",
+        ws = "  ",
+      },
+      folder_closed = icons.ui.folder,
+      folder_open = icons.ui.folder_open,
+      kinds = icons.lsp.kinds,
+    },
   },
 }

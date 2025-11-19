@@ -61,7 +61,12 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("vertical_help"),
   pattern = "help",
-  command = "wincmd L",
+  callback = function(args)
+    -- Only move to right split if this is actually a help buffer
+    if vim.bo[args.buf].buftype == "help" then
+      vim.cmd("wincmd L")
+    end
+  end,
 })
 
 -- Syntax highlighting for dotenv files
@@ -88,45 +93,45 @@ vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
   end,
 })
 
--- Auto-delete empty unnamed buffers when opening a file
-vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
-  group = augroup("delete_empty_buffer"),
-  callback = function(args)
-    if args.file == "" then
-      return
-    end
-
-    vim.schedule(function()
-      local buffers = vim.api.nvim_list_bufs()
-      local valid_buffers = 0
-
-      for _, buf in ipairs(buffers) do
-        if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_name(buf) ~= "" then
-          valid_buffers = valid_buffers + 1
-        end
-      end
-
-      if valid_buffers > 0 then
-        for _, buf in ipairs(buffers) do
-          if vim.api.nvim_buf_is_valid(buf) then
-            local name = vim.api.nvim_buf_get_name(buf)
-            local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
-            local modified = vim.api.nvim_buf_get_option(buf, "modified")
-
-            if (name == "" or name == "." or vim.fn.isdirectory(name) == 1) and buftype == "" and not modified then
-              local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-              local char_count = 0
-              for _, line in ipairs(lines) do
-                char_count = char_count + #line
-              end
-
-              if char_count == 0 then
-                pcall(vim.api.nvim_buf_delete, buf, { force = true })
-              end
-            end
-          end
-        end
-      end
-    end)
-  end,
-})
+-- -- Auto-delete empty unnamed buffers when opening a file
+-- vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+--   group = augroup("delete_empty_buffer"),
+--   callback = function(args)
+--     if args.file == "" then
+--       return
+--     end
+--
+--     vim.schedule(function()
+--       local buffers = vim.api.nvim_list_bufs()
+--       local valid_buffers = 0
+--
+--       for _, buf in ipairs(buffers) do
+--         if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_name(buf) ~= "" then
+--           valid_buffers = valid_buffers + 1
+--         end
+--       end
+--
+--       if valid_buffers > 0 then
+--         for _, buf in ipairs(buffers) do
+--           if vim.api.nvim_buf_is_valid(buf) then
+--             local name = vim.api.nvim_buf_get_name(buf)
+--             local buftype = vim.api.nvim_buf_get_option(buf, "buftype")
+--             local modified = vim.api.nvim_buf_get_option(buf, "modified")
+--
+--             if (name == "" or name == "." or vim.fn.isdirectory(name) == 1) and buftype == "" and not modified then
+--               local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+--               local char_count = 0
+--               for _, line in ipairs(lines) do
+--                 char_count = char_count + #line
+--               end
+--
+--               if char_count == 0 then
+--                 pcall(vim.api.nvim_buf_delete, buf, { force = true })
+--               end
+--             end
+--           end
+--         end
+--       end
+--     end)
+--   end,
+-- })

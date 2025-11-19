@@ -50,7 +50,6 @@ require("config.options")
 require("lazy").setup({
     spec = {
       { import = "plugins" },
-      { import = "harmony.specs" }, -- Auto-configuration for harmony theming
     },
     install = { colorscheme = { "catppuccin", "habamax" } },
     checker = { enabled = true, notify = true },
@@ -61,3 +60,6 @@ require("lazy").setup({
 -- Load keymaps and autocmds
 require("config.keymaps")
 require("config.autocmds")
+
+-- Apply custom theme highlights after colorscheme loads
+require("config.theme.highlights").setup()
