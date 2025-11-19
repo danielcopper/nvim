@@ -4,10 +4,10 @@ local M = {}
 
 ---Diagnostic icons (errors, warnings, info, hints)
 M.diagnostics = {
-  error = "󰅚",
-  hint = "󰌶",
-  info = "󰋽",
-  warn = "󰀪",
+  error = "󰅚 ",
+  hint = "󰌶 ",
+  info = "󰋽 ",
+  warn = "󰀪 ",
 }
 
 ---LSP completion item kind icons
@@ -59,7 +59,7 @@ M.lsp = {
 ---Git status icons
 M.git = {
   add       = " ",
-  branch    = " ",
+  branch    = "󰘬",
   change    = " ",
   conflict  = " ",
   delete    = " ",
@@ -114,6 +114,7 @@ M.ui = {
   prev = " ",
   prompt = "󰠗 ",
   quickfix = "󰒡 ",
+  readonly = "󰷊 ",
   rename = "󰑕 ",
   search = " ",
   spinner = " ",
@@ -122,6 +123,7 @@ M.ui = {
   symlink_folder = " ",
   terminal = " ",
   toggle = "󰙵 ",
+  unknown_file = "󰡯 ",
   view = "󰈈 ",
   yank = "󰆏 ",
   Space = "󱁐 ",

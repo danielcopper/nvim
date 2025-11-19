@@ -78,9 +78,19 @@ return {
       end,
     })
 
+    -- Get default capabilities with completion and other enhancements
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+    -- Enhance with nvim-cmp capabilities if available
+    local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+    if has_cmp then
+      capabilities = vim.tbl_deep_extend("force", capabilities, cmp_nvim_lsp.default_capabilities())
+    end
+
     -- Language server configurations using vim.lsp.config()
     local servers = {
       lua_ls = {
+        capabilities = capabilities,
         settings = {
           Lua = {
             runtime = { version = "LuaJIT" },
@@ -99,6 +109,7 @@ return {
       },
 
       ts_ls = {
+        capabilities = capabilities,
         settings = {
           typescript = {
             inlayHints = {
@@ -110,6 +121,7 @@ return {
       },
 
       jsonls = {
+        capabilities = capabilities,
         settings = {
           json = {
             schemas = require("schemastore").json.schemas(),
@@ -119,46 +131,49 @@ return {
       },
 
       yamlls = {
-        capabilities = require("cmp_nvim_lsp").default_capabilities(),
+        capabilities = capabilities,
         settings = {
           yaml = {
             schemaStore = {
-              enable = false,
-              url = "",
+              enable = true,
             },
-            schemas = require("schemastore").yaml.schemas({
-              replace = {
-                ["Azure Pipelines"] = {
-                  description = "Azure Pipelines (custom paths)",
-                  fileMatch = {
-                    "azure-pipeline*.y*ml",
-                    "azure-pipeline*.y*l",
-                    "**/Pipelines/**/*.yml",
-                    "**/Pipelines/**/*.yaml",
-                    "**/pipelines/**/*.yml",
-                    "**/pipelines/**/*.yaml",
-                  },
-                  name = "Azure Pipelines",
-                  url = "https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json",
-                },
-              },
-            }),
+            schemas = require("schemastore").yaml.schemas(),
           },
         },
       },
 
-      -- Simple servers (use defaults)
-      bashls = {},
-      cssls = {},
-      html = {},
-      dockerls = {},
-      marksman = {},
-      markdown_oxide = {},
-      angularls = {},
-      emmet_language_server = {},
-      eslint = {},
-      powershell_es = {},
-      lemminx = {}, -- XML Language Server
+      azure_pipelines_ls = {
+        capabilities = capabilities,
+        cmd = { "azure-pipelines-language-server", "--stdio" },
+        filetypes = { "yaml", "yml" },
+        root_dir = vim.fs.root(0, { "azure-pipelines.yml", ".git" }),
+        settings = {
+          yaml = {
+            schemas = {
+              ["https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json"] = {
+                "/azure-pipeline*.y*l",
+                "/*.azure*",
+                "Azure-Pipelines/**/*.y*l",
+                "Pipelines/**/*.y*l",
+                "pipelines/**/*.y*l",
+              },
+            },
+          },
+        },
+      },
+
+      -- Simple servers (use defaults with capabilities)
+      bashls = { capabilities = capabilities },
+      cssls = { capabilities = capabilities },
+      html = { capabilities = capabilities },
+      dockerls = { capabilities = capabilities },
+      marksman = { capabilities = capabilities },
+      markdown_oxide = { capabilities = capabilities },
+      angularls = { capabilities = capabilities },
+      emmet_language_server = { capabilities = capabilities },
+      eslint = { capabilities = capabilities },
+      powershell_es = { capabilities = capabilities },
+      lemminx = { capabilities = capabilities }, -- XML Language Server
     }
 
     -- Configure and enable each server
@@ -175,6 +190,7 @@ return {
       ts_ls = "typescript-language-server",
       jsonls = "json-lsp",
       yamlls = "yaml-language-server",
+      azure_pipelines_ls = "azure-pipelines-language-server",
       lua_ls = "lua-language-server",
       bashls = "bash-language-server",
       cssls = "css-lsp",

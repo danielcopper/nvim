@@ -53,7 +53,7 @@ return {
           local kind = item.kind
 
           -- Icon on the left with colored highlight
-          item.kind = " " .. (icons.lsp.kinds[kind] or "") .. " "
+          item.kind = "" .. (icons.lsp.kinds[kind] or "") .. ""
           item.kind_hl_group = "CmpItemKind" .. kind
 
           -- Add horizontal padding to suggestion text

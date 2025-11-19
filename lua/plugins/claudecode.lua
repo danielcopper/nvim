@@ -112,10 +112,11 @@ return {
     },
 
     -- Diff settings
-    diff = {
-      auto_close_on_accept = true,
-      vertical_split = true,
-      open_in_current_tab = false, -- Open in new tab to avoid cluttering split layouts
+    diff_opts = {
+      layout = "vertical",
+      open_in_new_tab = true, -- Open in new tab to preserve current window layout
+      keep_terminal_focus = false,
+      hide_terminal_in_new_tab = false,
     },
 
     -- Working directory (uses git root by default)

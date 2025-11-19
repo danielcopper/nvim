@@ -2,8 +2,7 @@
 -- lsp integration improvements in lualine
 --  - doenst work properly when restargin lsp
 --  - should have a cog symbol in front and maybe slightly colored
--- Load environment variables from .env file (for codecompanion API keys)
--- color preview
+-- lazygit borderles
 local function load_env()
   local env_file = vim.fn.stdpath("config") .. "/.env"
   if vim.fn.filereadable(env_file) == 1 then
@@ -34,7 +33,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out, "WarningMsg" },
+      { out,                            "WarningMsg" },
       { "\nPress any key to exit..." },
     }, true, {})
     vim.fn.getchar()
@@ -48,13 +47,13 @@ require("config.options")
 
 -- Setup plugins
 require("lazy").setup({
-    spec = {
-      { import = "plugins" },
-    },
-    install = { colorscheme = { "catppuccin", "habamax" } },
-    checker = { enabled = true, notify = true },
-    change_detection = { enabled = true, notify = false },
-    -- ui = { border = "rounded" },
+  spec = {
+    { import = "plugins" },
+  },
+  install = { colorscheme = { "catppuccin", "habamax" } },
+  checker = { enabled = true, notify = true },
+  change_detection = { enabled = true, notify = false },
+  -- ui = { border = "rounded" },
 })
 
 -- Load keymaps and autocmds
