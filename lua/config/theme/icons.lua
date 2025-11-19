@@ -1,5 +1,4 @@
 ---@class Icons
----Centralized icon definitions for nvim-harmony
 ---Requires Nerd Fonts to display correctly
 local M = {}
 
@@ -125,6 +124,14 @@ M.ui = {
   toggle = "󰙵 ",
   view = "󰈈 ",
   yank = "󰆏 ",
+  Space = "󱁐 ",
+  BS = "󰁮 ",
+  Esc = "󱊷 ",
+  CR = "󰌑 ",
+  Tab = "󰌒 ",
+  C = "󰘴 ",
+  S = "󰘶 ",
+  M = "󰘵 ",
 }
 
 return M
