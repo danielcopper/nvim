@@ -5,7 +5,6 @@ return {
   dependencies = {
     "rcarriga/nvim-dap-ui",
     "nvim-neotest/nvim-nio",
-    "williamboman/mason.nvim",
   },
   keys = {
     { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle breakpoint" },
@@ -71,33 +70,7 @@ return {
       dapui.close()
     end
 
-    local function ensure_netcoredbg_installed()
-      local mason_registry = require("mason-registry")
-
-      if not mason_registry.is_installed("netcoredbg") then
-        vim.notify("Installing netcoredbg...", vim.log.levels.INFO)
-        local ok, netcoredbg = pcall(mason_registry.get_package, "netcoredbg")
-        if ok then
-          netcoredbg:install():once("closed", function()
-            if netcoredbg:is_installed() then
-              vim.notify("netcoredbg installed successfully", vim.log.levels.INFO)
-            else
-              vim.notify("Failed to install netcoredbg", vim.log.levels.ERROR)
-            end
-          end)
-        else
-          vim.notify("netcoredbg package not found in Mason registry", vim.log.levels.WARN)
-        end
-      end
-    end
-
-    local mason_registry = require("mason-registry")
-    if mason_registry.refresh then
-      mason_registry.refresh(ensure_netcoredbg_installed)
-    else
-      ensure_netcoredbg_installed()
-    end
-
+    -- DAP adapters are automatically installed via mason-packages.lua
     dap.adapters.coreclr = {
       type = "executable",
       command = vim.fn.stdpath("data") .. "/mason/bin/netcoredbg",

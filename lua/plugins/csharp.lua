@@ -2,9 +2,6 @@ return {
   {
     "seblyng/roslyn.nvim",
     ft = "cs",
-    dependencies = {
-      "williamboman/mason.nvim",
-    },
     opts = {
       config = {
         root_dir = function(fname)
@@ -56,32 +53,6 @@ return {
     },
 
     config = function(_, opts)
-      local mason_registry = require("mason-registry")
-
-      local function ensure_roslyn_installed()
-        if not mason_registry.is_installed("roslyn") then
-          vim.notify("Installing roslyn...", vim.log.levels.INFO)
-          local ok, roslyn = pcall(mason_registry.get_package, "roslyn")
-          if ok then
-            roslyn:install():once("closed", function()
-              if roslyn:is_installed() then
-                vim.notify("roslyn installed successfully", vim.log.levels.INFO)
-              else
-                vim.notify("Failed to install roslyn", vim.log.levels.ERROR)
-              end
-            end)
-          else
-            vim.notify("roslyn package not found in Mason registry", vim.log.levels.WARN)
-          end
-        end
-      end
-
-      if mason_registry.refresh then
-        mason_registry.refresh(ensure_roslyn_installed)
-      else
-        ensure_roslyn_installed()
-      end
-
       require("roslyn").setup(opts)
     end,
   },
