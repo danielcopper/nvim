@@ -10,10 +10,10 @@ local M = {}
 
 -- Colorscheme configuration
 M.colorscheme = {
-  -- name = "catppuccin", -- "catppuccin" | "rose-pine" | "kanagawa" | etc.
-  -- variant = "mocha",   -- colorscheme-specific variant
-  name = "rose-pine", -- "catppuccin" | "rose-pine" | "kanagawa" | etc.
-  variant = "main",   -- colorscheme-specific variant
+  name = "catppuccin", -- "catppuccin" | "rose-pine" | "kanagawa" | etc.
+  variant = "mocha",   -- colorscheme-specific variant
+  -- name = "rose-pine", -- "catppuccin" | "rose-pine" | "kanagawa" | etc.
+  -- variant = "main",   -- colorscheme-specific variant
   -- catppuccin: "latte" | "frappe" | "macchiato" | "mocha"
   -- rose-pine: "main" | "moon" | "dawn"
   -- kanagawa: "wave" | "dragon" | "lotus"

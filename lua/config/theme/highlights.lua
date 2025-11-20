@@ -80,6 +80,18 @@ function M.setup()
   end
 
   -- ==========================================================================
+  -- Fidget Highlights (Rose-pine)
+  -- ==========================================================================
+
+  if settings.colorscheme.name == "rose-pine" then
+    local palette = require("rose-pine.palette")
+
+    -- Make fidget notification background match buffer background
+    vim.api.nvim_set_hl(0, "FloatNormal", { bg = palette.base, fg = palette.text })
+    vim.api.nvim_set_hl(0, "FloatBorder", { bg = palette.base, fg = palette.muted })
+  end
+
+  -- ==========================================================================
   -- Noice Highlights (Catppuccin + Borderless)
   -- ==========================================================================
 
@@ -188,6 +200,50 @@ function M.setup()
     -- Documentation window with base background for distinction
     vim.api.nvim_set_hl(0, "CmpDoc", { bg = palette.zenBg0, fg = palette.fg })
     vim.api.nvim_set_hl(0, "CmpDocBorder", { fg = palette.zenBg0, bg = palette.zenBg0 }) -- Invisible: fg = bg
+  end
+
+  -- ==========================================================================
+  -- Notify Highlights (Catppuccin)
+  -- ==========================================================================
+
+  if settings.colorscheme.name == "catppuccin" then
+    local palette = require("catppuccin.palettes").get_palette(settings.colorscheme.variant or "mocha")
+
+    -- Use darkest catppuccin background (crust)
+    local notify_bg = palette.crust
+
+    -- Set the overall notification background
+    vim.api.nvim_set_hl(0, "NotifyBackground", { fg = palette.text, bg = notify_bg })
+
+    -- ERROR level (red)
+    vim.api.nvim_set_hl(0, "NotifyERRORBorder", { fg = palette.red, bg = notify_bg })
+    vim.api.nvim_set_hl(0, "NotifyERRORIcon", { fg = palette.red, bg = notify_bg })
+    vim.api.nvim_set_hl(0, "NotifyERRORTitle", { fg = palette.red, bg = notify_bg, bold = true })
+    vim.api.nvim_set_hl(0, "NotifyERRORBody", { fg = palette.text, bg = notify_bg })
+
+    -- WARN level (yellow)
+    vim.api.nvim_set_hl(0, "NotifyWARNBorder", { fg = palette.yellow, bg = notify_bg })
+    vim.api.nvim_set_hl(0, "NotifyWARNIcon", { fg = palette.yellow, bg = notify_bg })
+    vim.api.nvim_set_hl(0, "NotifyWARNTitle", { fg = palette.yellow, bg = notify_bg, bold = true })
+    vim.api.nvim_set_hl(0, "NotifyWARNBody", { fg = palette.text, bg = notify_bg })
+
+    -- INFO level (blue)
+    vim.api.nvim_set_hl(0, "NotifyINFOBorder", { fg = palette.blue, bg = notify_bg })
+    vim.api.nvim_set_hl(0, "NotifyINFOIcon", { fg = palette.blue, bg = notify_bg })
+    vim.api.nvim_set_hl(0, "NotifyINFOTitle", { fg = palette.blue, bg = notify_bg, bold = true })
+    vim.api.nvim_set_hl(0, "NotifyINFOBody", { fg = palette.text, bg = notify_bg })
+
+    -- DEBUG level (teal)
+    vim.api.nvim_set_hl(0, "NotifyDEBUGBorder", { fg = palette.teal, bg = notify_bg })
+    vim.api.nvim_set_hl(0, "NotifyDEBUGIcon", { fg = palette.teal, bg = notify_bg })
+    vim.api.nvim_set_hl(0, "NotifyDEBUGTitle", { fg = palette.teal, bg = notify_bg, bold = true })
+    vim.api.nvim_set_hl(0, "NotifyDEBUGBody", { fg = palette.text, bg = notify_bg })
+
+    -- TRACE level (mauve)
+    vim.api.nvim_set_hl(0, "NotifyTRACEBorder", { fg = palette.mauve, bg = notify_bg })
+    vim.api.nvim_set_hl(0, "NotifyTRACEIcon", { fg = palette.mauve, bg = notify_bg })
+    vim.api.nvim_set_hl(0, "NotifyTRACETitle", { fg = palette.mauve, bg = notify_bg, bold = true })
+    vim.api.nvim_set_hl(0, "NotifyTRACEBody", { fg = palette.text, bg = notify_bg })
   end
 end
 

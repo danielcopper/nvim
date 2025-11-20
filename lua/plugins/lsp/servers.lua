@@ -104,7 +104,7 @@ function M.get_servers()
     eslint = {
       capabilities = capabilities,
       settings = {
-        experimental = { useFlatConfig = false }, -- Support legacy .eslintrc.json
+        useFlatConfig = false, -- Required for legacy .eslintrc.json with ESLint 9+
       },
     },
 
