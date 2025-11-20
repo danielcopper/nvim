@@ -99,15 +99,67 @@ return {
       )
     end
 
-    -- SonarLint configuration
+    -- SonarLint configuration with connected mode
+    -- Reads project-specific config from .sonarlint.json in project root
     require("sonarlint").setup({
       server = {
+        -- Connected mode credentials (must be inside server block!)
+        connected = vim.env.SONARQUBE_URL and {
+          get_credentials = function(client_id, url)
+            local token = vim.env.SONARQUBE_TOKEN or vim.fn.getenv("SONARQUBE_TOKEN")
+            if not token or token == "" then
+              vim.notify(
+                string.format("SonarLint: get_credentials called for %s but token is nil!", url),
+                vim.log.levels.ERROR,
+                { title = "SonarLint Debug" }
+              )
+            end
+            return token
+          end,
+        } or nil,
         cmd = {
           "sonarlint-language-server",
           "-stdio",
           "-analyzers",
           unpack(analyzers),
         },
+
+        -- Required for C# analysis
+        init_options = {
+          omnisharpDirectory = mason_path .. "/packages/sonarlint-language-server/extension/omnisharp",
+          csharpOssPath = mason_path .. "/share/sonarlint-analyzers/sonarcsharp.jar",
+          csharpEnterprisePath = mason_path .. "/share/sonarlint-analyzers/csharpenterprise.jar",
+        },
+
+        settings = vim.env.SONARQUBE_URL and {
+          sonarlint = {
+            connectedMode = {
+              connections = {
+                sonarqube = {
+                  {
+                    connectionId = "lpa-sonarqube",
+                    serverUrl = vim.env.SONARQUBE_URL,
+                    disableNotifications = false,
+                  },
+                },
+              },
+            },
+          },
+        } or {},
+
+        before_init = vim.env.SONARQUBE_URL and function(params, config)
+          -- Read project config from .sonarlint.json in project root
+          local sonarlint_config_path = params.rootPath .. "/.sonarlint.json"
+          if vim.fn.filereadable(sonarlint_config_path) == 1 then
+            local ok, project_config = pcall(vim.fn.json_decode, vim.fn.readfile(sonarlint_config_path))
+            if ok and project_config.projectKey then
+              config.settings.sonarlint.connectedMode.project = {
+                connectionId = project_config.connectionId or "lpa-sonarqube",
+                projectKey = project_config.projectKey,
+              }
+            end
+          end
+        end or nil,
       },
 
       filetypes = {
@@ -124,20 +176,8 @@ return {
         "xml",
         "php",
         "go",
-        "csharp",
+        "cs",
       },
-
-      -- Connected mode: Sync rules and quality profiles from your SonarQube server
-      -- Set SONARQUBE_URL and SONARQUBE_TOKEN in ~/.config/nvim/.env
-      -- Example .env file:
-      --   SONARQUBE_URL=https://sonarqube.yourcompany.com
-      --   SONARQUBE_TOKEN=your_sonarqube_token_here
-      connected_mode = vim.env.SONARQUBE_URL and {
-        [vim.env.SONARQUBE_URL] = {
-          token = vim.env.SONARQUBE_TOKEN,
-          -- For SonarCloud, add: organizationKey = "your-org-key"
-        },
-      } or nil,
     })
 
     -- Notify user about configuration status

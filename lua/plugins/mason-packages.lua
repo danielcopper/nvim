@@ -58,6 +58,8 @@ return {
 
       -- DAP Adapters
       "netcoredbg",
+
+      -- TODO: Add sonarlint here
     },
 
     -- Automatically update packages on startup
