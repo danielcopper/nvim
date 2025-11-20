@@ -57,7 +57,7 @@ function M.setup()
   end
 
   -- ==========================================================================
-  -- CMP Highlights (Catppuccin)
+  -- CMP Highlights (Catppuccin + Borderless)
   -- ==========================================================================
 
   if settings.colorscheme.name == "catppuccin" and settings.borders == "none" then
