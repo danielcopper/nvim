@@ -35,14 +35,14 @@ return {
     cmp.setup({
       window = {
         completion = cmp.config.window.bordered({
-          border = helpers.get_border() == "none" and "single" or helpers.get_border(),
+          border = helpers.get_border(),
           winhighlight = "Normal:CmpPmenu,FloatBorder:CmpBorder,CursorLine:CmpSel,Search:None",
           scrollbar = false,
           col_offset = -3,
           side_padding = 1,
         }),
         documentation = cmp.config.window.bordered({
-          border = helpers.get_border() == "none" and "single" or helpers.get_border(),
+          border = helpers.get_border(),
           winhighlight = "Normal:CmpDoc,FloatBorder:CmpDocBorder",
         }),
       },

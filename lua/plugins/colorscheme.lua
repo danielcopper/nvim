@@ -28,6 +28,12 @@ return {
       require("rose-pine").setup({
         variant = settings.colorscheme.variant or "main",
         dim_inactive_windows = settings.dim_inactive,
+        styles = {
+          transparency = settings.transparency
+        },
+        highlight_groups = {
+          EndOfBuffer = { fg = "base" }
+        }
       })
       vim.cmd.colorscheme("rose-pine")
     end,
@@ -55,6 +61,16 @@ return {
     priority = 1000,
     enabled = settings.colorscheme.name == "kanso",
     config = function()
+      require("kanso").setup({
+        background = {
+          dark = settings.colorscheme.variant or "ink",
+          light = settings.colorscheme.variant or "ink",
+        },
+        foreground = "saturated",
+        dimInactive = settings.dim_inactive,
+        commentStyle = { italic = true },
+        keywordStyle = { italic = true },
+      })
       vim.cmd.colorscheme("kanso")
     end,
   },
@@ -64,6 +80,7 @@ return {
     name = "oasis",
     lazy = false,
     priority = 1000,
+    enabled = settings.colorscheme.name == "oasis",
     config = function ()
       require("oasis").setup()
       vim.cmd.colorscheme("oasis")
