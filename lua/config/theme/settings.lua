@@ -12,6 +12,8 @@ local M = {}
 M.colorscheme = {
   name = "catppuccin", -- "catppuccin" | "rose-pine" | "kanagawa" | etc.
   variant = "mocha",   -- colorscheme-specific variant
+  -- name = "kanso", -- "catppuccin" | "rose-pine" | "kanagawa" | etc.
+  -- variant = "zen",   -- colorscheme-specific variant
   -- catppuccin: "latte" | "frappe" | "macchiato" | "mocha"
   -- rose-pine: "main" | "moon" | "dawn"
   -- kanagawa: "wave" | "dragon" | "lotus"

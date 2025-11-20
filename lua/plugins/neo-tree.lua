@@ -38,7 +38,7 @@ return {
             renamed = icons.git.renamed,
             untracked = icons.git.untracked,
             ignored = icons.git.ignored,
-            unstaged = icons.git.change,
+            unstaged = icons.git.unstaged,
             staged = icons.git.staged,
             conflict = icons.git.conflict,
           },
