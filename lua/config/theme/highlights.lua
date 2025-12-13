@@ -20,20 +20,20 @@ function M.setup()
     vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = palette.base, fg = palette.text })
     vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = palette.base, fg = palette.base })
 
-    -- Prompt (input area) - lighter background
-    vim.api.nvim_set_hl(0, "TelescopePromptNormal", { bg = palette.surface0, fg = palette.text })
-    vim.api.nvim_set_hl(0, "TelescopePromptBorder", { bg = palette.surface0, fg = palette.surface0 })
+    -- Prompt (input area) - base background
+    vim.api.nvim_set_hl(0, "TelescopePromptNormal", { bg = palette.base, fg = palette.text })
+    vim.api.nvim_set_hl(0, "TelescopePromptBorder", { bg = palette.base, fg = palette.base })
     vim.api.nvim_set_hl(0, "TelescopePromptTitle", { fg = palette.crust, bg = palette.maroon, bold = true })
-    vim.api.nvim_set_hl(0, "TelescopePromptPrefix", { fg = palette.maroon, bg = palette.surface0 })
+    vim.api.nvim_set_hl(0, "TelescopePromptPrefix", { fg = palette.maroon, bg = palette.base })
 
-    -- Results (list area) - use alt_bg for distinction from preview
-    vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { bg = catppuccin_alt_bg, fg = palette.text })
-    vim.api.nvim_set_hl(0, "TelescopeResultsBorder", { bg = catppuccin_alt_bg, fg = catppuccin_alt_bg })
+    -- Results (list area) - darker background (between crust and mantle)
+    vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { bg = settings.colorscheme.catppuccin_results_bg, fg = palette.text })
+    vim.api.nvim_set_hl(0, "TelescopeResultsBorder", { bg = settings.colorscheme.catppuccin_results_bg, fg = settings.colorscheme.catppuccin_results_bg })
     vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { fg = palette.crust, bg = palette.sapphire, bold = true })
 
-    -- Preview (preview area)
-    vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { bg = palette.base, fg = palette.text })
-    vim.api.nvim_set_hl(0, "TelescopePreviewBorder", { bg = palette.base, fg = palette.base })
+    -- Preview (preview area) - darkest background (crust)
+    vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { bg = palette.crust, fg = palette.text })
+    vim.api.nvim_set_hl(0, "TelescopePreviewBorder", { bg = palette.crust, fg = palette.crust })
     vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { fg = palette.crust, bg = palette.green, bold = true })
 
     -- Selection highlight
@@ -208,8 +208,9 @@ function M.setup()
 
   if settings.colorscheme.name == "catppuccin" then
     local palette = require("catppuccin.palettes").get_palette(settings.colorscheme.variant or "mocha")
+    local catppuccin_alt_bg = settings.colorscheme.catppuccin_alt_bg
 
-    -- Use darkest catppuccin background (crust)
+    -- Use darkest catppuccin background (crust) for notifications
     local notify_bg = palette.crust
 
     -- Set the overall notification background
@@ -244,6 +245,10 @@ function M.setup()
     vim.api.nvim_set_hl(0, "NotifyTRACEIcon", { fg = palette.mauve, bg = notify_bg })
     vim.api.nvim_set_hl(0, "NotifyTRACETitle", { fg = palette.mauve, bg = notify_bg, bold = true })
     vim.api.nvim_set_hl(0, "NotifyTRACEBody", { fg = palette.text, bg = notify_bg })
+
+    -- Telescope-notify specific highlights to blend with results background
+    vim.api.nvim_set_hl(0, "NotifyLogTime", { fg = palette.subtext0, bg = palette.crust })
+    vim.api.nvim_set_hl(0, "NotifyLogTitle", { fg = palette.text, bg = palette.crust })
   end
 end
 

@@ -15,12 +15,13 @@ return {
         return vim.fn.executable("make") == 1
       end,
     },
+    "nvim-telescope/telescope-ui-select.nvim",
   },
   keys = {
     -- Files
     { "<leader>ff", "<cmd>Telescope find_files<cr>",    desc = "Find files" },
-    { "<leader>fo", "<cmd>Telescope oldfiles<cr>",      desc = "Old/recent files" },
-    { "<leader>fb", "<cmd>Telescope buffers<cr>",       desc = "Buffers" },
+    { "<leader>fr", "<cmd>Telescope oldfiles<cr>",      desc = "Old/recent files" },
+    { "<leader>fo", "<cmd>Telescope buffers<cr>",       desc = "Buffers" },
 
     -- Search
     { "<leader>fs", "<cmd>Telescope live_grep<cr>",     desc = "Search (grep)" },
@@ -44,8 +45,8 @@ return {
         -- Theme values
         borderchars = helpers.get_telescope_borderchars(),
         prompt_prefix = icons.ui.search .. " ",
-        selection_caret = icons.ui.arrow_right .. " ",
-        entry_prefix = "  ",
+        selection_caret = " ",
+        entry_prefix = " ", -- No indentation, selection shown by background only
 
         -- Functional config
         sorting_strategy = "ascending",
@@ -131,6 +132,15 @@ return {
           fname_width = 50,
         },
       },
+
+      -- UI select extension for code actions
+      extensions = {
+        ["ui-select"] = {
+          require("telescope.themes").get_dropdown({
+            borderchars = helpers.get_telescope_borderchars(),
+          })
+        }
+      },
     }
   end,
   config = function(_, opts)
@@ -140,5 +150,11 @@ return {
 
     -- Load fzf extension for better performance
     pcall(telescope.load_extension, "fzf")
+
+    -- Load notify extension for notification history
+    pcall(telescope.load_extension, "notify")
+
+    -- Load ui-select extension for code actions
+    pcall(telescope.load_extension, "ui-select")
   end,
 }

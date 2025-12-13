@@ -2,34 +2,30 @@ return {
   "folke/snacks.nvim",
   priority = 1000,
   lazy = false,
-  opts = {
-    bigfile = { enabled = true },
-    bufdelete = { enabled = true },
-    picker = {
-      enabled = true,
-      -- Use snacks picker only for vim.ui.select (not replacing Telescope)
-      win = {
-        input = {
-          keys = {
-            ["<Esc>"] = { "close", mode = { "n", "i" } },
-            ["<C-c>"] = { "close", mode = { "n", "i" } },
-          },
+  opts = function()
+    local helpers = require("config.theme.helpers")
+    local border = helpers.get_border()
+
+    return {
+      bigfile = { enabled = true },
+      bufdelete = { enabled = true },
+      picker = {
+        enabled = false, -- Disabled: using telescope-ui-select instead
+      },
+      quickfile = { enabled = true },
+      indent = { enabled = true },
+      input = { enabled = true },
+      lazygit = {
+        enabled = true,
+        win = {
+          border = border,
         },
       },
-    },
-    quickfile = { enabled = true },
-    indent = { enabled = true },
-    input = { enabled = true },
-    lazygit = {
-      enabled = true,
-      -- win = {
-      --   border = "single",
-      -- },
-    },
-    rename = { enabled = true },
-    statuscolumn = { enabled = true },
-    words = { enabled = true },
-  },
+      rename = { enabled = true },
+      statuscolumn = { enabled = true },
+      words = { enabled = true },
+    }
+  end,
 
   keys = {
     -- Terminal

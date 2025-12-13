@@ -20,6 +20,7 @@ M.colorscheme = {
 
   -- Catppuccin-specific custom colors
   catppuccin_alt_bg = "#1c1c2b", -- Alternative bg (between base #1e1e2e and mantle #181825)
+  catppuccin_results_bg = "#141420", -- Telescope results bg (between crust #11111b and mantle #181825)
 }
 
 -- Border style for floating windows

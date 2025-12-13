@@ -1,7 +1,5 @@
 -- TODO:
--- lsp integration improvements in lualine
---  - doenst work properly when restargin lsp
---  - should have a cog symbol in front and maybe slightly colored
+-- code actions are still bordered
 -- lazygit borderles
 local function load_env()
   local env_file = vim.fn.stdpath("config") .. "/.env"
@@ -45,14 +43,32 @@ vim.opt.rtp:prepend(lazypath)
 -- Load core config (options sets leader keys)
 require("config.options")
 
+-- Plugins that should load in VSCode (whitelist approach)
+local vscode_enabled = {
+  "lazy.nvim",
+  "nvim-treesitter",
+  "nvim-treesitter-textobjects",
+  "nvim-surround",
+  "nvim-autopairs",
+  "which-key.nvim",
+}
+
 -- Setup plugins
 require("lazy").setup({
   spec = {
     { import = "plugins" },
   },
+  defaults = {
+    cond = function(plugin)
+      -- Always load outside VSCode
+      if not vim.g.vscode then return true end
+      -- In VSCode: only load whitelisted plugins or those marked vscode=true
+      return vim.tbl_contains(vscode_enabled, plugin.name) or plugin.vscode
+    end,
+  },
   install = { colorscheme = { "catppuccin", "habamax" } },
-  checker = { enabled = true, notify = true },
-  change_detection = { enabled = true, notify = false },
+  checker = { enabled = not vim.g.vscode, notify = true },
+  change_detection = { enabled = not vim.g.vscode, notify = false },
   -- ui = { border = "rounded" },
 })
 
@@ -60,5 +76,10 @@ require("lazy").setup({
 require("config.keymaps")
 require("config.autocmds")
 
--- Apply custom theme highlights after colorscheme loads
-require("config.theme.highlights").setup()
+-- Load VSCode-specific config when running in VSCode
+if vim.g.vscode then
+  require("config.vscode")
+else
+  -- Apply custom theme highlights after colorscheme loads (not needed in VSCode)
+  require("config.theme.highlights").setup()
+end

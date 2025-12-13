@@ -7,9 +7,8 @@ return {
       "<leader>cf",
       function()
         require("conform").format({
-          lsp_fallback = true,
-          async = false,
-          timeout_ms = 1000,
+          lsp_format = "fallback",
+          async = true,
         })
       end,
       mode = { "n", "v" },

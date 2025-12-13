@@ -46,6 +46,7 @@ return {
       -- Noice handles hover and signature help
       hover = {
         enabled = true,
+        silent = true, -- Suppress "No information available" when multiple LSPs attached
       },
       signature = {
         enabled = true,

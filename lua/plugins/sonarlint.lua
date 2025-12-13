@@ -102,21 +102,22 @@ return {
     -- SonarLint configuration with connected mode
     -- Reads project-specific config from .sonarlint.json in project root
     require("sonarlint").setup({
+      -- Connected mode credentials (sibling to server, not nested inside!)
+      connected = vim.env.SONARQUBE_URL and {
+        get_credentials = function(client_id, url)
+          local token = vim.env.SONARQUBE_TOKEN or vim.fn.getenv("SONARQUBE_TOKEN")
+          if not token or token == "" then
+            vim.notify(
+              string.format("SonarLint: get_credentials called for %s but token is nil!", url),
+              vim.log.levels.ERROR,
+              { title = "SonarLint Debug" }
+            )
+          end
+          return token
+        end,
+      } or nil,
+
       server = {
-        -- Connected mode credentials (must be inside server block!)
-        connected = vim.env.SONARQUBE_URL and {
-          get_credentials = function(client_id, url)
-            local token = vim.env.SONARQUBE_TOKEN or vim.fn.getenv("SONARQUBE_TOKEN")
-            if not token or token == "" then
-              vim.notify(
-                string.format("SonarLint: get_credentials called for %s but token is nil!", url),
-                vim.log.levels.ERROR,
-                { title = "SonarLint Debug" }
-              )
-            end
-            return token
-          end,
-        } or nil,
         cmd = {
           "sonarlint-language-server",
           "-stdio",
@@ -133,6 +134,8 @@ return {
 
         settings = vim.env.SONARQUBE_URL and {
           sonarlint = {
+            -- Don't use empty dict! Set to false to use server rules
+            rules = false,
             connectedMode = {
               connections = {
                 sonarqube = {
@@ -145,11 +148,21 @@ return {
               },
             },
           },
-        } or {},
+        } or { sonarlint = { rules = false } },
 
         before_init = vim.env.SONARQUBE_URL and function(params, config)
+          -- CRITICAL: Remove rules field to use server-side rules in connected mode
+          if config.settings and config.settings.sonarlint then
+            config.settings.sonarlint.rules = nil
+          end
+
           -- Read project config from .sonarlint.json in project root
           local sonarlint_config_path = params.rootPath .. "/.sonarlint.json"
+          vim.notify(
+            string.format("SonarLint: Looking for config at: %s", sonarlint_config_path),
+            vim.log.levels.INFO,
+            { title = "SonarLint Debug" }
+          )
           if vim.fn.filereadable(sonarlint_config_path) == 1 then
             local ok, project_config = pcall(vim.fn.json_decode, vim.fn.readfile(sonarlint_config_path))
             if ok and project_config.projectKey then
@@ -157,7 +170,25 @@ return {
                 connectionId = project_config.connectionId or "lpa-sonarqube",
                 projectKey = project_config.projectKey,
               }
+              vim.notify(
+                string.format("SonarLint: Bound to project '%s' via connection '%s'",
+                  project_config.projectKey, project_config.connectionId or "lpa-sonarqube"),
+                vim.log.levels.INFO,
+                { title = "SonarLint Connected Mode" }
+              )
+            else
+              vim.notify(
+                string.format("SonarLint: Failed to parse .sonarlint.json: %s", ok and "no projectKey" or "invalid JSON"),
+                vim.log.levels.WARN,
+                { title = "SonarLint Debug" }
+              )
             end
+          else
+            vim.notify(
+              "SonarLint: No .sonarlint.json found - running in local mode",
+              vim.log.levels.WARN,
+              { title = "SonarLint Debug" }
+            )
           end
         end or nil,
       },

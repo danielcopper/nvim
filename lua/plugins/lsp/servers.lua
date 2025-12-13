@@ -14,6 +14,12 @@ function M.get_capabilities()
     capabilities = vim.tbl_deep_extend("force", capabilities, cmp_nvim_lsp.default_capabilities())
   end
 
+  -- Enable file watcher
+  capabilities.workspace = capabilities.workspace or {}
+  capabilities.workspace.didChangeWatchedFiles = {
+    dynamicRegistration = true,
+  }
+
   return capabilities
 end
 
@@ -117,7 +123,26 @@ function M.get_servers()
     markdown_oxide = { capabilities = capabilities },
     angularls = { capabilities = capabilities },
     emmet_language_server = { capabilities = capabilities },
-    powershell_es = { capabilities = capabilities },
+    powershell_es = {
+      capabilities = capabilities,
+      settings = {
+        powershell = {
+          codeFormatting = {
+            preset = "OTBS",
+            openBraceOnSameLine = true,
+            newLineAfterOpenBrace = true,
+            newLineAfterCloseBrace = true,
+            whitespaceBeforeOpenBrace = true,
+            whitespaceBeforeOpenParen = true,
+            whitespaceAroundOperator = true,
+            whitespaceAfterSeparator = true,
+            ignoreOneLineBlock = true,
+            alignPropertyValuePairs = true,
+            useCorrectCasing = true,
+          },
+        },
+      },
+    },
     lemminx = { capabilities = capabilities }, -- XML Language Server
   }
 end
