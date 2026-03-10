@@ -1,6 +1,6 @@
 -- Trouble: Pretty diagnostics, references, and more
 
-local icons = require("config.theme.icons")
+local icons = require("config.icons")
 
 return {
   "folke/trouble.nvim",

@@ -1,4 +1,4 @@
-local icons = require("config.theme.icons")
+local icons = require("config.icons")
 
 return {
   {

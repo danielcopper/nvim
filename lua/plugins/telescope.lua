@@ -1,11 +1,10 @@
 -- Telescope: Fuzzy finder for files, text, and more
 
-local helpers = require("config.theme.helpers")
-local icons = require("config.theme.icons")
+local icons = require("config.icons")
 
 return {
   "nvim-telescope/telescope.nvim",
-  branch = "0.1.x",
+  branch = "master",
   dependencies = {
     "nvim-lua/plenary.nvim",
     {
@@ -42,13 +41,10 @@ return {
 
     return {
       defaults = {
-        -- Theme values
-        borderchars = helpers.get_telescope_borderchars(),
         prompt_prefix = icons.ui.search .. " ",
         selection_caret = " ",
-        entry_prefix = " ", -- No indentation, selection shown by background only
+        entry_prefix = " ",
 
-        -- Functional config
         sorting_strategy = "ascending",
         layout_strategy = "horizontal",
         layout_config = {
@@ -61,33 +57,24 @@ return {
         },
 
         path_display = { "smart" },
-        dynamic_preview_title = true, -- Show filename in preview title
+        dynamic_preview_title = true,
 
         mappings = {
           i = {
-            -- Navigation
             ["<C-j>"] = actions.move_selection_next,
             ["<C-k>"] = actions.move_selection_previous,
-
-            -- Scrolling preview
             ["<C-u>"] = actions.preview_scrolling_up,
             ["<C-d>"] = actions.preview_scrolling_down,
-
-            -- Send to quickfix
             ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-
-            -- Close telescope
             ["<C-c>"] = actions.close,
             ["<esc>"] = actions.close,
           },
-
           n = {
             ["q"] = actions.close,
             ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
           },
         },
 
-        -- Open files in the first normal buffer (not special buffers)
         get_selection_window = function()
           local wins = vim.api.nvim_list_wins()
           table.insert(wins, 1, vim.api.nvim_get_current_win())
@@ -110,51 +97,24 @@ return {
           sort_lastused = true,
           sort_mru = true,
         },
-        -- LSP pickers with better path display
-        lsp_references = {
-          path_display = { "truncate" }, -- Show more of the path
-          show_line = true,
-          fname_width = 50, -- Adjust filename column width
-        },
-        lsp_definitions = {
-          path_display = { "truncate" },
-          show_line = true,
-          fname_width = 50,
-        },
-        lsp_implementations = {
-          path_display = { "truncate" },
-          show_line = true,
-          fname_width = 50,
-        },
-        lsp_type_definitions = {
-          path_display = { "truncate" },
-          show_line = true,
-          fname_width = 50,
-        },
+        lsp_references = { path_display = { "truncate" }, show_line = true, fname_width = 50 },
+        lsp_definitions = { path_display = { "truncate" }, show_line = true, fname_width = 50 },
+        lsp_implementations = { path_display = { "truncate" }, show_line = true, fname_width = 50 },
+        lsp_type_definitions = { path_display = { "truncate" }, show_line = true, fname_width = 50 },
       },
 
-      -- UI select extension for code actions
       extensions = {
         ["ui-select"] = {
-          require("telescope.themes").get_dropdown({
-            borderchars = helpers.get_telescope_borderchars(),
-          })
-        }
+          require("telescope.themes").get_dropdown(),
+        },
       },
     }
   end,
   config = function(_, opts)
     local telescope = require("telescope")
-
     telescope.setup(opts)
-
-    -- Load fzf extension for better performance
     pcall(telescope.load_extension, "fzf")
-
-    -- Load notify extension for notification history
     pcall(telescope.load_extension, "notify")
-
-    -- Load ui-select extension for code actions
     pcall(telescope.load_extension, "ui-select")
   end,
 }

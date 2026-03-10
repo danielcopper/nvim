@@ -1,6 +1,3 @@
--- TODO:
--- code actions are still bordered
--- lazygit borderles
 local function load_env()
   local env_file = vim.fn.stdpath("config") .. "/.env"
   if vim.fn.filereadable(env_file) == 1 then
@@ -48,7 +45,7 @@ local vscode_enabled = {
   "lazy.nvim",
   "nvim-treesitter",
   "nvim-treesitter-textobjects",
-  "nvim-surround",
+  "mini.surround",
   "nvim-autopairs",
   "which-key.nvim",
 }
@@ -79,7 +76,4 @@ require("config.autocmds")
 -- Load VSCode-specific config when running in VSCode
 if vim.g.vscode then
   require("config.vscode")
-else
-  -- Apply custom theme highlights after colorscheme loads (not needed in VSCode)
-  require("config.theme.highlights").setup()
 end

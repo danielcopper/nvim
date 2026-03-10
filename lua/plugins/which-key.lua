@@ -1,17 +1,12 @@
 -- Which-key: Show keybindings in a popup
 
-local helpers = require("config.theme.helpers")
-local icons = require("config.theme.icons")
+local icons = require("config.icons")
 
 return {
   "folke/which-key.nvim",
   event = "VeryLazy",
-  opts = function()
-    return {
-      win = {
-        border = helpers.get_border(),
-      },
-      preset = "modern",
+  opts = {
+    preset = "modern",
     delay = 500,
     spec = {
       { "<leader>a", group = "ai/claude", icon = { icon = icons.ui.ai, color = "azure" } },
@@ -34,7 +29,6 @@ return {
       { "s", icon = { icon = icons.ui.surround, color = "orange" } },
       { "t", icon = { icon = icons.ui.terminal, color = "cyan" } },
     },
-    -- Window border configured automatically by harmony
     icons = {
       mappings = true,
       keys = {
@@ -52,8 +46,7 @@ return {
         M = icons.ui.M,
       },
     },
-    }
-  end,
+  },
   keys = {
     {
       "<leader>?",

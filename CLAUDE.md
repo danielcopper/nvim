@@ -4,81 +4,65 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-CopperVim is a personal Neovim configuration designed to work on both Linux and Windows. It uses the Lazy.nvim plugin manager with a modular structure organized under the `lua/copper/` namespace.
+CopperVim is a personal Neovim configuration designed to work on both Linux and Windows. It uses Lazy.nvim for plugin management with a flat plugin structure.
 
 ## Architecture
 
 ### Configuration Structure
 
-The configuration follows a modular architecture with clear separation of concerns:
-
-- **`init.lua`**: Entry point that loads core configuration modules in sequence
-- **`lua/copper/config/`**: Core Neovim settings
-  - `options.lua`: All vim options, globals, and custom `vim.copper_config` table
+- **`init.lua`**: Entry point — loads `.env`, bootstraps Lazy.nvim, loads config modules
+- **`lua/config/`**: Core Neovim settings
+  - `options.lua`: Vim options, globals, leader key setup
   - `keymaps.lua`: General keybindings (non-plugin specific)
   - `autocmds.lua`: Autocommands for file handling, highlighting, and behavior
-  - `icons.lua`: Centralized icon definitions used across plugins
-  - `filetype.lua`: Custom filetype detection
-- **`lua/copper/lazy.lua`**: Lazy.nvim plugin manager setup and configuration
-- **`lua/copper/plugins/`**: Plugin configurations organized by category:
-  - `coding/`: Code editing tools (treesitter, completion, formatting, terminal, etc.)
-  - `debugging/`: DAP debugger configuration
-  - `editor/`: Editor enhancement plugins (telescope, neo-tree, which-key, etc.)
-  - `lsp/`: LSP configurations and related tools
-  - `ui/`: UI enhancements (statusline, notifications, colorschemes, etc.)
   - `vscode.lua`: VSCode Neovim integration settings
+  - `colorscheme.lua`: Active colorscheme name and variant
+  - `icons.lua`: Centralized icon definitions used across plugins
+- **`lua/plugins/`**: Plugin configurations (one file per plugin, flat structure)
+  - `colorschemes/`: One file per colorscheme — each handles its own setup and injects visual overrides into other plugins via Lazy.nvim spec merging
+  - `lsp/`: LSP-specific configs (`init.lua`, `servers.lua`, `keymaps.lua`)
+- **`ftplugin/`**: Filetype-specific settings (java, json, lua, solution, xml)
 
 ### Plugin Loading Strategy
 
-Lazy.nvim conditionally loads plugins based on the environment:
-- Most plugins are disabled when running inside VSCode (`cond = not vim.g.vscode`)
-- Each plugin category is imported from its respective directory
-- Plugins use lazy-loading with `event`, `cmd`, or `keys` triggers for performance
+- Lazy.nvim conditionally loads plugins via a VSCode whitelist in `init.lua`
+- Most plugins use lazy-loading with `event`, `cmd`, or `keys` triggers
+- Only whitelisted plugins load in VSCode (treesitter, surround, autopairs, which-key)
 
-### Global Configuration Table
+### Theme System
 
-The `vim.copper_config` table (defined in `lua/copper/config/options.lua`) stores custom settings:
-- `borders`: UI border style (default: "none")
-- `colorscheme`: Active colorscheme (default: "catppuccin")
-- `transparency`: Transparency setting (default: false)
+Active colorscheme is configured in `lua/config/colorscheme.lua` (name + variant).
 
-This table is referenced throughout plugin configurations for consistent theming.
+Each colorscheme has its own file in `lua/plugins/colorschemes/` (e.g., `catppuccin.lua`, `rose-pine.lua`). These files are self-contained — they handle colorscheme setup, custom highlight overrides, and inject visual config (borders, backgrounds, borderchars) into other plugins via Lazy.nvim spec merging. Each file early-returns `{}` if it's not the active colorscheme.
 
 ### LSP Architecture
 
-LSP setup (`lua/copper/plugins/lsp/lspconfig.lua`) uses Mason for automatic server installation:
-- Mason and mason-lspconfig handle LSP server lifecycle
-- Custom handlers configure UI elements (borders, floating windows)
-- Capabilities are enhanced with nvim-cmp and folding support
-- Server-specific configurations use mason-lspconfig's `setup_handlers` pattern
-- LSP keybindings are attached via `LspAttach` autocommand (not in `on_attach` function)
-- Supports multiple languages: Angular, Bash, CSS, Docker, HTML, JSON, Lua, Markdown, PowerShell, TypeScript, YAML
-- C# support via Roslyn LSP (OmniSharp configuration is commented out)
+- `lua/plugins/lsp/init.lua`: Diagnostic config, capabilities setup
+- `lua/plugins/lsp/servers.lua`: Per-server configurations using native `vim.lsp.config()` and `vim.lsp.enable()` (Neovim 0.11 API)
+- `lua/plugins/lsp/keymaps.lua`: LSP keybindings attached via `LspAttach` autocommand
+- `lua/plugins/mason.lua` + `mason-packages.lua`: Mason setup and tool installation list
+
+Supported languages: Angular, Bash, C#, CSS, Docker, HTML, JSON, Lua, Markdown, PowerShell, Python, TypeScript, XML, YAML (including Azure Pipelines)
+
+### Adding New LSP Servers
+
+1. Add the mason package name to `mason-packages.lua`
+2. Add server config to `lsp/servers.lua` using `vim.lsp.config()` pattern
+3. Add the server name to the `vim.lsp.enable()` list in `lsp/servers.lua`
 
 ## Common Commands
 
 ### Formatting
 
-Code formatting is primarily handled through LSP:
-- `<leader>cf`: Quick format current buffer (LSP-based, async)
-- `<leader>cF`: Format with conform.nvim (currently disabled)
-
-To format Lua code manually:
-```bash
-stylua .
-```
-
-StyLua configuration is in `stylua.toml`:
-- 2-space indentation
-- 120 column width
-- Requires sorting enabled
+- `<leader>cf`: Format with conform.nvim (LSP fallback)
+- Lua: `stylua .` (config in `stylua.toml`: 2-space indent, 120 columns)
 
 ### LSP Management
 
 ```vim
 :LspInfo          " Show LSP client information
-:LspRestart       " Restart LSP servers (also <leader>rs)
-:Mason            " Open Mason UI for LSP server management
+:LspRestart       " Restart LSP servers
+:Mason            " Open Mason UI
 ```
 
 ### Plugin Management
@@ -86,83 +70,22 @@ StyLua configuration is in `stylua.toml`:
 ```vim
 :Lazy             " Open Lazy.nvim UI
 :Lazy sync        " Update and install plugins
-:Lazy clean       " Remove unused plugins
 :Lazy profile     " Profile startup time
 ```
 
-### Treesitter
+## Keybinding Conventions
 
-```vim
-:TSUpdate         " Update all parsers
-:TSInstall <lang> " Install specific parser
-:TSUpdateSync     " Synchronous update
-```
-
-### DAP (Debugging)
-
-- DAP configurations are loaded from `.vscode/launch.json` files
-- `<leader>du`: Toggle DAP UI
-- `<leader>de`: Evaluate expression
-- DAP setup includes virtual text and UI integration
-
-## Development Notes
-
-### Keybinding Conventions
-
-- Leader key: `<Space>`
-- Local leader: `\`
-- LSP bindings are set on `LspAttach` autocommand (see `lspconfig.lua:134-206`)
-- Plugin-specific keybindings are defined in their respective plugin config files
-- Common prefixes:
-  - `<leader>c`: Code actions (format, actions)
-  - `<leader>d`: Debug/diagnostics
-  - `<leader>v`: View/diagnostics
-  - `g*`: Go to (definition, references, etc.)
-  - `]`/`[`: Next/previous (diagnostics, etc.)
-
-### Adding New LSP Servers
-
-1. Add server name to `ensure_installed` in `lspconfig.lua:221-244`
-2. If custom configuration is needed, add a handler in `mason_lspconfig.setup_handlers` (line 247+)
-3. Default handler applies `capabilities` and `handlers` to all servers
-4. Server-specific settings go in the handler's `settings` table
-
-### Plugin Configuration Pattern
-
-Each plugin file in `lua/copper/plugins/` should return a table (or array of tables) with:
-```lua
-return {
-  "author/plugin-name",
-  event = { "BufReadPre", "BufNewFile" },  -- or cmd, keys, etc.
-  dependencies = { ... },
-  opts = { ... },  -- passed to setup()
-  config = function(_, opts)
-    -- Custom setup logic
-  end,
-}
-```
+- Leader key: `<Space>`, Local leader: `\`
+- `<leader>c`: Code actions (format, actions)
+- `<leader>d`: Debug/diagnostics
+- `<leader>v`: View/diagnostics
+- `g*`: Go to (definition, references, etc.)
+- `]`/`[`: Next/previous (diagnostics, buffers, etc.)
 
 ### Icons
 
-Icons are centralized in `lua/copper/config/icons.lua`. Reference them with:
+Icons are centralized in `lua/config/icons.lua`:
 ```lua
-local icons = require("copper.config.icons")
--- icons.diagnostics, icons.git, icons.ui, icons.dap, etc.
+local icons = require("config.icons")
+-- icons.diagnostics, icons.git, icons.ui, icons.dap, icons.lsp
 ```
-
-### Windows Compatibility
-
-- Configuration aims for cross-platform compatibility
-- Known issue: Some treesitter parsers (html, yaml) may fail on Windows - solution involves deleting `libstdc++-6.dll` from Neovim install location
-- PowerShell LSP is configured with custom bundle path for Windows
-- MinGW may be required for C compilation on Windows
-
-### File Type Specific Settings
-
-- Spell checking and word wrap auto-enable for: gitcommit, markdown, tex
-- Last cursor position is remembered across sessions
-- External programs open for: png, jpg, gif, pdf, xls, ppt, doc, rtf files
-
-### Session Management
-
-Session options include: buffers, curdir, tabpages, winsize, help, globals, skiprtp, folds

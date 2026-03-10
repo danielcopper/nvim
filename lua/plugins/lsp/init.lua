@@ -11,8 +11,7 @@ return {
   },
 
   config = function()
-    local icons = require("config.theme.icons")
-    local helpers = require("config.theme.helpers")
+    local icons = require("config.icons")
 
     vim.diagnostic.config({
       signs = {
@@ -24,7 +23,6 @@ return {
         },
       },
       float = {
-        border = helpers.get_border(),
         source = true,
       },
       update_in_insert = false,
@@ -37,9 +35,10 @@ return {
     })
 
     -- Setup mason-lspconfig
-    -- This automatically enables LSP servers installed via mason-packages.lua
     require("mason-lspconfig").setup({
-      automatic_enable = true, -- Automatically calls vim.lsp.enable() for installed servers
+      automatic_enable = {
+        exclude = { "jdtls" }, -- jdtls is handled by ftplugin/java.lua via nvim-jdtls
+      },
     })
 
     -- Load server configurations

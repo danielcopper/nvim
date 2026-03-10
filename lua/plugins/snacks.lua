@@ -2,30 +2,18 @@ return {
   "folke/snacks.nvim",
   priority = 1000,
   lazy = false,
-  opts = function()
-    local helpers = require("config.theme.helpers")
-    local border = helpers.get_border()
-
-    return {
-      bigfile = { enabled = true },
-      bufdelete = { enabled = true },
-      picker = {
-        enabled = false, -- Disabled: using telescope-ui-select instead
-      },
-      quickfile = { enabled = true },
-      indent = { enabled = true },
-      input = { enabled = true },
-      lazygit = {
-        enabled = true,
-        win = {
-          border = border,
-        },
-      },
-      rename = { enabled = true },
-      statuscolumn = { enabled = true },
-      words = { enabled = true },
-    }
-  end,
+  opts = {
+    bigfile = { enabled = true },
+    bufdelete = { enabled = true },
+    picker = { enabled = false }, -- Using telescope-ui-select instead
+    quickfile = { enabled = true },
+    indent = { enabled = true },
+    input = { enabled = true },
+    lazygit = { enabled = true },
+    rename = { enabled = true },
+    statuscolumn = { enabled = true },
+    words = { enabled = true },
+  },
 
   keys = {
     -- Terminal
@@ -49,7 +37,6 @@ return {
     vim.api.nvim_create_autocmd("User", {
       pattern = "VeryLazy",
       callback = function()
-        -- Setup notification system
         _G.dd = function(...)
           Snacks.debug.inspect(...)
         end

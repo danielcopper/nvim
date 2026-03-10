@@ -1,7 +1,6 @@
 -- Mason: Portable package manager for LSP servers, DAP servers, linters, and formatters
 
-local helpers = require("config.theme.helpers")
-local icons = require("config.theme.icons")
+local icons = require("config.icons")
 
 return {
   "williamboman/mason.nvim",
@@ -12,7 +11,6 @@ return {
   build = ":MasonUpdate",
   opts = {
     ui = {
-      border = helpers.get_border(),
       icons = {
         package_installed = icons.ui.check,
         package_pending = icons.ui.spinner,

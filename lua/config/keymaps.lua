@@ -52,11 +52,6 @@ keymap("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 keymap("n", "H", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
 keymap("n", "L", "<cmd>bnext<cr>", { desc = "Next buffer" })
 
--- Quick buffer access with Alt+number
-for i = 1, 9 do
-  keymap("n", "<A-" .. i .. ">", "<cmd>BufferLineGoToBuffer " .. i .. "<cr>", { desc = "Go to buffer " .. i })
-end
-
 -- Quick save/quit
 keymap("n", "<leader>w", "<cmd>w<cr>", { desc = "Save file" })
 keymap("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
@@ -67,17 +62,6 @@ keymap("n", "Q", "<nop>")
 -- Theme controls
 keymap("n", "<leader>ut", function()
   vim.g.transparent_bg = not vim.g.transparent_bg
-  vim.cmd("colorscheme catppuccin")
+  vim.cmd("colorscheme " .. vim.g.colors_name)
   vim.notify("Transparency: " .. (vim.g.transparent_bg and "ON" or "OFF"))
 end, { desc = "Toggle transparency" })
-
-keymap("n", "<leader>uf", function()
-  local flavors = { "latte", "frappe", "macchiato", "mocha" }
-  vim.ui.select(flavors, { prompt = "Select flavor:" }, function(choice)
-    if choice then
-      vim.g.catppuccin_flavor = choice
-      vim.cmd("colorscheme catppuccin")
-      vim.notify("Flavor: " .. choice)
-    end
-  end)
-end, { desc = "Select theme flavor" })

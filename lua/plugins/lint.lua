@@ -10,7 +10,7 @@ return {
     -- Linters are automatically installed via mason-packages.lua
     lint.linters_by_ft = {
       -- javascript/typescript linting handled by ESLint LSP
-      python = { "pylint" },
+      python = { "ruff" },
       -- lua = { "luacheck" }, -- Disabled: lua_ls LSP already provides diagnostics
       markdown = { "markdownlint" },
       yaml = { "yamllint" },

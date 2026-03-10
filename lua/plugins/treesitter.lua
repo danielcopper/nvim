@@ -2,10 +2,11 @@
 
 return {
   "nvim-treesitter/nvim-treesitter",
+  branch = "master", -- pin to master; main branch has incompatible rewrite
   build = ":TSUpdate",
   event = { "BufReadPost", "BufNewFile" },
   dependencies = {
-    "nvim-treesitter/nvim-treesitter-textobjects",
+    { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
   },
   cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
 

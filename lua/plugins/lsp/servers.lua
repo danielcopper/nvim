@@ -4,14 +4,14 @@
 
 local M = {}
 
--- Get capabilities with nvim-cmp integration
+-- Get capabilities with blink.cmp integration
 function M.get_capabilities()
   local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-  -- Enhance with nvim-cmp capabilities if available
-  local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-  if has_cmp then
-    capabilities = vim.tbl_deep_extend("force", capabilities, cmp_nvim_lsp.default_capabilities())
+  -- Enhance with blink.cmp capabilities if available
+  local has_blink, blink = pcall(require, "blink.cmp")
+  if has_blink then
+    capabilities = blink.get_lsp_capabilities(capabilities)
   end
 
   -- Enable file watcher
@@ -119,7 +119,6 @@ function M.get_servers()
     cssls = { capabilities = capabilities },
     html = { capabilities = capabilities },
     dockerls = { capabilities = capabilities },
-    marksman = { capabilities = capabilities },
     markdown_oxide = { capabilities = capabilities },
     angularls = { capabilities = capabilities },
     emmet_language_server = { capabilities = capabilities },
@@ -144,6 +143,20 @@ function M.get_servers()
       },
     },
     lemminx = { capabilities = capabilities }, -- XML Language Server
+
+    -- Python
+    basedpyright = {
+      capabilities = capabilities,
+      settings = {
+        basedpyright = {
+          analysis = {
+            autoSearchPaths = true,
+            useLibraryCodeForTypes = true,
+            diagnosticMode = "openFilesOnly",
+          },
+        },
+      },
+    },
   }
 end
 

@@ -83,6 +83,34 @@ return {
       args = { "--interpreter=vscode" },
     }
 
+    -- Python (debugpy)
+    dap.adapters.python = {
+      type = "executable",
+      command = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python",
+      args = { "-m", "debugpy.adapter" },
+    }
+
+    dap.configurations.python = {
+      {
+        type = "python",
+        name = "Launch file",
+        request = "launch",
+        program = "${file}",
+        cwd = "${workspaceFolder}",
+      },
+      {
+        type = "python",
+        name = "Launch file with arguments",
+        request = "launch",
+        program = "${file}",
+        args = function()
+          local args_string = vim.fn.input("Arguments: ")
+          return vim.split(args_string, " +")
+        end,
+        cwd = "${workspaceFolder}",
+      },
+    }
+
     dap.configurations.cs = {
       {
         type = "coreclr",

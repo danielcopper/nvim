@@ -29,14 +29,13 @@ return {
       "yamllint",
 
       -- Markdown
-      "marksman",
       "markdown-oxide",
       "markdownlint",
 
       -- Python
-      "pylint",
-      "black",
-      "isort",
+      "basedpyright",
+      "ruff",
+      "debugpy",
 
       -- Bash/Shell
       "bash-language-server",
@@ -55,6 +54,11 @@ return {
 
       -- C#
       "roslyn",
+
+      -- Java
+      "jdtls",
+      "java-test",
+      "java-debug-adapter",
 
       -- DAP Adapters
       "netcoredbg",
