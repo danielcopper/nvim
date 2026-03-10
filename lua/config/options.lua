@@ -22,6 +22,7 @@ opt.sidescrolloff = 8
 -- TODO: use theme.icons.
 opt.list = true
 opt.listchars = { tab = "→ ", trail = "·", extends = "›", precedes = "‹", nbsp = "␣" }
+opt.fillchars = { eob = " " }
 
 -- Indentation
 opt.expandtab = true
