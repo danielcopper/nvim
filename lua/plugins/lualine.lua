@@ -32,7 +32,17 @@ return {
         { "filename", path = 0, symbols = { modified = "", readonly = icons.ui.readonly, unnamed = icons.ui.unknown_file } },
       },
       lualine_c = {
-        { "branch", icon = icons.git.branch },
+        {
+          "branch",
+          icon = "",
+          fmt = function(branch)
+            if branch == "" then return "" end
+            local git_path = vim.fn.getcwd() .. "/.git"
+            local is_wt = vim.fn.isdirectory(git_path) == 0 and vim.fn.filereadable(git_path) == 1
+            local icon = is_wt and icons.git.worktree or icons.git.branch
+            return icon .. " " .. branch
+          end,
+        },
         { "diff", symbols = { added = icons.git.add, modified = icons.git.change, removed = icons.git.delete } },
       },
       lualine_x = {
@@ -74,6 +84,14 @@ return {
           end,
         },
         { "encoding", icons_enabled = false },
+        {
+          "fileformat",
+          icons_enabled = false,
+          fmt = function(str)
+            local map = { unix = "LF", dos = "CRLF", mac = "CR" }
+            return map[str] or str
+          end,
+        },
         { "filetype", icon = { align = "left" } },
         {
           function()

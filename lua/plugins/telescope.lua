@@ -19,7 +19,8 @@ return {
   keys = {
     -- Files
     { "<leader>ff", "<cmd>Telescope find_files<cr>",    desc = "Find files" },
-    { "<leader>fr", "<cmd>Telescope oldfiles<cr>",      desc = "Old/recent files" },
+    { "<leader>fr", "<cmd>Telescope oldfiles cwd_only=true<cr>", desc = "Recent files (cwd)" },
+    { "<leader>fR", "<cmd>Telescope oldfiles<cr>",                desc = "Recent files (all)" },
     { "<leader>fo", "<cmd>Telescope buffers<cr>",       desc = "Buffers" },
 
     -- Search

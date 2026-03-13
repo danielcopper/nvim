@@ -60,6 +60,7 @@ M.lsp = {
 M.git = {
   add       = " ",
   branch    = "󰘬",
+  worktree  = "",
   change    = " ",
   conflict  = " ",
   delete    = " ",

@@ -59,6 +59,10 @@ keymap("n", "<leader>q", "<cmd>q<cr>", { desc = "Quit" })
 -- Disable Ex mode
 keymap("n", "Q", "<nop>")
 
+-- Git / Worktree
+keymap("n", "<leader>gg", function() require("worktree").lazygit() end, { desc = "LazyGit" })
+keymap("n", "<leader>gw", function() require("worktree").pick() end, { desc = "Switch worktree" })
+
 -- Theme controls
 keymap("n", "<leader>ut", function()
   vim.g.transparent_bg = not vim.g.transparent_bg

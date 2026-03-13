@@ -21,7 +21,7 @@ return {
     { "<C-_>", function() Snacks.terminal() end, desc = "Toggle terminal (which-key)", mode = { "n", "t" } },
 
     -- LazyGit
-    { "<leader>gg", function() Snacks.lazygit() end, desc = "LazyGit" },
+    -- LazyGit: moved to keymaps.lua (worktree-aware, no snacks dependency)
     { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "LazyGit current file history" },
 
     -- Buffer delete
