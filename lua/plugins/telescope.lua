@@ -23,6 +23,9 @@ return {
     { "<leader>fR", "<cmd>Telescope oldfiles<cr>",                desc = "Recent files (all)" },
     { "<leader>fo", "<cmd>Telescope buffers<cr>",       desc = "Buffers" },
 
+    -- Git
+    { "<leader>fg", "<cmd>Telescope git_status<cr>",    desc = "Git changed files" },
+
     -- Search
     { "<leader>fs", "<cmd>Telescope live_grep<cr>",     desc = "Search (grep)" },
     { "<leader>fw", "<cmd>Telescope grep_string<cr>",   desc = "Word under cursor" },
@@ -102,6 +105,17 @@ return {
         lsp_definitions = { path_display = { "truncate" }, show_line = true, fname_width = 50 },
         lsp_implementations = { path_display = { "truncate" }, show_line = true, fname_width = 50 },
         lsp_type_definitions = { path_display = { "truncate" }, show_line = true, fname_width = 50 },
+        git_status = {
+          git_icons = {
+            added = icons.git.add:gsub("%s+$", ""),
+            changed = icons.git.change:gsub("%s+$", ""),
+            copied = icons.git.add:gsub("%s+$", ""),
+            deleted = icons.git.delete:gsub("%s+$", ""),
+            renamed = icons.git.renamed:gsub("%s+$", ""),
+            unmerged = icons.git.conflict:gsub("%s+$", ""),
+            untracked = icons.git.untracked,
+          },
+        },
       },
 
       extensions = {

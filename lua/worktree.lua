@@ -136,7 +136,8 @@ function M.pick()
     local actions = require("telescope.actions")
     local action_state = require("telescope.actions.state")
 
-    telescope_pickers.new({}, {
+    local themes = require("telescope.themes")
+    telescope_pickers.new(themes.get_dropdown({ previewer = false, width = 0.4 }), {
       prompt_title = "Worktrees",
       finder = finders.new_table({
         results = worktrees,

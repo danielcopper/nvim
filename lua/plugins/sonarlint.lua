@@ -1,5 +1,6 @@
--- SonarLint: Connected mode integration with SonarQube/SonarCloud for real-time code analysis
--- NOTE: Requires gitsigns.nvim for SCM integration (already in your config)
+-- SonarQube for IDE (formerly SonarLint): Real-time code analysis via sonarlint-language-server
+-- Requires: Java runtime, gitsigns.nvim (for SCM integration)
+-- Connected mode: set SONAR_TOKEN env var and add .sonarlint.json to project root
 
 return {
   "https://gitlab.com/schrieveslaach/sonarlint.nvim",
@@ -7,189 +8,131 @@ return {
     "neovim/nvim-lspconfig",
     "williamboman/mason.nvim",
   },
-  -- Load after mason is ready
   event = "VeryLazy",
 
   config = function()
-    -- Check for Java dependency (required to run SonarLint)
-    local function check_java()
-      local java_cmd = vim.fn.exepath("java")
-      if java_cmd == "" then
-        vim.notify(
-          "SonarLint requires Java to run!\n" ..
-          "Install Java with: sudo pacman -S jdk21-openjdk\n" ..
-          "Or: sudo pacman -S jre21-openjdk (minimal)",
-          vim.log.levels.ERROR,
-          { title = "SonarLint - Missing Dependency" }
-        )
-        return false
+    -- Patch: fix find_server_url crash when sonarcloud is an array (plugin bug)
+    -- The plugin expects sonarcloud as flat object but the language server needs an array.
+    -- Remove this patch once https://gitlab.com/schrieveslaach/sonarlint.nvim/-/issues/XX is fixed.
+    local cm = require("sonarlint.connected_mode")
+    local _orig_notify = cm.notify_connection_result
+    cm.notify_connection_result = function(_, params, ctx)
+      local client = vim.lsp.get_client_by_id(ctx.client_id)
+      if not client then return end
+
+      local status = params.success and "connected" or "failed-connection"
+      if params.success then
+        vim.notify_once("Connected to SonarQube (" .. params.connectionId .. ")", vim.log.levels.DEBUG)
+      else
+        vim.notify_once("Cannot connect (" .. params.connectionId .. "): " .. params.reason, vim.log.levels.ERROR)
       end
-      return true
+      cm._connected_clients[client.id] = status
     end
 
-    -- Check for gitsigns (recommended for SCM integration)
-    local function check_gitsigns()
-      local has_gitsigns = pcall(require, "gitsigns")
-      if not has_gitsigns then
-        vim.notify(
-          "SonarLint works best with gitsigns.nvim for SCM integration",
-          vim.log.levels.WARN,
-          { title = "SonarLint - Recommended Plugin" }
-        )
-      end
-      return has_gitsigns
+    local _orig_invalid = cm.notify_invalid_token
+    cm.notify_invalid_token = function(_, params, ctx)
+      vim.notify("Invalid token for connection " .. params.connectionId, vim.log.levels.WARN)
     end
 
-    -- Run dependency checks
-    if not check_java() then
-      return -- Don't continue setup if Java is missing
+    if vim.fn.exepath("java") == "" then
+      vim.notify("SonarLint requires Java", vim.log.levels.WARN)
+      return
     end
-    check_gitsigns()
 
     local mason_path = vim.fn.stdpath("data") .. "/mason"
-
-    -- Ensure sonarlint-language-server is installed
-    local registry = require("mason-registry")
-    if registry.refresh then
-      registry.refresh(function()
-        local package_name = "sonarlint-language-server"
-        if not registry.is_installed(package_name) then
-          vim.notify("Installing " .. package_name .. "...", vim.log.levels.INFO)
-          local ok, package = pcall(registry.get_package, package_name)
-          if ok then
-            package:install()
-          end
-        end
-      end)
-    end
-
-    -- Build analyzer list from all installed analyzers
-    local analyzers = {}
     local analyzer_dir = mason_path .. "/share/sonarlint-analyzers"
 
-    -- List of all available analyzers (correct names)
-    local analyzer_jars = {
-      "sonarjs.jar",         -- JavaScript/TypeScript
-      "sonarpython.jar",     -- Python
-      "sonarjava.jar",       -- Java
-      "sonarhtml.jar",       -- HTML
-      "sonarxml.jar",        -- XML
-      "sonarphp.jar",        -- PHP
-      "sonargo.jar",         -- Go
-      "sonarcsharp.jar",     -- C#
-      "sonartext.jar",       -- Text/Secrets
-      "sonariac.jar",        -- Infrastructure as Code
+    -- Collect installed analyzer JARs
+    local analyzer_names = {
+      "sonarjs",     -- JavaScript/TypeScript
+      "sonarpython", -- Python
+      "sonarjava",   -- Java
+      "sonarhtml",   -- HTML
+      "sonarxml",    -- XML
+      "sonarphp",    -- PHP
+      "sonargo",     -- Go
+      "sonarcsharp", -- C#
+      "sonartext",   -- Text/Secrets
+      "sonariac",    -- Infrastructure as Code (Docker/Terraform)
     }
 
-    for _, jar in ipairs(analyzer_jars) do
-      local analyzer_path = analyzer_dir .. "/" .. jar
-      if vim.fn.filereadable(analyzer_path) == 1 then
-        table.insert(analyzers, analyzer_path)
+    local analyzers = {}
+    for _, name in ipairs(analyzer_names) do
+      local path = analyzer_dir .. "/" .. name .. ".jar"
+      if vim.fn.filereadable(path) == 1 then
+        table.insert(analyzers, path)
       end
     end
 
-    -- Warn if no analyzers found
     if #analyzers == 0 then
-      vim.notify(
-        "No SonarLint analyzers found!\n" ..
-        "Language server is installed but analyzers are missing.\n" ..
-        "Try: :Mason and reinstall sonarlint-language-server",
-        vim.log.levels.WARN,
-        { title = "SonarLint - Missing Analyzers" }
-      )
+      vim.notify("SonarLint: no analyzers found. Run :Mason and install sonarlint-language-server", vim.log.levels.WARN)
+      return
     end
 
-    -- SonarLint configuration with connected mode
-    -- Reads project-specific config from .sonarlint.json in project root
+    -- Build cmd table
+    local cmd = { "sonarlint-language-server", "-stdio", "-analyzers" }
+    for _, analyzer in ipairs(analyzers) do
+      table.insert(cmd, analyzer)
+    end
+
+    -- Connected mode settings (SonarQube Server or SonarQube Cloud)
+    -- Configure via env vars:
+    --   SONARQUBE_URL + SONAR_TOKEN   -> SonarQube Server (self-hosted)
+    --   SONARCLOUD_ORG + SONAR_TOKEN  -> SonarQube Cloud (formerly SonarCloud)
+    -- Per-project binding via .sonarlint.json in project root:
+    --   { "projectKey": "my-project", "connectionId": "my-connection" }
+    local connections = {
+      sonarqube = {},
+      sonarcloud = {},
+    }
+    local has_connected_mode = false
+
+    if vim.env.SONARQUBE_URL then
+      connections.sonarqube = { {
+        connectionId = "sonarqube",
+        serverUrl = vim.env.SONARQUBE_URL,
+        disableNotifications = false,
+      } }
+      has_connected_mode = true
+    end
+
+    if vim.env.SONARCLOUD_ORG then
+      connections.sonarcloud = { {
+        connectionId = "sonarcloud",
+        region = "EU",
+        organizationKey = vim.env.SONARCLOUD_ORG,
+        disableNotifications = false,
+      } }
+      has_connected_mode = true
+    end
+
     require("sonarlint").setup({
-      -- Connected mode credentials (sibling to server, not nested inside!)
-      connected = vim.env.SONARQUBE_URL and {
-        get_credentials = function(client_id, url)
-          local token = vim.env.SONARQUBE_TOKEN or vim.fn.getenv("SONARQUBE_TOKEN")
-          if not token or token == "" then
-            vim.notify(
-              string.format("SonarLint: get_credentials called for %s but token is nil!", url),
-              vim.log.levels.ERROR,
-              { title = "SonarLint Debug" }
-            )
-          end
-          return token
+      connected = has_connected_mode and {
+        get_credentials = function()
+          return vim.env.SONAR_TOKEN
         end,
       } or nil,
 
       server = {
-        cmd = {
-          "sonarlint-language-server",
-          "-stdio",
-          "-analyzers",
-          unpack(analyzers),
-        },
+        cmd = cmd,
 
-        -- Required for C# analysis
-        init_options = {
-          omnisharpDirectory = mason_path .. "/packages/sonarlint-language-server/extension/omnisharp",
-          csharpOssPath = mason_path .. "/share/sonarlint-analyzers/sonarcsharp.jar",
-          csharpEnterprisePath = mason_path .. "/share/sonarlint-analyzers/csharpenterprise.jar",
-        },
-
-        settings = vim.env.SONARQUBE_URL and {
+        settings = {
           sonarlint = {
-            -- Don't use empty dict! Set to false to use server rules
-            rules = false,
-            connectedMode = {
-              connections = {
-                sonarqube = {
-                  {
-                    connectionId = "lpa-sonarqube",
-                    serverUrl = vim.env.SONARQUBE_URL,
-                    disableNotifications = false,
-                  },
-                },
-              },
-            },
+            connectedMode = has_connected_mode and { connections = connections } or nil,
           },
-        } or { sonarlint = { rules = false } },
+        },
 
-        before_init = vim.env.SONARQUBE_URL and function(params, config)
-          -- CRITICAL: Remove rules field to use server-side rules in connected mode
-          if config.settings and config.settings.sonarlint then
-            config.settings.sonarlint.rules = nil
-          end
+        before_init = has_connected_mode and function(params, config)
+          local config_path = params.rootPath .. "/.sonarlint.json"
+          if vim.fn.filereadable(config_path) ~= 1 then return end
 
-          -- Read project config from .sonarlint.json in project root
-          local sonarlint_config_path = params.rootPath .. "/.sonarlint.json"
-          vim.notify(
-            string.format("SonarLint: Looking for config at: %s", sonarlint_config_path),
-            vim.log.levels.INFO,
-            { title = "SonarLint Debug" }
-          )
-          if vim.fn.filereadable(sonarlint_config_path) == 1 then
-            local ok, project_config = pcall(vim.fn.json_decode, vim.fn.readfile(sonarlint_config_path))
-            if ok and project_config.projectKey then
-              config.settings.sonarlint.connectedMode.project = {
-                connectionId = project_config.connectionId or "lpa-sonarqube",
-                projectKey = project_config.projectKey,
-              }
-              vim.notify(
-                string.format("SonarLint: Bound to project '%s' via connection '%s'",
-                  project_config.projectKey, project_config.connectionId or "lpa-sonarqube"),
-                vim.log.levels.INFO,
-                { title = "SonarLint Connected Mode" }
-              )
-            else
-              vim.notify(
-                string.format("SonarLint: Failed to parse .sonarlint.json: %s", ok and "no projectKey" or "invalid JSON"),
-                vim.log.levels.WARN,
-                { title = "SonarLint Debug" }
-              )
-            end
-          else
-            vim.notify(
-              "SonarLint: No .sonarlint.json found - running in local mode",
-              vim.log.levels.WARN,
-              { title = "SonarLint Debug" }
-            )
-          end
+          local ok, project = pcall(vim.fn.json_decode, vim.fn.readfile(config_path))
+          if not ok or not project.projectKey then return end
+
+          config.settings.sonarlint.connectedMode.project = {
+            connectionId = project.connectionId or "sonarcloud",
+            projectKey = project.projectKey,
+          }
         end or nil,
       },
 
@@ -210,23 +153,5 @@ return {
         "cs",
       },
     })
-
-    -- Notify user about configuration status
-    local status_msg = string.format("SonarLint configured with %d language analyzer(s)", #analyzers)
-
-    if vim.env.SONARQUBE_URL and vim.env.SONARQUBE_TOKEN then
-      vim.notify(
-        status_msg .. "\nConnected mode enabled for: " .. vim.env.SONARQUBE_URL,
-        vim.log.levels.INFO,
-        { title = "SonarLint Ready" }
-      )
-    else
-      vim.notify(
-        status_msg .. "\nRunning in standalone mode.\n" ..
-        "Set SONARQUBE_URL and SONARQUBE_TOKEN in .env for connected mode.",
-        vim.log.levels.INFO,
-        { title = "SonarLint Ready" }
-      )
-    end
   end,
 }
