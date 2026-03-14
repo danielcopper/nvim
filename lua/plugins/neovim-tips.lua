@@ -12,11 +12,11 @@ return {
   },
   init = function()
     local map = vim.keymap.set
-    map("n", "<leader>nto", ":NeovimTips<CR>", { desc = "Neovim tips", silent = true })
-    map("n", "<leader>nte", ":NeovimTipsEdit<CR>", { desc = "Edit your Neovim tips", silent = true })
-    map("n", "<leader>nta", ":NeovimTipsAdd<CR>", { desc = "Add your Neovim tip", silent = true })
-    map("n", "<leader>nth", ":help neovim-tips<CR>", { desc = "Neovim tips help", silent = true })
-    map("n", "<leader>ntr", ":NeovimTipsRandom<CR>", { desc = "Show random tip", silent = true })
-    map("n", "<leader>ntp", ":NeovimTipsPdf<CR>", { desc = "Open Neovim tips PDF", silent = true })
+    map("n", "<leader>tto", ":NeovimTips<CR>", { desc = "Neovim tips", silent = true })
+    map("n", "<leader>tte", ":NeovimTipsEdit<CR>", { desc = "Edit your Neovim tips", silent = true })
+    map("n", "<leader>tta", ":NeovimTipsAdd<CR>", { desc = "Add your Neovim tip", silent = true })
+    map("n", "<leader>tth", ":help neovim-tips<CR>", { desc = "Neovim tips help", silent = true })
+    map("n", "<leader>ttr", ":NeovimTipsRandom<CR>", { desc = "Show random tip", silent = true })
+    map("n", "<leader>ttp", ":NeovimTipsPdf<CR>", { desc = "Open Neovim tips PDF", silent = true })
   end
 }

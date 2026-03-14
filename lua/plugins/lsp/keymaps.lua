@@ -24,7 +24,6 @@ function M.setup()
       end
 
       -- Additional useful keymaps
-      map("n", "<leader>cl", "<cmd>LspInfo<cr>", "LSP Info")
       map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
       map("n", "<leader>cr", vim.lsp.buf.rename, "Rename symbol")
       map("n", "[d", vim.diagnostic.goto_prev, "Previous diagnostic")

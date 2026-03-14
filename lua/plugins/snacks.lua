@@ -9,7 +9,7 @@ return {
     quickfile = { enabled = true },
     indent = { enabled = true },
     input = { enabled = true },
-    lazygit = { enabled = true },
+    lazygit = { enabled = false },
     rename = { enabled = true },
     statuscolumn = { enabled = true },
     words = { enabled = true },
@@ -19,10 +19,6 @@ return {
     -- Terminal
     { "<C-/>", function() Snacks.terminal() end, desc = "Toggle terminal", mode = { "n", "t" } },
     { "<C-_>", function() Snacks.terminal() end, desc = "Toggle terminal (which-key)", mode = { "n", "t" } },
-
-    -- LazyGit
-    -- LazyGit: moved to keymaps.lua (worktree-aware, no snacks dependency)
-    { "<leader>gl", function() Snacks.lazygit.log_file() end, desc = "LazyGit current file history" },
 
     -- Buffer delete
     { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete buffer" },
