@@ -11,7 +11,7 @@ return {
     draw = {
       delay = 50,
       animation = function()
-        return 5 -- ms per step, smooth but fast
+        return 20 -- ms per step
       end,
     },
   },
