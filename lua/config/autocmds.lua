@@ -78,6 +78,25 @@ vim.api.nvim_create_autocmd("BufRead", {
   end,
 })
 
+-- Disable heavy features for large files
+vim.api.nvim_create_autocmd("BufReadPre", {
+  group = augroup("bigfile"),
+  callback = function(args)
+    local max_filesize = 1024 * 1024 -- 1 MB
+    local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+    if ok and stats and stats.size > max_filesize then
+      vim.b[args.buf].bigfile = true
+      vim.opt_local.syntax = ""
+      vim.opt_local.swapfile = false
+      vim.opt_local.undofile = false
+      vim.opt_local.foldmethod = "manual"
+      vim.schedule(function()
+        pcall(vim.treesitter.stop, args.buf)
+      end)
+    end
+  end,
+})
+
 -- Show cursorline only in active window
 vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
   group = augroup("active_cursorline"),

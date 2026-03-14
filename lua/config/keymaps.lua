@@ -46,7 +46,6 @@ keymap("n", "<leader>sr", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]
 keymap("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 
 -- Buffer navigation
--- <leader>bd is handled by snacks.nvim bufdelete
 keymap("n", "[b", "<cmd>bprevious<cr>", { desc = "Previous buffer" })
 keymap("n", "]b", "<cmd>bnext<cr>", { desc = "Next buffer" })
 keymap("n", "H", "<cmd>bprevious<cr>", { desc = "Previous buffer" })

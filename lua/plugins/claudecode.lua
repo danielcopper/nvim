@@ -3,9 +3,7 @@
 
 return {
   "coder/claudecode.nvim",
-  dependencies = {
-    "folke/snacks.nvim",
-  },
+  dependencies = {},
   event = "VeryLazy",
 
   keys = {
@@ -44,71 +42,10 @@ return {
 
     -- Terminal configuration
     terminal = {
-      provider = "snacks", -- Use snacks.nvim for better terminal management
-      split_side = "right", -- "left" or "right"
-      split_width_percentage = 0.35, -- 35% of window width
-      auto_close = false, -- Keep terminal open after completion
-
-      -- Snacks-specific window options
-      snacks_win_opts = {
-        wo = {
-          -- TODO: Dynamic icons based on Claude's state would be nice:
-          --   󱚣 when working (writing, creating, generating)
-          --   󱚟 when waiting for user input
-          --   󱜙 when task completed
-          --   󱚡 when error occurred
-          --   󰚩 default/idle
-          -- Currently not possible as Claude Code doesn't expose state via terminal title
-          winbar = "󰚩 Claude Code",
-          number = false, -- Hide line numbers
-          relativenumber = false,
-        },
-        keys = {
-          -- Override double-escape with single escape to exit terminal mode
-          term_normal = {
-            "<Esc>",
-            function(self)
-              vim.cmd("stopinsert")
-            end,
-            mode = "t",
-            desc = "Exit terminal mode",
-          },
-          -- Easy window navigation from terminal mode
-          nav_left = {
-            "<C-h>",
-            function()
-              vim.cmd("wincmd h")
-            end,
-            mode = "t",
-            desc = "Move to left window",
-          },
-          nav_right = {
-            "<C-l>",
-            function()
-              vim.cmd("wincmd l")
-            end,
-            mode = "t",
-            desc = "Move to right window",
-          },
-          nav_up = {
-            "<C-k>",
-            function()
-              vim.cmd("wincmd k")
-            end,
-            mode = "t",
-            desc = "Move to upper window",
-          },
-          -- Disabled: User needs <C-j> for newline, rarely have windows below
-          -- nav_down = {
-          --   "<C-j>",
-          --   function()
-          --     vim.cmd("wincmd j")
-          --   end,
-          --   mode = "t",
-          --   desc = "Move to lower window",
-          -- },
-        },
-      },
+      provider = "native",
+      split_side = "right",
+      split_width_percentage = 0.35,
+      auto_close = false,
     },
 
     -- Diff settings

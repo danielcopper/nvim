@@ -6,7 +6,7 @@ return {
   lazy = false,
   keys = {
     { "<leader>un", function() require("notify").dismiss({ silent = true, pending = true }) end, desc = "Dismiss All Notifications" },
-    { "<leader>tn", "<cmd>Telescope notify<cr>", desc = "Notification History" },
+    { "<leader>tn", "<cmd>Telescope notify<cr>", desc = "Notifications" },
   },
   opts = {
     timeout = 3000,

@@ -108,8 +108,6 @@ return {
 
   { "williamboman/mason.nvim", opts = { ui = { border = borders } } },
   { "folke/which-key.nvim", opts = { win = { border = borders } } },
-  { "folke/snacks.nvim", opts = { lazygit = { win = { border = borders } } } },
-
   { "neovim/nvim-lspconfig", opts = {
     diagnostics = { float = { border = borders } },
   }},
@@ -137,33 +135,15 @@ return {
 
     -- Apply colors to lualine_x components
     local x = opts.sections.lualine_x or {}
-    -- Diagnostic separator ("|") — color by severity
-    for i, comp in ipairs(x) do
-      if type(comp) == "table" and comp.padding and comp.padding.left == 1 then
-        comp.color = function()
-          local err = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-          local warn = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
-          local info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
-          local hint = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
-          if err > 0 then return { fg = p.red }
-          elseif warn > 0 then return { fg = p.yellow }
-          elseif info > 0 then return { fg = p.sky }
-          elseif hint > 0 then return { fg = p.teal }
-          end
-        end
-      end
-    end
-
-    -- Color specific sections by index (fragile but explicit)
-    -- Ln/Col
-    if x[3] then x[3].color = { fg = p.overlay1 } end
-    -- LSP clients
-    if x[4] then x[4].color = { fg = p.green } end
-    -- Encoding
-    if x[5] then x[5].color = { fg = p.mauve } end
-    -- Filetype
+    -- Color specific sections by index
+    -- x[1] = diagnostics (handled by lualine)
+    -- x[2] = Ln/Col
+    if x[2] then x[2].color = { fg = p.overlay1 } end
+    -- x[3] = LSP clients (green/gray handled dynamically in lualine.lua)
+    -- x[4] = Encoding
+    if x[4] then x[4].color = { fg = p.mauve } end
+    -- x[5] = Fileformat (conditional)
+    -- x[6] = Filetype
     if x[6] then x[6].color = { fg = p.blue } end
-    -- CWD folder
-    if x[7] then x[7].color = { bg = p.surface0, fg = p.red } end
   end},
 }
