@@ -83,6 +83,10 @@ M.dap = {
 ---General UI icons
 M.ui = {
   ai = "󰚩 ",
+  debug = " ",
+  hunk = "󰊢 ",
+  jupyter = "󰠮 ",
+  tree = "󰙅 ",
   arrow_down = " ",
   arrow_left = " ",
   arrow_right = " ",

@@ -10,16 +10,16 @@ return {
   },
   keys = {
     -- Load
-    { "<leader>alc", "<cmd>AdoPure load context<cr>", desc = "Load PR context" },
-    { "<leader>alt", "<cmd>AdoPure load threads<cr>", desc = "Load threads" },
+    { "<leader>plc", "<cmd>AdoPure load context<cr>", desc = "Load PR context" },
+    { "<leader>plt", "<cmd>AdoPure load threads<cr>", desc = "Load threads" },
     -- Open
-    { "<leader>aoq", "<cmd>AdoPure open quickfix<cr>", desc = "Open quickfix" },
-    { "<leader>aot", "<cmd>AdoPure open thread_picker<cr>", desc = "Thread picker" },
-    { "<leader>aon", "<cmd>AdoPure open new_thread<cr>", desc = "New thread" },
-    { "<leader>aoe", "<cmd>AdoPure open existing_thread<cr>", desc = "Open thread" },
+    { "<leader>poq", "<cmd>AdoPure open quickfix<cr>", desc = "Open quickfix" },
+    { "<leader>pot", "<cmd>AdoPure open thread_picker<cr>", desc = "Thread picker" },
+    { "<leader>pon", "<cmd>AdoPure open new_thread<cr>", desc = "New thread" },
+    { "<leader>poe", "<cmd>AdoPure open existing_thread<cr>", desc = "Open thread" },
     -- Submit
-    { "<leader>asc", "<cmd>AdoPure submit comment<cr>", desc = "Submit comment" },
-    { "<leader>asv", "<cmd>AdoPure submit vote<cr>", desc = "Submit vote" },
-    { "<leader>ast", "<cmd>AdoPure submit thread_status<cr>", desc = "Submit status" },
+    { "<leader>psc", "<cmd>AdoPure submit comment<cr>", desc = "Submit comment" },
+    { "<leader>psv", "<cmd>AdoPure submit vote<cr>", desc = "Submit vote" },
+    { "<leader>pst", "<cmd>AdoPure submit thread_status<cr>", desc = "Submit status" },
   },
 }

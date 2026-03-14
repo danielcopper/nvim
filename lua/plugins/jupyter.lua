@@ -29,26 +29,26 @@ return {
 
     keys = {
       -- Initialize kernel
-      { "<leader>mi", ":MoltenInit<cr>", desc = "Initialize Molten", silent = true },
+      { "<leader>ji", ":MoltenInit<cr>", desc = "Initialize Molten", silent = true },
 
       -- Evaluate code
-      { "<leader>me", ":MoltenEvaluateOperator<cr>", desc = "Evaluate Operator", silent = true },
-      { "<leader>ml", ":MoltenEvaluateLine<cr>", desc = "Evaluate Line", silent = true },
-      { "<leader>mc", ":MoltenReevaluateCell<cr>", desc = "Re-evaluate Cell", silent = true },
-      { "<leader>mr", ":MoltenEvaluateVisual<cr>gv", desc = "Evaluate Visual", mode = "v", silent = true },
+      { "<leader>je", ":MoltenEvaluateOperator<cr>", desc = "Evaluate Operator", silent = true },
+      { "<leader>jl", ":MoltenEvaluateLine<cr>", desc = "Evaluate Line", silent = true },
+      { "<leader>jc", ":MoltenReevaluateCell<cr>", desc = "Re-evaluate Cell", silent = true },
+      { "<leader>jr", ":MoltenEvaluateVisual<cr>gv", desc = "Evaluate Visual", mode = "v", silent = true },
 
       -- Output management
-      { "<leader>mo", ":MoltenShowOutput<cr>", desc = "Show Output", silent = true },
-      { "<leader>mh", ":MoltenHideOutput<cr>", desc = "Hide Output", silent = true },
-      { "<leader>md", ":MoltenDelete<cr>", desc = "Delete Cell", silent = true },
+      { "<leader>jo", ":MoltenShowOutput<cr>", desc = "Show Output", silent = true },
+      { "<leader>jh", ":MoltenHideOutput<cr>", desc = "Hide Output", silent = true },
+      { "<leader>jd", ":MoltenDelete<cr>", desc = "Delete Cell", silent = true },
 
       -- Navigation
-      { "]c", ":MoltenNext<cr>", desc = "Next Cell", silent = true },
-      { "[c", ":MoltenPrev<cr>", desc = "Previous Cell", silent = true },
+      { "]j", ":MoltenNext<cr>", desc = "Next Cell", silent = true },
+      { "[j", ":MoltenPrev<cr>", desc = "Previous Cell", silent = true },
 
       -- Interrupt/restart
-      { "<leader>mx", ":MoltenInterrupt<cr>", desc = "Interrupt Execution", silent = true },
-      { "<leader>mR", ":MoltenRestart!<cr>", desc = "Restart Kernel", silent = true },
+      { "<leader>jx", ":MoltenInterrupt<cr>", desc = "Interrupt Execution", silent = true },
+      { "<leader>jR", ":MoltenRestart!<cr>", desc = "Restart Kernel", silent = true },
     },
   },
 

@@ -22,7 +22,7 @@ return {
 
     -- LazyGit
     -- LazyGit: moved to keymaps.lua (worktree-aware, no snacks dependency)
-    { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "LazyGit current file history" },
+    { "<leader>gl", function() Snacks.lazygit.log_file() end, desc = "LazyGit current file history" },
 
     -- Buffer delete
     { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete buffer" },

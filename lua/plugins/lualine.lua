@@ -57,21 +57,13 @@ return {
         },
         {
           function()
-            if not rawget(vim, "lsp") then return "" end
-            local total = #vim.diagnostic.get(0)
-            return total > 0 and "|" or ""
-          end,
-          padding = { left = 1, right = 1 },
-        },
-        {
-          function()
             return string.format("Ln %d, Col %d", vim.fn.line("."), vim.fn.col("."))
           end,
         },
         {
           function()
             local clients = vim.lsp.get_clients({ buffer = 0 })
-            if next(clients) == nil then return "" end
+            if next(clients) == nil then return icons.ui.lsp .. " --" end
             local names = {}
             for _, client in pairs(clients) do
               table.insert(names, client.name)
@@ -82,22 +74,28 @@ return {
               return icons.ui.lsp .. " LSP"
             end
           end,
+          color = function()
+            local clients = vim.lsp.get_clients({ buffer = 0 })
+            if next(clients) then
+              return { fg = "#a6e3a1" }
+            end
+            return { fg = "#6c7086" }
+          end,
         },
         { "encoding", icons_enabled = false },
         {
           "fileformat",
           icons_enabled = false,
           fmt = function(str)
-            local map = { unix = "LF", dos = "CRLF", mac = "CR" }
+            if str == "unix" then return "" end
+            local map = { dos = "CRLF", mac = "CR" }
             return map[str] or str
+          end,
+          cond = function()
+            return vim.bo.fileformat ~= "unix"
           end,
         },
         { "filetype", icon = { align = "left" } },
-        {
-          function()
-            return icons.ui.folder .. " " .. vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
-          end,
-        },
       },
       lualine_y = {},
       lualine_z = {},
