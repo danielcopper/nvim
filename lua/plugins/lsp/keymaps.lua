@@ -32,7 +32,7 @@ function M.setup()
       map("n", "<leader>vd", vim.diagnostic.open_float, "Show line diagnostics")
 
       -- Inlay hints (if supported)
-      if client and client.supports_method("textDocument/inlayHint") then
+      if client and client:supports_method("textDocument/inlayHint") then
         map("n", "<leader>uh", function()
           vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }))
         end, "Toggle inlay hints")

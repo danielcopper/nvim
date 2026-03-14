@@ -3,6 +3,7 @@
 
 return {
   -- Inline notebook execution with output display (like VSCode/JupyterLab)
+  -- Requires: Python provider enabled, kitty/wezterm/ghostty terminal for image support
   {
     "benlubas/molten-nvim",
     version = "^1.0.0",
@@ -78,8 +79,10 @@ return {
   },
 
   -- Image display support for molten
+  -- Requires: kitty/wezterm/ghostty terminal with image protocol support
   {
     "3rd/image.nvim",
+    cond = vim.env.TERM_PROGRAM == "WezTerm" or vim.env.TERM == "xterm-kitty" or vim.env.TERM_PROGRAM == "ghostty",
     opts = {
       backend = "kitty", -- or "ueberzug"
       integrations = {
