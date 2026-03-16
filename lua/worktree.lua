@@ -1,5 +1,50 @@
 -- worktree.lua — Git worktree switcher for nvim
+--
 -- No plugin dependencies. Uses telescope if available, falls back to vim.ui.select.
+--
+-- Switch orchestration (M.switch):
+--   The order of operations is critical to avoid race conditions between LSP
+--   clients and buffer path changes. Specifically:
+--
+--   1. Stop all LSP clients FIRST
+--      - Buffers still have their old paths at this point, so LSP clients
+--        send clean didClose notifications for the correct (old) URIs.
+--      - If we remapped buffers first, the old LSP client would receive
+--        didClose for the NEW paths it never opened → InvalidOperationException.
+--      - Managed clients (those with a vim.lsp.config entry, e.g. roslyn, ts_ls)
+--        are disabled via vim.lsp.enable(name, false) to prevent premature
+--        restart from buffer/filetype events during the transition.
+--      - Unmanaged clients (e.g. sonarlint.nvim, which uses its own startup
+--        mechanism) are stopped directly. Sonarlint's internal root_dir→client_id
+--        cache is also cleared so it doesn't try to reuse a dead client.
+--      - Roslyn state: vim.g.roslyn_nvim_selected_solution is cleared so
+--        lock_target doesn't reuse a stale solution path from the old worktree.
+--
+--   2. Change working directory (vim.fn.chdir)
+--      - Fires DirChanged autocmd → neo-tree, gitsigns, lualine react.
+--
+--   3. Remap buffers
+--      - For each loaded buffer under the old worktree path:
+--        - If the file exists in the new worktree → rename buffer + reload
+--        - If not → close buffer (prompt to save if modified)
+--      - Safe to do now because no LSP clients are watching these buffers.
+--
+--   4. Reset neo-tree
+--      - Worktrees live under .worktrees/ which is a subdir of the main repo.
+--        Neo-tree's is_subpath() matches the new path to the already-cached
+--        parent repo, so git status lookups fail. Clearing the internal worktree
+--        cache forces re-discovery via git rev-parse from the new cwd.
+--
+--   5. Re-enable LSP clients after 500ms delay
+--      - Managed clients: vim.lsp.enable(name) re-enables auto-attachment,
+--        which starts fresh clients that discover the new worktree's project files.
+--      - doautocmd FileType re-triggers filetype detection for the current buffer,
+--        which causes unmanaged LSPs (sonarlint) to start fresh via their own
+--        FileType autocmd handlers.
+--
+-- Keymaps (set in config/keymaps.lua):
+--   <leader>gw → M.pick()    (interactive worktree picker)
+--   <leader>gg → M.lazygit() (lazygit with auto-follow on worktree switch)
 
 local M = {}
 
@@ -52,7 +97,6 @@ local function remap_buffers(old_path, new_path)
             vim.cmd("silent edit!")
           end)
         else
-          -- Prompt to save if modified, then close
           if vim.bo[buf].modified then
             vim.api.nvim_buf_call(buf, function()
               vim.cmd("confirm bdelete")
@@ -66,10 +110,56 @@ local function remap_buffers(old_path, new_path)
   end
 end
 
---- Switch to a worktree by path.
---- 1. chdir          → triggers DirChanged (neo-tree, gitsigns auto-update)
---- 2. remap buffers  → simple string replace, no async, no plenary
---- 3. LspRestart     → LSP picks up the new solution/project files
+--- Stop all LSP clients and disable managed servers to prevent premature restart.
+--- Returns a set of managed server names for later re-enabling.
+local function stop_all_lsp()
+  vim.g.roslyn_nvim_selected_solution = nil
+
+  local managed_names = {}
+  -- Suppress exit-code warnings from force-stopped clients
+  local orig_notify = vim.notify
+  vim.notify = function(msg, ...)
+    if type(msg) == "string" and msg:match("quit with exit code") then return end
+    return orig_notify(msg, ...)
+  end
+  for _, client in ipairs(vim.lsp.get_clients()) do
+    if vim.lsp.config[client.name] ~= nil then
+      managed_names[client.name] = true
+    end
+    client:stop(true)
+  end
+  -- Restore after a delay (exit notifications arrive async)
+  vim.defer_fn(function() vim.notify = orig_notify end, 2000)
+
+  -- Clear sonarlint's root_dir→client_id cache (it won't start fresh otherwise)
+  pcall(function()
+    require("sonarlint")._client_id_by_root_dir = {}
+  end)
+
+  -- Disable managed servers so buffer/filetype events don't restart them early
+  for name in pairs(managed_names) do
+    vim.lsp.enable(name, false)
+  end
+
+  return managed_names
+end
+
+--- Re-enable LSP clients after a delay to let old clients fully shut down.
+local function restart_lsp(managed_names)
+  vim.defer_fn(function()
+    for name in pairs(managed_names) do
+      vim.lsp.enable(name)
+    end
+  end, 500)
+
+  -- Re-trigger FileType with a longer delay so unmanaged LSPs (sonarlint)
+  -- re-attach AFTER managed clients have fully started (avoids duplicate roslyn).
+  vim.defer_fn(function()
+    vim.cmd("doautocmd FileType")
+  end, 1500)
+end
+
+--- Switch to a worktree by path. See module header for detailed orchestration docs.
 function M.switch(target_path)
   local old_path = vim.fn.getcwd()
   target_path = vim.fn.fnamemodify(target_path, ":p"):gsub("/$", "")
@@ -79,16 +169,16 @@ function M.switch(target_path)
     return
   end
 
-  -- 1. Change directory (fires DirChanged → neo-tree, gitsigns react)
+  -- 1. Stop LSP clients (must happen before buffer remap)
+  local managed_names = stop_all_lsp()
+
+  -- 2. Change directory
   vim.fn.chdir(target_path)
 
-  -- 2. Remap buffers
+  -- 3. Remap buffers (safe — no LSP clients are watching)
   remap_buffers(old_path, target_path)
 
-  -- 3. Reset neo-tree: worktrees live under .worktrees/ which is a subdir of the
-  --    main repo. Neo-tree's is_subpath() matches the new path to the already-cached
-  --    parent repo, so git status lookups fail (wrong paths). Clearing the internal
-  --    worktree cache forces re-discovery via git rev-parse from the new cwd.
+  -- 4. Reset neo-tree (clear worktree cache, reopen at new root)
   pcall(vim.cmd, "Neotree close")
   pcall(function()
     local git = require("neo-tree.git")
@@ -105,10 +195,10 @@ function M.switch(target_path)
     end)
   end, 200)
 
-  -- 4. Restart LSP so it finds the solution in the new worktree
-  vim.cmd("LspRestart")
+  -- 5. Re-enable LSP after delay
+  restart_lsp(managed_names)
 
-  -- Look up branch name from worktree list
+  -- Notify with branch name
   local branch = vim.fn.fnamemodify(target_path, ":t")
   for _, wt in ipairs(list_worktrees()) do
     if wt.path == target_path and wt.branch then

@@ -97,20 +97,7 @@ vim.api.nvim_create_autocmd("BufReadPre", {
   end,
 })
 
--- Show cursorline only in active window
-vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
-  group = augroup("active_cursorline"),
-  callback = function()
-    vim.opt_local.cursorline = true
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
-  group = augroup("active_cursorline"),
-  callback = function()
-    vim.opt_local.cursorline = false
-  end,
-})
+-- Cursorline stays visible in all windows (shows cursor position in inactive splits)
 
 -- -- Auto-delete empty unnamed buffers when opening a file
 -- vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {

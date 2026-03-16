@@ -19,8 +19,21 @@ return {
   keys = {
     -- Files
     { "<leader>ff", "<cmd>Telescope find_files<cr>",    desc = "Find files" },
-    { "<leader>fr", "<cmd>Telescope oldfiles cwd_only=true<cr>", desc = "Recent files (cwd)" },
-    { "<leader>fR", "<cmd>Telescope oldfiles<cr>",                desc = "Recent files (all)" },
+    {
+      "<leader>fr",
+      function()
+        local cwd = vim.fn.getcwd()
+        local git_path = cwd .. "/.git"
+        local is_main_repo = vim.fn.isdirectory(git_path) == 1
+        require("telescope.builtin").oldfiles({
+          cwd_only = true,
+          -- On main repo: exclude .worktrees/ paths so only branch-local files show
+          file_ignore_patterns = is_main_repo and { "%.worktrees/" } or nil,
+        })
+      end,
+      desc = "Recent files (cwd)",
+    },
+    { "<leader>fR", "<cmd>Telescope oldfiles<cr>", desc = "Recent files (all)" },
     { "<leader>fo", "<cmd>Telescope buffers<cr>",       desc = "Buffers" },
 
     -- Git

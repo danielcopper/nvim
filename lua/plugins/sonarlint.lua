@@ -109,7 +109,7 @@ return {
     require("sonarlint").setup({
       connected = has_connected_mode and {
         get_credentials = function()
-          return vim.env.SONAR_TOKEN
+          return vim.env.SONARQUBE_TOKEN or vim.env.SONAR_TOKEN
         end,
       } or nil,
 

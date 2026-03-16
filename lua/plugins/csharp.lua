@@ -1,5 +1,81 @@
+-- Worktree-aware solution chooser for roslyn.nvim
+-- Extracted as a standalone function so it can be registered early (before LSP starts)
+-- and also passed to roslyn.nvim setup().
+local function choose_target(targets)
+  if #targets == 0 then
+    return nil
+  end
+  if #targets == 1 then
+    return targets[1]
+  end
+
+  -- Scope targets to the current worktree/repo.
+  -- broad_search + upward find discovers solutions from other worktrees too.
+  -- In a worktree .git is a FILE → keep only targets under that worktree root.
+  -- In the main repo .git is a DIRECTORY → exclude anything under .worktrees/.
+  local root = vim.fs.root(0, ".git")
+  if root then
+    local git_path = root .. "/.git"
+    local is_worktree = vim.fn.isdirectory(git_path) == 0 and vim.fn.filereadable(git_path) == 1
+    local local_targets
+    if is_worktree then
+      local_targets = vim.iter(targets):filter(function(t)
+        return t:find(root, 1, true) ~= nil
+      end):totable()
+    else
+      local_targets = vim.iter(targets):filter(function(t)
+        return t:find("/.worktrees/", 1, true) == nil
+      end):totable()
+    end
+    if #local_targets > 0 then
+      targets = local_targets
+    end
+  end
+  if #targets == 1 then
+    return targets[1]
+  end
+
+  -- Categorize by extension (priority: .slnx > .sln > .slnf)
+  local slnx = vim.iter(targets):filter(function(t) return t:match("%.slnx$") end):totable()
+  local sln = vim.iter(targets):filter(function(t) return t:match("%.sln$") end):totable()
+  local slnf = vim.iter(targets):filter(function(t) return t:match("%.slnf$") end):totable()
+
+  if #slnx == 1 then
+    return slnx[1]
+  elseif #slnx > 1 then
+    return nil
+  end
+
+  if #sln == 1 then
+    return sln[1]
+  elseif #sln > 1 then
+    return nil
+  end
+
+  if #slnf == 1 then
+    return slnf[1]
+  end
+
+  return nil
+end
+
 -- Configure LSP settings for roslyn
 vim.lsp.config("roslyn", {
+  -- Prevent ghost clients: roslyn.nvim's root_dir can return nil when choose_target
+  -- can't resolve a solution (e.g., during startup race). Neovim then starts a client
+  -- with root_dir=nil. Override root_dir to swallow nil and prevent the ghost client.
+  root_dir = function(bufnr, on_dir)
+    local cfg = require("roslyn.config").get()
+    if cfg.lock_target and vim.g.roslyn_nvim_selected_solution then
+      on_dir(vim.fs.dirname(vim.g.roslyn_nvim_selected_solution))
+      return
+    end
+    local root = require("roslyn.sln.utils").root_dir(bufnr)
+    if root then
+      on_dir(root)
+    end
+    -- nil root → don't call on_dir → no ghost client
+  end,
   handlers = {
     -- Fix for noice.nvim: ensure progress messages have a token field
     ["$/progress"] = function(err, result, ctx, config)
@@ -37,52 +113,18 @@ vim.lsp.config("roslyn", {
 return {
   {
     "seblyng/roslyn.nvim",
-    ft = "cs",
+    -- Must load before mason-lspconfig auto-enables roslyn, so choose_target
+    -- is registered in time for the first root_dir() call.
+    lazy = false,
     opts = {
       broad_search = true,
       lock_target = true,
-      -- Priority: .slnx > .sln > .slnf
-      -- Auto-select if only one of highest priority type, otherwise prompt
-      choose_target = function(targets)
-        if #targets == 0 then
-          return nil
-        end
-        if #targets == 1 then
-          return targets[1]
-        end
-
-        -- Categorize by extension
-        local slnx = vim.iter(targets):filter(function(t) return t:match("%.slnx$") end):totable()
-        local sln = vim.iter(targets):filter(function(t) return t:match("%.sln$") end):totable()
-        local slnf = vim.iter(targets):filter(function(t) return t:match("%.slnf$") end):totable()
-
-        -- Priority 1: .slnx
-        if #slnx == 1 then
-          return slnx[1]
-        elseif #slnx > 1 then
-          return nil -- prompt user
-        end
-
-        -- Priority 2: .sln
-        if #sln == 1 then
-          return sln[1]
-        elseif #sln > 1 then
-          return nil -- prompt user
-        end
-
-        -- Priority 3: .slnf
-        if #slnf == 1 then
-          return slnf[1]
-        end
-
-        -- Multiple or unknown - prompt user
-        return nil
-      end,
+      choose_target = choose_target,
     },
   },
   {
     "khoido2003/roslyn-filewatch.nvim",
     ft = "cs",
     opts = {},
-  }
+  },
 }

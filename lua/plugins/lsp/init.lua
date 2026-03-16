@@ -37,7 +37,10 @@ return {
     -- Setup mason-lspconfig
     require("mason-lspconfig").setup({
       automatic_enable = {
-        exclude = { "jdtls" }, -- jdtls is handled by ftplugin/java.lua via nvim-jdtls
+        exclude = {
+          "jdtls",  -- handled by ftplugin/java.lua via nvim-jdtls
+          "roslyn", -- handled by roslyn.nvim plugin (plugin/roslyn.lua calls vim.lsp.enable)
+        },
       },
     })
 
