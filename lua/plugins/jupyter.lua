@@ -7,7 +7,8 @@ return {
   {
     "benlubas/molten-nvim",
     version = "^1.0.0",
-    dependencies = { "3rd/image.nvim" },
+    -- image.nvim is optional — loaded via its own spec when terminal + ImageMagick are available
+    dependencies = {},
     build = ":UpdateRemotePlugins",
     ft = { "python", "jupyter" },
 
@@ -82,7 +83,8 @@ return {
   -- Requires: kitty/wezterm/ghostty terminal with image protocol support
   {
     "3rd/image.nvim",
-    cond = vim.env.TERM_PROGRAM == "WezTerm" or vim.env.TERM == "xterm-kitty" or vim.env.TERM_PROGRAM == "ghostty",
+    cond = (vim.env.TERM_PROGRAM == "WezTerm" or vim.env.TERM == "xterm-kitty" or vim.env.TERM_PROGRAM == "ghostty")
+      and (vim.fn.executable("magick") == 1 or vim.fn.executable("convert") == 1),
     opts = {
       backend = "kitty", -- or "ueberzug"
       integrations = {

@@ -47,6 +47,66 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Auto-download missing spell files when spell is first enabled
+-- SpellFileMissing doesn't fire when spell is set programmatically,
+-- so we check when opening text files (where spell gets enabled).
+do
+  local spell_prompted = false
+  vim.api.nvim_create_autocmd("FileType", {
+    group = augroup("spell_download"),
+    pattern = { "gitcommit", "markdown", "text" },
+    callback = function()
+      if spell_prompted then return end
+
+      local spell_dir = vim.fn.stdpath("config") .. "/spell"
+      if vim.fn.isdirectory(spell_dir) == 0 then
+        vim.fn.mkdir(spell_dir, "p")
+      end
+
+      local wanted = { "de" }
+      local missing = {}
+      for _, lang in ipairs(wanted) do
+        if vim.fn.filereadable(spell_dir .. "/" .. lang .. ".utf-8.spl") == 0 then
+          table.insert(missing, lang)
+        end
+      end
+      if #missing == 0 then return end
+      spell_prompted = true
+
+      local base_url = "https://ftp.nluug.nl/pub/vim/runtime/spell"
+
+      vim.defer_fn(function()
+        vim.ui.select(missing, {
+          prompt = "Download missing spell files?",
+          format_item = function(lang)
+            return lang .. " (utf-8)"
+          end,
+        }, function(lang)
+          if not lang then return end
+          for _, ext in ipairs({ "spl", "sug" }) do
+            local name = lang .. ".utf-8." .. ext
+            local url = base_url .. "/" .. name
+            local pth = spell_dir .. "/" .. name
+            vim.notify("Downloading " .. name .. "...", vim.log.levels.INFO)
+            vim.system({ "curl", "-fLo", pth, url }, {}, function(result)
+              vim.schedule(function()
+                if result.code == 0 then
+                  vim.notify("Downloaded " .. name, vim.log.levels.INFO)
+                  if ext == "spl" then
+                    vim.opt.spelllang:append(lang)
+                  end
+                else
+                  vim.notify("Failed to download " .. name, vim.log.levels.ERROR)
+                end
+              end)
+            end)
+          end
+        end)
+      end, 500)
+    end,
+  })
+end
+
 -- Close certain windows with 'q'
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("close_with_q"),

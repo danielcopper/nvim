@@ -8,6 +8,9 @@ vim.g.maplocalleader = "\\"
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- Disable built-in spellfile.vim (we handle SpellFileMissing in autocmds.lua)
+vim.g.loaded_spellfile_plugin = 1
+
 -- Appearance
 opt.number = true
 opt.relativenumber = true
@@ -54,8 +57,14 @@ opt.pumheight = 10
 -- Formatting (jcroqlnt: see :help fo-table)
 opt.formatoptions = "jcroqlnt"
 
--- Spell check
-opt.spelllang = { "en", "de" }
+-- Spell check (only add languages whose .spl files are installed)
+opt.spelllang = { "en" }
+for _, lang in ipairs({ "de" }) do
+  local spl = vim.fn.stdpath("config") .. "/spell/" .. lang .. ".utf-8.spl"
+  if vim.fn.filereadable(spl) == 1 then
+    vim.opt.spelllang:append(lang)
+  end
+end
 
 -- Folding (for nvim-ufo)
 opt.foldcolumn = "0"

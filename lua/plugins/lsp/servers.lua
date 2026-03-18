@@ -90,7 +90,8 @@ function M.get_servers()
       capabilities = capabilities,
       cmd = { "azure-pipelines-language-server", "--stdio" },
       filetypes = { "yaml", "yml" },
-      root_dir = vim.fs.root(0, { "azure-pipelines.yml", ".git" }),
+      root_markers = { "azure-pipelines.yml" },
+      workspace_required = true,
       settings = {
         yaml = {
           schemas = {
@@ -120,7 +121,11 @@ function M.get_servers()
     html = { capabilities = capabilities },
     dockerls = { capabilities = capabilities },
     markdown_oxide = { capabilities = capabilities },
-    angularls = { capabilities = capabilities },
+    angularls = {
+      capabilities = capabilities,
+      root_markers = { "angular.json", "nx.json" },
+      workspace_required = true,
+    },
     emmet_language_server = { capabilities = capabilities },
     powershell_es = {
       capabilities = capabilities,
