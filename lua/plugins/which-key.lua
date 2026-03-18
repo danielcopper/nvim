@@ -15,7 +15,7 @@ return {
       { "<leader>d", group = "debug", icon = { icon = icons.ui.debug, color = "red" } },
       { "<leader>f", group = "find/file", icon = { icon = icons.ui.find, color = "green" } },
       { "<leader>g", group = "git", icon = { icon = icons.git.branch, color = "purple" } },
-      { "<leader>h", group = "hunks", icon = { icon = icons.ui.hunk, color = "orange" } },
+      { "<leader>h", group = "http", icon = { icon = icons.ui.http, color = "orange" } },
       { "<leader>j", group = "jupyter", icon = { icon = icons.ui.jupyter, color = "yellow" } },
       { "<leader>p", group = "pr/azure", icon = { icon = icons.git.branch, color = "azure" } },
       { "<leader>pl", group = "load" },
