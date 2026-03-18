@@ -179,7 +179,13 @@ function M.switch(target_path)
       git._upward_worktree_cache = setmetatable({}, { __mode = "kv" })
     end
   end)
+  local prev_win = vim.api.nvim_get_current_win()
   pcall(vim.cmd, "Neotree dir=" .. target_path)
+  -- Restore focus to the file window (Neotree steals focus)
+  -- Only restore if the window is still valid and has a real buffer
+  if vim.api.nvim_win_is_valid(prev_win) and vim.bo[vim.api.nvim_win_get_buf(prev_win)].buftype == "" then
+    vim.api.nvim_set_current_win(prev_win)
+  end
   vim.defer_fn(function()
     pcall(function()
       local events = require("neo-tree.events")

@@ -58,7 +58,7 @@ do
     callback = function()
       if spell_prompted then return end
 
-      local spell_dir = vim.fn.stdpath("config") .. "/spell"
+      local spell_dir = vim.fn.stdpath("data") .. "/site/spell"
       if vim.fn.isdirectory(spell_dir) == 0 then
         vim.fn.mkdir(spell_dir, "p")
       end
@@ -83,23 +83,72 @@ do
           end,
         }, function(lang)
           if not lang then return end
-          for _, ext in ipairs({ "spl", "sug" }) do
+          local extensions = { "spl", "sug" }
+          for _, ext in ipairs(extensions) do
             local name = lang .. ".utf-8." .. ext
             local url = base_url .. "/" .. name
             local pth = spell_dir .. "/" .. name
-            vim.notify("Downloading " .. name .. "...", vim.log.levels.INFO)
-            vim.system({ "curl", "-fLo", pth, url }, {}, function(result)
-              vim.schedule(function()
-                if result.code == 0 then
-                  vim.notify("Downloaded " .. name, vim.log.levels.INFO)
-                  if ext == "spl" then
-                    vim.opt.spelllang:append(lang)
+            local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+            local spin_idx = 0
+
+            local notification = vim.notify(spinner[1] .. " " .. name, vim.log.levels.INFO, {
+              title = "Spell",
+              timeout = false,
+            })
+
+            -- Spinner timer (updates every 100ms while downloading)
+            local timer = vim.uv.new_timer()
+            timer:start(100, 100, vim.schedule_wrap(function()
+              spin_idx = (spin_idx + 1) % #spinner
+              notification = vim.notify(spinner[spin_idx + 1] .. " " .. name, vim.log.levels.INFO, {
+                title = "Spell",
+                replace = notification,
+                timeout = false,
+              })
+            end))
+
+            vim.system(
+              { "curl", "--connect-timeout", "10", "--max-time", "60", "-#", "-fLo", pth, url },
+              {
+                stderr = function(_, data)
+                  if not data then return end
+                  local pct = data:match("(%d+%.%d)%%") or data:match("(%d+)%%")
+                  if pct then
+                    -- Real progress available — stop spinner, show percentage
+                    timer:stop()
+                    vim.schedule(function()
+                      notification = vim.notify(name .. " — " .. pct .. "%", vim.log.levels.INFO, {
+                        title = "Spell",
+                        replace = notification,
+                        timeout = false,
+                      })
+                    end)
                   end
-                else
-                  vim.notify("Failed to download " .. name, vim.log.levels.ERROR)
-                end
-              end)
-            end)
+                end,
+              },
+              function(result)
+                timer:stop()
+                timer:close()
+                vim.schedule(function()
+                  if result.code == 0 then
+                    vim.notify("✓ " .. name, vim.log.levels.INFO, {
+                      title = "Spell",
+                      replace = notification,
+                      timeout = 3000,
+                    })
+                    if ext == "spl" then
+                      vim.opt.spelllang:append(lang)
+                    end
+                  else
+                    vim.notify("✗ " .. name .. " (download failed)", vim.log.levels.ERROR, {
+                      title = "Spell",
+                      replace = notification,
+                      timeout = 5000,
+                    })
+                  end
+                end)
+              end
+            )
           end
         end)
       end, 500)

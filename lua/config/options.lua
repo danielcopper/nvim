@@ -59,9 +59,9 @@ opt.formatoptions = "jcroqlnt"
 
 -- Spell check (only add languages whose .spl files are installed)
 opt.spelllang = { "en" }
+local spell_dir = vim.fn.stdpath("data") .. "/site/spell"
 for _, lang in ipairs({ "de" }) do
-  local spl = vim.fn.stdpath("config") .. "/spell/" .. lang .. ".utf-8.spl"
-  if vim.fn.filereadable(spl) == 1 then
+  if vim.fn.filereadable(spell_dir .. "/" .. lang .. ".utf-8.spl") == 1 then
     vim.opt.spelllang:append(lang)
   end
 end
