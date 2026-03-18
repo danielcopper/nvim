@@ -170,8 +170,8 @@ function M.switch(target_path)
   -- 3. Remap buffers (safe — no LSP clients are watching)
   remap_buffers(old_path, target_path)
 
-  -- 4. Reset neo-tree (clear worktree cache, reopen at new root)
-  pcall(vim.cmd, "Neotree close")
+  -- 4. Reset neo-tree (clear worktree cache, refresh at new root)
+  local prev_win = vim.api.nvim_get_current_win()
   pcall(function()
     local git = require("neo-tree.git")
     git.worktrees = {}
@@ -179,10 +179,9 @@ function M.switch(target_path)
       git._upward_worktree_cache = setmetatable({}, { __mode = "kv" })
     end
   end)
-  local prev_win = vim.api.nvim_get_current_win()
-  pcall(vim.cmd, "Neotree dir=" .. target_path)
-  -- Restore focus to the file window (Neotree steals focus)
-  -- Only restore if the window is still valid and has a real buffer
+  -- Use action=show to refresh without stealing focus, avoid close/reopen race
+  pcall(vim.cmd, "Neotree action=show dir=" .. target_path)
+  -- Restore focus in case neo-tree took it
   if vim.api.nvim_win_is_valid(prev_win) and vim.bo[vim.api.nvim_win_get_buf(prev_win)].buftype == "" then
     vim.api.nvim_set_current_win(prev_win)
   end
