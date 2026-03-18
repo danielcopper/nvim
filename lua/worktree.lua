@@ -116,20 +116,12 @@ local function stop_all_lsp()
   vim.g.roslyn_nvim_selected_solution = nil
 
   local managed_names = {}
-  -- Suppress exit-code warnings from force-stopped clients
-  local orig_notify = vim.notify
-  vim.notify = function(msg, ...)
-    if type(msg) == "string" and msg:match("quit with exit code") then return end
-    return orig_notify(msg, ...)
-  end
   for _, client in ipairs(vim.lsp.get_clients()) do
     if vim.lsp.config[client.name] ~= nil then
       managed_names[client.name] = true
     end
     client:stop(true)
   end
-  -- Restore after a delay (exit notifications arrive async)
-  vim.defer_fn(function() vim.notify = orig_notify end, 2000)
 
   -- Clear sonarlint's root_dir→client_id cache (it won't start fresh otherwise)
   pcall(function()

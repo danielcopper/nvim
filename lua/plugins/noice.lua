@@ -25,6 +25,8 @@ return {
       inc_rename = false,
     },
     routes = {
+      -- Suppress LSP "quit with exit code" warnings — always noise from force-stopped servers (e.g. worktree switch)
+      { filter = { event = "notify", find = "quit with exit code" }, opts = { skip = true } },
       { filter = { event = "notify" }, view = "notify" },
     },
   },
