@@ -38,6 +38,36 @@ return {
 
     -- Git
     { "<leader>fg", "<cmd>Telescope git_status<cr>",    desc = "Git changed files" },
+    {
+      "<leader>fG",
+      function()
+        local default_branch = vim.fn
+          .system("git rev-parse --abbrev-ref origin/HEAD"):gsub("%s+$", ""):gsub("^origin/", "")
+        if vim.v.shell_error ~= 0 or default_branch == "" then
+          vim.notify("Could not determine default branch (run: git remote set-head origin --auto)", vim.log.levels.WARN)
+          return
+        end
+        local base = vim.fn.system("git merge-base " .. default_branch .. " HEAD"):gsub("%s+$", "")
+        if vim.v.shell_error ~= 0 then
+          vim.notify("Failed to find merge base", vim.log.levels.WARN)
+          return
+        end
+        local output = vim.fn.systemlist("git diff --name-only " .. base .. "...HEAD")
+        if #output == 0 then
+          vim.notify("No changed files in this branch", vim.log.levels.INFO)
+          return
+        end
+        require("telescope.pickers")
+          .new({}, {
+            prompt_title = "Branch changed files (vs " .. default_branch .. ")",
+            finder = require("telescope.finders").new_table({ results = output }),
+            sorter = require("telescope.config").values.generic_sorter({}),
+            previewer = require("telescope.config").values.file_previewer({}),
+          })
+          :find()
+      end,
+      desc = "Git branch changes",
+    },
 
     -- Search
     { "<leader>fs", "<cmd>Telescope live_grep<cr>",     desc = "Search (grep)" },
