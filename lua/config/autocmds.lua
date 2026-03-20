@@ -57,6 +57,7 @@ do
     pattern = { "gitcommit", "markdown", "text" },
     callback = function()
       if spell_prompted then return end
+      if vim.bo.buftype ~= "" then return end
 
       local spell_dir = vim.fn.stdpath("data") .. "/site/spell"
       if vim.fn.isdirectory(spell_dir) == 0 then
