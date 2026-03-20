@@ -120,6 +120,12 @@ local function stop_all_lsp()
     if vim.lsp.config[client.name] ~= nil then
       managed_names[client.name] = true
     end
+    -- In-process LSP servers (like kulala) don't fully stop asynchronously.
+    -- Force the exit callback so nvim removes them from the registry immediately,
+    -- preventing duplicate clients when remap_buffers triggers FileType events.
+    if type(client.config.cmd) == "function" then
+      pcall(function() client.rpc.notify("exit") end)
+    end
     client:stop(true)
   end
 
