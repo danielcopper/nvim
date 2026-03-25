@@ -12,6 +12,60 @@ return {
     { "<leader>ri", function() require("kulala").inspect() end, desc = "Inspect request" },
     { "<leader>rc", function() require("kulala").copy() end, desc = "Copy as cURL" },
     { "<leader>rt", function() require("kulala").toggle_view() end, desc = "Toggle body/headers" },
+    {
+      "<leader>ro",
+      function()
+        local globals = require("kulala.globals")
+        local headers_file = globals.HEADERS_FILE
+        local body_file = globals.BODY_FILE
+
+        -- Read headers and extract filename from Content-Disposition
+        local headers = vim.fn.readfile(headers_file)
+        local filename
+        for _, line in ipairs(headers) do
+          if line:lower():match("content%-disposition") then
+            -- Try: filename="quoted.xlsx" (exclude filename*)
+            filename = line:match('[; ]filename%s*=%s*"([^"]+)"')
+            -- Try: filename=unquoted.xlsx (exclude filename*)
+            if not filename then filename = line:match("[; ]filename%s*=%s*([^;%s]+)") end
+            if filename then break end
+          end
+        end
+
+        if not filename then
+          filename = "response_" .. os.date("%Y%m%d_%H%M%S") .. ".bin"
+          vim.notify("No filename in headers, using: " .. filename, vim.log.levels.WARN)
+        end
+
+        -- Detect platform and open with appropriate method
+        local is_wsl = vim.fn.has("wsl") == 1 or vim.fn.filereadable("/proc/sys/fs/binfmt_misc/WSLInterop") == 1
+        local is_mac = vim.fn.has("mac") == 1
+
+        if is_wsl then
+          local win_home = os.getenv("USERPROFILE") or "/mnt/c/Users"
+          local dest = win_home .. "/Downloads/" .. filename
+          vim.fn.system({ "cp", body_file, dest })
+          if vim.v.shell_error == 0 then
+            local win_path = vim.fn.system({ "wslpath", "-w", dest }):gsub("%s+$", "")
+            vim.fn.jobstart({ "cmd.exe", "/C", "start", '""', win_path }, { detach = true })
+            vim.notify("Opened: " .. filename, vim.log.levels.INFO)
+          else
+            vim.notify("Failed to copy to " .. dest, vim.log.levels.ERROR)
+          end
+        elseif is_mac then
+          local dest = "/tmp/" .. filename
+          vim.fn.system({ "cp", body_file, dest })
+          vim.fn.jobstart({ "open", dest }, { detach = true })
+          vim.notify("Opened: " .. filename, vim.log.levels.INFO)
+        else
+          local dest = "/tmp/" .. filename
+          vim.fn.system({ "cp", body_file, dest })
+          vim.fn.jobstart({ "xdg-open", dest }, { detach = true })
+          vim.notify("Opened: " .. filename, vim.log.levels.INFO)
+        end
+      end,
+      desc = "Open response with default app",
+    },
   },
   opts = {
     request_timeout = 30000,
@@ -19,11 +73,26 @@ return {
     ui = {
       display_mode = "float",
       default_view = "body",
-      max_response_size = 1048576,
+      max_response_size = 100 * 1024 * 1024,
+      win_opts = {},
     },
   },
   config = function(_, opts)
     require("kulala").setup(opts)
+
+    -- Float window: 80% of editor, centered, updates on resize
+    local cfg = require("kulala.config").options
+    local function update_float_size()
+      local w = math.floor(vim.o.columns * 0.7)
+      local h = math.floor(vim.o.lines * 0.7)
+      local wo = cfg.ui.win_opts
+      wo.width = w
+      wo.height = h
+      wo.row = math.floor((vim.o.lines - h) / 2) - 1
+      wo.col = math.floor((vim.o.columns - w) / 2)
+    end
+    update_float_size()
+    vim.api.nvim_create_autocmd("VimResized", { callback = update_float_size })
 
     -- Prevent duplicate kulala LSP clients on worktree switches.
     -- Kulala creates a new cmd closure per start_lsp() call, so vim.lsp.start()
