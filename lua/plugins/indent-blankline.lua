@@ -15,6 +15,7 @@ return {
     },
     exclude = {
       filetypes = { "help", "dashboard", "neo-tree", "Trouble", "lazy", "mason", "notify" },
+      buftypes = { "terminal" },
     },
   },
   config = function(_, opts)

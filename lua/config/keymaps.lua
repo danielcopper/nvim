@@ -5,12 +5,29 @@ keymap("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 keymap("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
 keymap("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
 keymap("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
+keymap("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Move to left window" })
+keymap("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Move to bottom window" })
+keymap("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Move to top window" })
+keymap("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Move to right window" })
 
 -- Window resizing
 keymap("n", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
 keymap("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
 keymap("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 keymap("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+keymap({ "n", "t" }, "<M-h>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
+keymap({ "n", "t" }, "<M-l>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+keymap({ "n", "t" }, "<M-j>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
+keymap({ "n", "t" }, "<M-k>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
+keymap({ "n", "t" }, "<M-z>", function()
+  if vim.g._zoom_restore_cmd then
+    vim.cmd(vim.g._zoom_restore_cmd)
+    vim.g._zoom_restore_cmd = nil
+  else
+    vim.g._zoom_restore_cmd = vim.fn.winrestcmd()
+    vim.cmd("wincmd |")
+  end
+end, { desc = "Toggle zoom window" })
 
 -- Better scrolling (keep cursor centered)
 -- NOTE: These are handled as long as mini.animate is enabled

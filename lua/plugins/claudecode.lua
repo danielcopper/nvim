@@ -52,7 +52,7 @@ return {
     diff_opts = {
       layout = "vertical",
       open_in_new_tab = true, -- Open in new tab to preserve current window layout
-      keep_terminal_focus = false,
+      keep_terminal_focus = true,
       hide_terminal_in_new_tab = false,
     },
 
@@ -65,13 +65,23 @@ return {
   config = function(_, opts)
     require("claudecode").setup(opts)
 
-    -- Auto-enter insert mode when navigating to Claude terminal
-    vim.api.nvim_create_autocmd("BufEnter", {
+    -- Hide Claude terminal from buffer lists and configure terminal behavior
+    vim.api.nvim_create_autocmd("TermOpen", {
+      pattern = "term://*claude*",
+      callback = function()
+        vim.bo.buflisted = false
+        vim.wo.winfixwidth = true
+      end,
+      desc = "Unlist Claude terminal",
+    })
+
+    -- Always keep Claude terminal in insert mode
+    vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
       pattern = "term://*claude*",
       callback = function()
         vim.cmd("startinsert")
       end,
-      desc = "Auto-enter insert mode in Claude terminal",
+      desc = "Auto-insert Claude terminal",
     })
 
     -- Optional: Add file tree integration for Neo-tree
