@@ -40,20 +40,24 @@ return {
     end
 
     local mason_path = vim.fn.stdpath("data") .. "/mason"
+    local extension_path = mason_path .. "/packages/sonarlint-language-server/extension"
     local analyzer_dir = mason_path .. "/share/sonarlint-analyzers"
 
     -- Collect installed analyzer JARs
     local analyzer_names = {
-      "sonarjs",     -- JavaScript/TypeScript
-      "sonarpython", -- Python
-      "sonarjava",   -- Java
-      "sonarhtml",   -- HTML
-      "sonarxml",    -- XML
-      "sonarphp",    -- PHP
-      "sonargo",     -- Go
-      "sonarcsharp", -- C#
-      "sonartext",   -- Text/Secrets
-      "sonariac",    -- Infrastructure as Code (Docker/Terraform)
+      "sonarjs",                       -- JavaScript/TypeScript
+      "sonarpython",                   -- Python
+      "sonarjava",                     -- Java
+      "sonarjavasymbolicexecution",    -- Java Symbolic Execution
+      "sonarhtml",                     -- HTML
+      "sonarxml",                      -- XML
+      "sonarphp",                      -- PHP
+      "sonargo",                       -- Go
+      "sonarcsharp",                   -- C#
+      "csharpenterprise",              -- C# Enterprise Rules (Connected Mode)
+      "sonarlintomnisharp",            -- C# Omnisharp Integration
+      "sonartext",                     -- Text/Secrets
+      "sonariac",                      -- Infrastructure as Code (Docker/Terraform)
     }
 
     local analyzers = {}
@@ -86,24 +90,45 @@ return {
       sonarcloud = {},
     }
     local has_connected_mode = false
+    local missing = {}
 
     if vim.env.SONARQUBE_URL then
-      connections.sonarqube = { {
-        connectionId = "sonarqube",
-        serverUrl = vim.env.SONARQUBE_URL,
-        disableNotifications = false,
-      } }
-      has_connected_mode = true
+      if not (vim.env.SONARQUBE_TOKEN or vim.env.SONAR_TOKEN) then
+        table.insert(missing, "SONARQUBE_URL is set but SONAR_TOKEN/SONARQUBE_TOKEN is missing")
+      else
+        connections.sonarqube = { {
+          connectionId = "sonarqube",
+          serverUrl = vim.env.SONARQUBE_URL,
+          disableNotifications = false,
+        } }
+        has_connected_mode = true
+      end
     end
 
     if vim.env.SONARCLOUD_ORG then
-      connections.sonarcloud = { {
-        connectionId = "sonarcloud",
-        region = "EU",
-        organizationKey = vim.env.SONARCLOUD_ORG,
-        disableNotifications = false,
-      } }
-      has_connected_mode = true
+      if not (vim.env.SONARQUBE_TOKEN or vim.env.SONAR_TOKEN) then
+        table.insert(missing, "SONARCLOUD_ORG is set but SONAR_TOKEN/SONARQUBE_TOKEN is missing")
+      else
+        connections.sonarcloud = { {
+          connectionId = "sonarcloud",
+          region = "EU",
+          organizationKey = vim.env.SONARCLOUD_ORG,
+          disableNotifications = false,
+        } }
+        has_connected_mode = true
+      end
+    end
+
+    if #missing > 0 then
+      vim.notify("SonarLint: " .. table.concat(missing, "; "), vim.log.levels.WARN)
+    end
+
+    if not has_connected_mode then
+      local reasons = {}
+      if not vim.env.SONARQUBE_URL and not vim.env.SONARCLOUD_ORG then
+        table.insert(reasons, "no SONARQUBE_URL or SONARCLOUD_ORG set")
+      end
+      vim.notify("SonarLint: standalone mode (" .. table.concat(reasons, ", ") .. ")", vim.log.levels.INFO)
     end
 
     require("sonarlint").setup({
@@ -116,6 +141,12 @@ return {
       server = {
         cmd = cmd,
 
+        init_options = {
+          omnisharpDirectory = extension_path .. "/omnisharp",
+          csharpOssPath = analyzer_dir .. "/sonarcsharp.jar",
+          csharpEnterprisePath = analyzer_dir .. "/csharpenterprise.jar",
+        },
+
         settings = {
           sonarlint = {
             connectedMode = has_connected_mode and { connections = connections } or nil,
@@ -124,13 +155,26 @@ return {
 
         before_init = has_connected_mode and function(params, config)
           local config_path = params.rootPath .. "/.sonarlint.json"
-          if vim.fn.filereadable(config_path) ~= 1 then return end
+          if vim.fn.filereadable(config_path) ~= 1 then
+            vim.notify(
+              "SonarLint: no .sonarlint.json in " .. params.rootPath .. " — no project binding, analysis will be limited",
+              vim.log.levels.WARN
+            )
+            return
+          end
 
           local ok, project = pcall(vim.fn.json_decode, vim.fn.readfile(config_path))
-          if not ok or not project.projectKey then return end
+          if not ok then
+            vim.notify("SonarLint: failed to parse .sonarlint.json", vim.log.levels.ERROR)
+            return
+          end
+          if not project.projectKey then
+            vim.notify("SonarLint: .sonarlint.json is missing 'projectKey'", vim.log.levels.ERROR)
+            return
+          end
 
           config.settings.sonarlint.connectedMode.project = {
-            connectionId = project.connectionId or "sonarcloud",
+            connectionId = project.connectionId or "sonarqube",
             projectKey = project.projectKey,
           }
         end or nil,

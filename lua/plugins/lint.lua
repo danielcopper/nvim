@@ -20,6 +20,12 @@ return {
       dockerfile = { "hadolint" },
     }
 
+    lint.linters.yamllint.args = {
+      "--format", "parsable",
+      "-d", "{extends: default, rules: {line-length: {max: 120}}}",
+      "-",
+    }
+
     -- Auto-lint on save and text changes
     local lint_augroup = vim.api.nvim_create_augroup("nvim_lint", { clear = true })
 

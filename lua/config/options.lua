@@ -3,6 +3,7 @@ local opt = vim.opt
 -- Leader keys (set before lazy.nvim)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
+vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
 -- Disable netrw (nvim-tree replaces it)
 vim.g.loaded_netrw = 1

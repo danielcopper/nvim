@@ -120,11 +120,25 @@ return {
       broad_search = true,
       lock_target = true,
       choose_target = choose_target,
+      filewatching = "off",
     },
   },
   {
     "khoido2003/roslyn-filewatch.nvim",
     ft = "cs",
-    opts = {},
+    opts = {
+      ignore_dirs = {
+        -- Worktrees contain duplicate node_modules trees (100k+ dirs)
+        ".worktrees",
+        -- Defaults from plugin
+        "node_modules",
+        "obj", "Obj",
+        "bin", "Bin",
+        "Build", "Builds",
+        "packages",
+        "TestResults",
+        ".git", ".idea", ".vs", ".vscode",
+      },
+    },
   },
 }

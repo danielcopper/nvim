@@ -90,7 +90,7 @@ function M.get_servers()
       capabilities = capabilities,
       cmd = { "azure-pipelines-language-server", "--stdio" },
       filetypes = { "yaml", "yml" },
-      root_markers = { "azure-pipelines.yml" },
+      root_markers = { "Pipelines", "azure-pipelines.yml", ".azure-pipelines" },
       workspace_required = true,
       settings = {
         yaml = {
