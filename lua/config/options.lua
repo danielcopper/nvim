@@ -88,3 +88,8 @@ end
 if vim.fn.has("nvim-0.10") == 1 then
   opt.smoothscroll = true
 end
+
+-- Neovim 0.12+: hide progress from cmdline (shown in lualine via vim.ui.progress_status)
+if vim.fn.has("nvim-0.12") == 1 then
+  opt.messagesopt = "hit-enter,history:500"
+end

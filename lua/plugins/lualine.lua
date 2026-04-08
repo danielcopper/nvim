@@ -10,6 +10,7 @@ return {
     options = {
       theme = "auto",
       globalstatus = true,
+      refresh = { statusline = 300 },
       component_separators = { left = "", right = "" },
       section_separators = "",
       disabled_filetypes = { statusline = { "dashboard", "alpha", "starter" } },
@@ -57,29 +58,50 @@ return {
         },
         {
           function()
-            return string.format("Ln %d, Col %d", vim.fn.line("."), vim.fn.col("."))
+            local all_clients = vim.lsp.get_clients()
+            if next(all_clients) == nil then return icons.ui.lsp .. " --" end
+
+            local spinner_frames = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+            local frame = spinner_frames[math.floor(vim.uv.now() / 80) % #spinner_frames + 1]
+            local busy = require("config.lsp").busy
+
+            -- Highlight groups
+            local hl_active = "%#CopperLspActive#"
+            local hl_busy = "%#CopperLspBusy#"
+            local hl_spinner = "%#CopperLspSpinner#"
+            local hl_dim = "%#CopperLspDim#"
+            local hl_icon = "%#CopperLspIcon#"
+
+            local buf_clients = {}
+            for _, c in pairs(vim.lsp.get_clients({ bufnr = 0 })) do
+              buf_clients[c.id] = true
+            end
+
+            if vim.o.columns <= 100 then
+              local any_busy = false
+              for _, c in pairs(all_clients) do
+                if busy[c.id] then any_busy = true break end
+              end
+              return hl_icon .. icons.ui.lsp .. (any_busy and (" " .. frame) or "")
+            end
+
+            local parts = {}
+            for _, client in pairs(all_clients) do
+              local hl = buf_clients[client.id] and hl_active or hl_dim
+              if busy[client.id] then
+                local name_hl = buf_clients[client.id] and hl_busy or hl_dim
+                table.insert(parts, name_hl .. client.name .. " " .. hl_spinner .. frame)
+              else
+                table.insert(parts, hl .. client.name)
+              end
+            end
+
+            return hl_icon .. icons.ui.lsp .. " " .. table.concat(parts, hl_dim .. ", ")
           end,
         },
         {
           function()
-            local clients = vim.lsp.get_clients({ buffer = 0 })
-            if next(clients) == nil then return icons.ui.lsp .. " --" end
-            local names = {}
-            for _, client in pairs(clients) do
-              table.insert(names, client.name)
-            end
-            if vim.o.columns > 100 then
-              return icons.ui.lsp .. " " .. table.concat(names, " | ")
-            else
-              return icons.ui.lsp .. " LSP"
-            end
-          end,
-          color = function()
-            local clients = vim.lsp.get_clients({ buffer = 0 })
-            if next(clients) then
-              return { fg = "#a6e3a1" }
-            end
-            return { fg = "#6c7086" }
+            return string.format("Ln %d, Col %d", vim.fn.line("."), vim.fn.col("."))
           end,
         },
         { "encoding", icons_enabled = false },

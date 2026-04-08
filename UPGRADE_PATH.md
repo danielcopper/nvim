@@ -12,28 +12,17 @@ Roadmap for migrating CopperVim to newer Neovim native APIs.
 - Servers enabled via `vim.lsp.enable()` in `lua/config/lsp.lua`
 - Mason stays for binary installation (`mason.nvim` + `mason-tool-installer.nvim`)
 
-## When upgrading to 0.12
+## Done on 0.12
 
-### Replace fidget.nvim with native ui2
+### Replace fidget.nvim with native progress
 
-Neovim 0.12 adds `:h ui2` and an extended `nvim_echo` API with progress support.
-Once on 0.12, remove `lua/plugins/fidget.lua` and add this to `lua/config/autocmds.lua`:
+- `LspProgress` autocmd creates progress messages via `nvim_echo` (kind=progress)
+- Disabled `progress:c` in `messagesopt` (no cmdline noise)
+- `vim.ui.progress_status()` shown as lualine component (auto-hides when idle)
+- Removed `lua/plugins/fidget.lua`
+- Note: ui2 is NOT enabled — it conflicts with noice.nvim's cmdline handling
 
-```lua
-vim.api.nvim_create_autocmd('LspProgress', {
-  callback = function(ev)
-    local value = ev.data.params.value
-    vim.api.nvim_echo({ { value.message or 'done' } }, false, {
-      id = 'lsp.' .. ev.data.client_id,
-      kind = 'progress',
-      source = 'vim.lsp',
-      title = value.title,
-      status = value.kind ~= 'end' and 'running' or 'success',
-      percent = value.percentage,
-    })
-  end,
-})
-```
+## Still open
 
 ### Evaluate nvim-treesitter main branch
 

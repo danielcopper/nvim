@@ -59,6 +59,24 @@ vim.lsp.enable({
   "yamlls",
 })
 
+-- LSP progress state (shared with lualine via require("config.lsp").busy)
+local M = {}
+M.busy = {} -- client_id -> true
+
+vim.api.nvim_create_autocmd("LspProgress", {
+  callback = function(ev)
+    if ev.data.params.value.kind == "end" then
+      M.busy[ev.data.client_id] = nil
+    else
+      M.busy[ev.data.client_id] = true
+    end
+    vim.cmd.redrawstatus()
+  end,
+})
+
+-- Return module so lualine can require("config.lsp").busy
+-- (Lua modules are singletons — both files see the same table)
+
 -- LSP keymaps (buffer-local, only active after LspAttach)
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("config_lsp_attach", { clear = true }),
@@ -92,3 +110,5 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
   end,
 })
+
+return M

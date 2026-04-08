@@ -10,6 +10,20 @@ end
 --   end,
 -- })
 
+-- Lualine LSP highlight groups (re-applied on colorscheme change)
+local function set_lsp_highlights()
+  vim.api.nvim_set_hl(0, "CopperLspActive", { fg = "#a6e3a1" })
+  vim.api.nvim_set_hl(0, "CopperLspBusy", { fg = "#fab387" })
+  vim.api.nvim_set_hl(0, "CopperLspSpinner", { fg = "#89b4fa" })
+  vim.api.nvim_set_hl(0, "CopperLspDim", { fg = "#6c7086" })
+  vim.api.nvim_set_hl(0, "CopperLspIcon", { fg = "#a6e3a1" })
+end
+set_lsp_highlights()
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = augroup("lsp_highlights"),
+  callback = set_lsp_highlights,
+})
+
 -- Restore cursor position with centering
 vim.api.nvim_create_autocmd("BufReadPost", {
   group = augroup("restore_cursor"),

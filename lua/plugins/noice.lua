@@ -16,7 +16,7 @@ return {
       },
       hover = { enabled = true, silent = true },
       signature = { enabled = true },
-      progress = { enabled = false }, -- Using fidget.nvim
+      progress = { enabled = false }, -- Using native LspProgress + ui2
     },
     presets = {
       bottom_search = true,
