@@ -22,25 +22,15 @@ Roadmap for migrating CopperVim to newer Neovim native APIs.
 - Removed `lua/plugins/fidget.lua`
 - Note: ui2 is NOT enabled — it conflicts with noice.nvim's cmdline handling
 
-## Still open
+### Migrate nvim-treesitter to main branch
 
-### Evaluate nvim-treesitter main branch
-
-The `main` branch is a complete rewrite (March 2026, repo archived April 2026).
-Breaking changes vs `master`:
-
-| Feature | master | main (0.12+) |
-|---|---|---|
-| `ensure_installed` | list in setup | removed — manual install API |
-| `highlight = { enable = true }` | auto-enables | removed — use `vim.treesitter.start()` |
-| `indent = { enable = true }` | auto-enables | removed — manual autocmd |
-| `incremental_selection` | built-in | removed |
-| `textobjects` | built-in module | separate plugin (`nvim-treesitter-textobjects` main branch) |
-
-Migration requires rewriting the entire treesitter config. Evaluate when:
-1. You're on Neovim 0.12+
-2. `master` branch stops receiving parser updates
-3. You're willing to replace textobjects/incremental-selection setup
+- Switched both `nvim-treesitter` and `nvim-treesitter-textobjects` to `main` branch
+- Highlight/indent via `FileType` autocmd (`vim.treesitter.start()`, `indentexpr`)
+- Parser install via `require('nvim-treesitter').install()`
+- Textobjects: keymaps via `vim.keymap.set` with module functions (new API)
+- Incremental selection: native 0.12 (`an`/`in`/`]n`/`[n`), remapped `<C-space>`/`<bs>`
+- Multi-language injection works automatically
+- ufo kept as-is (uses treesitter as fold provider, complementary not redundant)
 
 ### Consider dropping Mason entirely (optional, low priority)
 

@@ -1,134 +1,126 @@
--- Treesitter: Advanced syntax highlighting and code understanding
+-- Treesitter: syntax highlighting, indentation, textobjects
+-- Requires tree-sitter CLI (brew install tree-sitter)
+
+local parsers = {
+  "bash",
+  "c",
+  "c_sharp",
+  "css",
+  "diff",
+  "html",
+  "javascript",
+  "jsdoc",
+  "json",
+  "lua",
+  "luadoc",
+  "markdown",
+  "markdown_inline",
+  "python",
+  "query",
+  "regex",
+  "sql",
+  "toml",
+  "tsx",
+  "typescript",
+  "vim",
+  "vimdoc",
+  "xml",
+  "yaml",
+}
 
 return {
-  "nvim-treesitter/nvim-treesitter",
-  branch = "master", -- pin to master; main branch has incompatible rewrite
-  build = ":TSUpdate",
-  event = { "BufReadPost", "BufNewFile" },
-  dependencies = {
-    { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    branch = "main",
+    build = ":TSUpdate",
+    lazy = false,
+    config = function()
+      -- Install missing parsers
+      local installed = require("nvim-treesitter").get_installed()
+      local to_install = vim.iter(parsers):filter(function(p)
+        return not vim.list_contains(installed, p)
+      end):totable()
+      if #to_install > 0 then
+        require("nvim-treesitter").install(to_install)
+      end
+
+      -- Enable highlighting and indentation via FileType autocmd
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("treesitter_start", { clear = true }),
+        callback = function(ev)
+          -- Skip large files
+          local max_filesize = 100 * 1024 -- 100 KB
+          local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(ev.buf))
+          if ok and stats and stats.size > max_filesize then return end
+
+          local lang = vim.treesitter.language.get_lang(ev.match) or ev.match
+          if pcall(vim.treesitter.language.inspect, lang) then
+            if pcall(vim.treesitter.start, ev.buf) then
+              vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end
+          end
+        end,
+      })
+
+      -- Incremental selection (native 0.12: an=expand, in=shrink, ]n/[n=siblings)
+      vim.keymap.set("n", "<C-space>", "van", { desc = "Select treesitter node" })
+      vim.keymap.set("x", "<C-space>", "an", { desc = "Expand to parent node" })
+      vim.keymap.set("x", "<bs>", "in", { desc = "Shrink to child node" })
+    end,
   },
-  cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    branch = "main",
+    event = { "BufReadPost", "BufNewFile" },
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    config = function()
+      require("nvim-treesitter-textobjects").setup({
+        select = { lookahead = true },
+        move = { set_jumps = true },
+      })
 
-  main = "nvim-treesitter.configs",
-  opts = {
-    -- Auto-install parsers for these languages
-    ensure_installed = {
-      "bash",
-      "c",
-      "c_sharp",
-      "css",
-      "diff",
-      "html",
-      "javascript",
-      "jsdoc",
-      "json",
-      "jsonc",
-      "lua",
-      "luadoc",
-      "markdown",
-      "markdown_inline",
-      "python",
-      "query",
-      "regex",
-      "sql",
-      "toml",
-      "tsx",
-      "typescript",
-      "vim",
-      "vimdoc",
-      "xml",
-      "yaml",
-    },
+      local select = require("nvim-treesitter-textobjects.select")
+      local move = require("nvim-treesitter-textobjects.move")
 
-    -- Install parsers synchronously (only applied to `ensure_installed`)
-    sync_install = false,
+      -- Select textobjects
+      local select_maps = {
+        ["af"] = { "@function.outer", "Select around function" },
+        ["if"] = { "@function.inner", "Select inside function" },
+        ["ac"] = { "@class.outer", "Select around class" },
+        ["ic"] = { "@class.inner", "Select inside class" },
+        ["aa"] = { "@parameter.outer", "Select around argument" },
+        ["ia"] = { "@parameter.inner", "Select inside argument" },
+        ["ai"] = { "@conditional.outer", "Select around conditional" },
+        ["ii"] = { "@conditional.inner", "Select inside conditional" },
+        ["al"] = { "@loop.outer", "Select around loop" },
+        ["il"] = { "@loop.inner", "Select inside loop" },
+        ["ab"] = { "@block.outer", "Select around block" },
+        ["ib"] = { "@block.inner", "Select inside block" },
+      }
+      for key, val in pairs(select_maps) do
+        vim.keymap.set({ "x", "o" }, key, function()
+          select.select_textobject(val[1], "textobjects")
+        end, { desc = val[2] })
+      end
 
-    -- Automatically install missing parsers when entering buffer
-    auto_install = true,
-
-    -- Syntax highlighting
-    highlight = {
-      enable = true,
-      -- Disable for very large files
-      disable = function(lang, buf)
-        local max_filesize = 100 * 1024 -- 100 KB
-        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-        if ok and stats and stats.size > max_filesize then
-          return true
-        end
-      end,
-    },
-
-    -- Indentation based on treesitter
-    indent = { enable = true },
-
-    -- Incremental selection
-    incremental_selection = {
-      enable = true,
-      keymaps = {
-        init_selection = "<C-space>",
-        node_incremental = "<C-space>",
-        scope_incremental = false,
-        node_decremental = "<bs>",
-      },
-    },
-
-    -- Text objects
-    textobjects = {
-      select = {
-        enable = true,
-        lookahead = true, -- Automatically jump forward to textobj
-        keymaps = {
-          -- Functions
-          ["af"] = { query = "@function.outer", desc = "Select around function" },
-          ["if"] = { query = "@function.inner", desc = "Select inside function" },
-
-          -- Classes
-          ["ac"] = { query = "@class.outer", desc = "Select around class" },
-          ["ic"] = { query = "@class.inner", desc = "Select inside class" },
-
-          -- Parameters/arguments
-          ["aa"] = { query = "@parameter.outer", desc = "Select around argument" },
-          ["ia"] = { query = "@parameter.inner", desc = "Select inside argument" },
-
-          -- Conditionals
-          ["ai"] = { query = "@conditional.outer", desc = "Select around conditional" },
-          ["ii"] = { query = "@conditional.inner", desc = "Select inside conditional" },
-
-          -- Loops
-          ["al"] = { query = "@loop.outer", desc = "Select around loop" },
-          ["il"] = { query = "@loop.inner", desc = "Select inside loop" },
-
-          -- Blocks
-          ["ab"] = { query = "@block.outer", desc = "Select around block" },
-          ["ib"] = { query = "@block.inner", desc = "Select inside block" },
-        },
-      },
-
-      -- Move between text objects
-      move = {
-        enable = true,
-        set_jumps = true, -- Add to jumplist
-        goto_next_start = {
-          ["]f"] = { query = "@function.outer", desc = "Next function start" },
-          ["]c"] = { query = "@class.outer", desc = "Next class start" },
-          ["]a"] = { query = "@parameter.inner", desc = "Next argument" },
-        },
-        goto_next_end = {
-          ["]F"] = { query = "@function.outer", desc = "Next function end" },
-          ["]C"] = { query = "@class.outer", desc = "Next class end" },
-        },
-        goto_previous_start = {
-          ["[f"] = { query = "@function.outer", desc = "Previous function start" },
-          ["[c"] = { query = "@class.outer", desc = "Previous class start" },
-          ["[a"] = { query = "@parameter.inner", desc = "Previous argument" },
-        },
-        goto_previous_end = {
-          ["[F"] = { query = "@function.outer", desc = "Previous function end" },
-          ["[C"] = { query = "@class.outer", desc = "Previous class end" },
-        },
-      },
-    },
+      -- Move between textobjects
+      local move_maps = {
+        { "]f", "goto_next_start", "@function.outer", "Next function start" },
+        { "]c", "goto_next_start", "@class.outer", "Next class start" },
+        { "]a", "goto_next_start", "@parameter.inner", "Next argument" },
+        { "]F", "goto_next_end", "@function.outer", "Next function end" },
+        { "]C", "goto_next_end", "@class.outer", "Next class end" },
+        { "[f", "goto_previous_start", "@function.outer", "Previous function start" },
+        { "[c", "goto_previous_start", "@class.outer", "Previous class start" },
+        { "[a", "goto_previous_start", "@parameter.inner", "Previous argument" },
+        { "[F", "goto_previous_end", "@function.outer", "Previous function end" },
+        { "[C", "goto_previous_end", "@class.outer", "Previous class end" },
+      }
+      for _, m in ipairs(move_maps) do
+        vim.keymap.set({ "n", "x", "o" }, m[1], function()
+          move[m[2]](m[3], "textobjects")
+        end, { desc = m[4] })
+      end
+    end,
   },
 }
