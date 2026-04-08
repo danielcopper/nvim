@@ -113,7 +113,7 @@ vim.lsp.config("roslyn", {
 return {
   {
     "seblyng/roslyn.nvim",
-    -- Must load before mason-lspconfig auto-enables roslyn, so choose_target
+    -- Must load early so choose_target is registered before roslyn's first
     -- is registered in time for the first root_dir() call.
     lazy = false,
     opts = {

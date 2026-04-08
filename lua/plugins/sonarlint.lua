@@ -5,7 +5,6 @@
 return {
   "https://gitlab.com/schrieveslaach/sonarlint.nvim",
   dependencies = {
-    "neovim/nvim-lspconfig",
     "williamboman/mason.nvim",
   },
   event = "VeryLazy",

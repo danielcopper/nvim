@@ -1,11 +1,10 @@
--- Java: Simple jdtls setup via lspconfig
+-- Java: jdtls setup via nvim-jdtls
 -- jdtls is installed via Mason (see mason-packages.lua)
 
 return {
   "mfussenegger/nvim-jdtls",
   ft = { "java" },
   dependencies = {
-    "neovim/nvim-lspconfig",
     "williamboman/mason.nvim",
   },
   config = function()

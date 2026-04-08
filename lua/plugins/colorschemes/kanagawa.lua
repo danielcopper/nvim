@@ -35,5 +35,4 @@ return {
   }},
   { "williamboman/mason.nvim", opts = { ui = { border = borders } } },
   { "folke/which-key.nvim", opts = { win = { border = borders } } },
-  { "neovim/nvim-lspconfig", opts = { diagnostics = { float = { border = borders } } } },
 }

@@ -69,9 +69,10 @@ require("lazy").setup({
   -- ui = { border = "rounded" },
 })
 
--- Load keymaps and autocmds
+-- Load core modules
 require("config.keymaps")
 require("config.autocmds")
+require("config.lsp")
 
 -- Load VSCode-specific config when running in VSCode
 if vim.g.vscode then
