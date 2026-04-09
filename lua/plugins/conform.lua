@@ -46,19 +46,21 @@ return {
         -- conform's default requires a .sqlfluff/pyproject.toml etc. to be
         -- present before it'll run at all — disable that so we always format.
         require_cwd = false,
-        -- Override args entirely: sqlfluff wants flags AFTER the subcommand
-        -- (`fix --dialect=sqlite -`), so prepend_args (which prepends BEFORE
-        -- the default `fix`) wouldn't work. When a project `.sqlfluff` exists
-        -- we omit --dialect so sqlfluff reads it from the config file.
+        -- Use `sqlfluff format` (not `fix`): `fix` exits non-zero when it
+        -- finds violations it can't auto-fix, which conform treats as a
+        -- format failure. `format` is the pure-formatter subcommand (stable
+        -- subset of rules, whitespace/layout only) and doesn't fail on
+        -- lint issues. When a project `.sqlfluff` exists we drop --dialect
+        -- so sqlfluff reads it from config.
         args = function(_, ctx)
           local found = vim.fs.find({ ".sqlfluff" }, {
             upward = true,
             path = vim.fs.dirname(ctx.filename),
           })
           if #found > 0 then
-            return { "fix", "-" }
+            return { "format", "-" }
           end
-          return { "fix", "--dialect", "sqlite", "-" }
+          return { "format", "--dialect", "sqlite", "-" }
         end,
       },
     },
