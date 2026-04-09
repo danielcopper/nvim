@@ -18,7 +18,16 @@ return {
       sh = { "shellcheck" },
       bash = { "shellcheck" },
       dockerfile = { "hadolint" },
+      sql = { "sqlfluff" },
     }
+
+    -- sqlfluff: default dialect sqlite. A `.sqlfluff` in the project tree
+    -- overrides this — when one is found we drop --dialect so sqlfluff reads
+    -- it from the config file instead of being forced by the CLI flag.
+    -- The switch is done per buffer in an autocmd below.
+    local sqlfluff_default = { "lint", "--format=json", "--dialect=sqlite", "-" }
+    local sqlfluff_project = { "lint", "--format=json", "-" }
+    lint.linters.sqlfluff.args = sqlfluff_default
 
     lint.linters.yamllint.args = {
       "--format", "parsable",
@@ -29,12 +38,22 @@ return {
     -- Auto-lint on save and text changes
     local lint_augroup = vim.api.nvim_create_augroup("nvim_lint", { clear = true })
 
-    vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave", "TextChanged" }, {
+    vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "BufEnter", "InsertLeave", "TextChanged" }, {
       group = lint_augroup,
-      callback = function()
+      callback = function(ev)
+        -- Swap sqlfluff dialect args depending on whether the project ships
+        -- its own .sqlfluff config. Runs before try_lint so the right args
+        -- are active for this buffer.
+        if vim.bo[ev.buf].filetype == "sql" then
+          local dir = vim.fs.dirname(vim.api.nvim_buf_get_name(ev.buf))
+          if dir == "" then
+            dir = vim.fn.getcwd()
+          end
+          local has_cfg = #vim.fs.find({ ".sqlfluff" }, { upward = true, path = dir }) > 0
+          lint.linters.sqlfluff.args = has_cfg and sqlfluff_project or sqlfluff_default
+        end
         -- Only lint if the buffer has a linter configured
-        local ft = vim.bo.filetype
-        if lint.linters_by_ft[ft] then
+        if lint.linters_by_ft[vim.bo[ev.buf].filetype] then
           lint.try_lint()
         end
       end,

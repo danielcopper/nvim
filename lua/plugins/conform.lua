@@ -30,6 +30,7 @@ return {
       markdown = { "prettier" },
       bash = { "shfmt" },
       sh = { "shfmt" },
+      sql = { "sqlfluff" },
     },
     -- Format on save disabled - use <leader>cf instead
     format_on_save = nil,
@@ -40,6 +41,25 @@ return {
       },
       shfmt = {
         prepend_args = { "-i", "2" },
+      },
+      sqlfluff = {
+        -- conform's default requires a .sqlfluff/pyproject.toml etc. to be
+        -- present before it'll run at all — disable that so we always format.
+        require_cwd = false,
+        -- Override args entirely: sqlfluff wants flags AFTER the subcommand
+        -- (`fix --dialect=sqlite -`), so prepend_args (which prepends BEFORE
+        -- the default `fix`) wouldn't work. When a project `.sqlfluff` exists
+        -- we omit --dialect so sqlfluff reads it from the config file.
+        args = function(_, ctx)
+          local found = vim.fs.find({ ".sqlfluff" }, {
+            upward = true,
+            path = vim.fs.dirname(ctx.filename),
+          })
+          if #found > 0 then
+            return { "fix", "-" }
+          end
+          return { "fix", "--dialect", "sqlite", "-" }
+        end,
       },
     },
   },

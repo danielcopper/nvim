@@ -52,6 +52,10 @@ return {
       -- PowerShell
       "powershell-editor-services",
 
+      -- SQL (T-SQL semantic analysis via mssql.nvim / sqltoolsservice,
+      -- sqlfluff handles dialect-aware linting + formatting)
+      "sqlfluff",
+
       -- C#
       "roslyn",
 
