@@ -31,7 +31,7 @@ return {
 
     lint.linters.yamllint.args = {
       "--format", "parsable",
-      "-d", "{extends: default, rules: {line-length: {max: 120}}}",
+      "-d", "{extends: default, rules: {line-length: disable}}",
       "-",
     }
 
