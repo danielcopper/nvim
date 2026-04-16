@@ -54,8 +54,10 @@ return {
   },
 
   -- Convert between .ipynb and .py formats (better git diffs)
+  -- Disabled: uses deprecated vim.validate{} API, healthcheck crashes
   {
     "GCBallesteros/jupytext.nvim",
+    enabled = false,
     config = function()
       require("jupytext").setup({
         style = "percent", -- Use "# %%" style cell markers

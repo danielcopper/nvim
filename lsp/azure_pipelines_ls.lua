@@ -1,6 +1,6 @@
 return {
   cmd = { "azure-pipelines-language-server", "--stdio" },
-  filetypes = { "yaml", "yml" },
+  filetypes = { "yaml" },
   root_markers = { "Pipelines", "azure-pipelines.yml", ".azure-pipelines" },
   workspace_required = true,
   settings = {
