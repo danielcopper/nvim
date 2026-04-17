@@ -3,3 +3,9 @@
 
 # Claude Code local settings
 .claude/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*~
