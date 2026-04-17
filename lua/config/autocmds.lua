@@ -229,18 +229,43 @@ vim.api.nvim_create_autocmd("VimEnter", {
       end
       if not target_buf then return end
 
-      local banner = {
-        "",
-        "",
-        "  ╔═╗┌─┐┌─┐┌─┐┌─┐┬─┐╦  ╦┬┌┬┐",
-        "  ║  │ │├─┘├─┘├┤ ├┬┘╚╗╔╝││││",
-        "  ╚═╝└─┘┴  ┴  └─┘┴└─ ╚╝ ┴┴ ┴",
-        "  ~~~~~~~~~~~~~~~~~~~~~~~~~~",
-        "  hand-rolled · neovim 0.12",
+      local art = {
+        " ██████╗ ██████╗ ██████╗ ██████╗ ███████╗██████╗ ██╗   ██╗██╗███╗   ███╗",
+        "██╔════╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██║   ██║██║████╗ ████║",
+        "██║     ██║   ██║██████╔╝██████╔╝█████╗  ██████╔╝██║   ██║██║██╔████╔██║",
+        "██║     ██║   ██║██╔═══╝ ██╔═══╝ ██╔══╝  ██╔══██╗╚██╗ ██╔╝██║██║╚██╔╝██║",
+        "╚██████╗╚██████╔╝██║     ██║     ███████╗██║  ██║ ╚████╔╝ ██║██║ ╚═╝ ██║",
+        " ╚═════╝ ╚═════╝ ╚═╝     ╚═╝     ╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝╚═╝     ╚═╝",
       }
 
+      local v = vim.version()
+      local subtitle = string.format("hand-rolled  ·  nvim %d.%d", v.major, v.minor)
+
+      -- Catppuccin Mocha gradient: peach -> maroon (6 interpolated steps)
+      local gradient = { "#fab387", "#f7af8e", "#f4ab95", "#f1a89d", "#eea4a4", "#eba0ac" }
+      for i, color in ipairs(gradient) do
+        vim.api.nvim_set_hl(0, "CopperVimBanner" .. i, { fg = color, bold = true })
+      end
+      vim.api.nvim_set_hl(0, "CopperVimBannerSubtitle", { fg = "#7f849c", italic = true })
+
+      local win_width = vim.api.nvim_win_get_width(target_win)
+      local win_height = vim.api.nvim_win_get_height(target_win)
+      local banner_height = #art + 2 -- art + blank + subtitle
+      local top_pad = math.max(0, math.floor((win_height - banner_height) / 2))
+
+      local function center(line)
+        local pad = math.max(0, math.floor((win_width - vim.fn.strdisplaywidth(line)) / 2))
+        return string.rep(" ", pad) .. line
+      end
+
+      local lines = {}
+      for _ = 1, top_pad do table.insert(lines, "") end
+      for _, line in ipairs(art) do table.insert(lines, center(line)) end
+      table.insert(lines, "")
+      table.insert(lines, center(subtitle))
+
       vim.bo[target_buf].modifiable = true
-      vim.api.nvim_buf_set_lines(target_buf, 0, -1, false, banner)
+      vim.api.nvim_buf_set_lines(target_buf, 0, -1, false, lines)
       vim.bo[target_buf].modifiable = false
       vim.bo[target_buf].modified = false
       vim.bo[target_buf].buftype = "nofile"
@@ -251,6 +276,23 @@ vim.api.nvim_create_autocmd("VimEnter", {
       vim.wo[target_win].statuscolumn = ""
       vim.wo[target_win].cursorline = false
       vim.wo[target_win].list = false
+
+      -- Apply gradient highlights via extmarks (one hl group per art row)
+      local ns = vim.api.nvim_create_namespace("coppervim_banner")
+      for i = 1, #art do
+        local row = top_pad + i - 1
+        vim.api.nvim_buf_set_extmark(target_buf, ns, row, 0, {
+          end_row = row,
+          end_col = #lines[row + 1],
+          hl_group = "CopperVimBanner" .. i,
+        })
+      end
+      local subtitle_row = top_pad + #art + 1
+      vim.api.nvim_buf_set_extmark(target_buf, ns, subtitle_row, 0, {
+        end_row = subtitle_row,
+        end_col = #lines[subtitle_row + 1],
+        hl_group = "CopperVimBannerSubtitle",
+      })
     end)
   end,
 })
