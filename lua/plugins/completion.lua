@@ -5,7 +5,15 @@ return {
   event = "InsertEnter",
   version = "1.*",
   dependencies = {
-    "rafamadriz/friendly-snippets",
+    {
+      "L3MON4D3/LuaSnip",
+      version = "v2.*",
+      build = (vim.fn.executable("make") == 1) and "make install_jsregexp" or nil,
+      dependencies = { "rafamadriz/friendly-snippets" },
+      config = function()
+        require("luasnip.loaders.from_vscode").lazy_load()
+      end,
+    },
   },
 
   opts = {
@@ -28,6 +36,8 @@ return {
       kind_icons = icons.lsp.kinds,
     },
 
+    snippets = { preset = "luasnip" },
+
     completion = {
       list = {
         selection = { preselect = false, auto_insert = true },
@@ -40,6 +50,14 @@ return {
         auto_show_delay_ms = 200,
       },
       ghost_text = { enabled = false },
+      menu = {
+        draw = {
+          columns = {
+            { "label", "label_description", gap = 1 },
+            { "kind_icon", "kind", gap = 1 },
+          },
+        },
+      },
     },
 
     signature = { enabled = true },

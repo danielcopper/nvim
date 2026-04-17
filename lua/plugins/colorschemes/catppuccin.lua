@@ -43,12 +43,14 @@ return {
             hl.NoiceCmdlineNormal = { bg = colors.surface0, fg = colors.text }
             hl.NoiceCmdlineBorder = { bg = colors.surface0, fg = colors.surface0 }
 
-            -- Blink completion menu
-            hl.BlinkCmpMenu = { bg = colors.surface0, fg = colors.text }
-            hl.BlinkCmpMenuBorder = { fg = colors.surface0, bg = colors.surface0 }
-            hl.BlinkCmpMenuSelection = { bg = colors.surface1, fg = colors.text, bold = true }
+            -- Blink completion menu: dark crust bg, warm peach selection
+            hl.BlinkCmpMenu = { bg = colors.crust, fg = colors.text }
+            hl.BlinkCmpMenuBorder = { fg = colors.crust, bg = colors.crust }
+            hl.BlinkCmpMenuSelection = { bg = colors.peach, fg = colors.crust, bold = true }
             hl.BlinkCmpDoc = { bg = colors.mantle, fg = colors.text }
             hl.BlinkCmpDocBorder = { fg = colors.mantle, bg = colors.mantle }
+            -- Kind label on the right column: softer tone
+            hl.BlinkCmpKind = { fg = colors.overlay1, bg = colors.crust }
           end
 
           -- Notify highlights
