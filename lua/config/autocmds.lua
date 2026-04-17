@@ -202,6 +202,59 @@ vim.api.nvim_create_autocmd("BufRead", {
   end,
 })
 
+-- Banner splash: render the CopperVim banner in the empty unnamed main
+-- buffer that Neo-Tree leaves behind when opening with `nvim .`.
+-- Bare `nvim` still shows the default :intro (single-window case is skipped).
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = augroup("splash"),
+  once = true,
+  callback = function()
+    vim.schedule(function()
+      if #vim.api.nvim_list_wins() < 2 then return end
+
+      local target_buf, target_win
+      for _, win in ipairs(vim.api.nvim_list_wins()) do
+        if vim.api.nvim_win_get_config(win).relative == "" then
+          local buf = vim.api.nvim_win_get_buf(win)
+          if vim.api.nvim_buf_get_name(buf) == ""
+            and vim.bo[buf].buftype == ""
+            and vim.bo[buf].filetype == ""
+            and vim.api.nvim_buf_line_count(buf) <= 1
+            and (vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or "") == ""
+          then
+            target_buf, target_win = buf, win
+            break
+          end
+        end
+      end
+      if not target_buf then return end
+
+      local banner = {
+        "",
+        "",
+        "  ╔═╗┌─┐┌─┐┌─┐┌─┐┬─┐╦  ╦┬┌┬┐",
+        "  ║  │ │├─┘├─┘├┤ ├┬┘╚╗╔╝││││",
+        "  ╚═╝└─┘┴  ┴  └─┘┴└─ ╚╝ ┴┴ ┴",
+        "  ~~~~~~~~~~~~~~~~~~~~~~~~~~",
+        "  hand-rolled · neovim 0.12",
+      }
+
+      vim.bo[target_buf].modifiable = true
+      vim.api.nvim_buf_set_lines(target_buf, 0, -1, false, banner)
+      vim.bo[target_buf].modifiable = false
+      vim.bo[target_buf].modified = false
+      vim.bo[target_buf].buftype = "nofile"
+      vim.bo[target_buf].bufhidden = "wipe"
+
+      vim.wo[target_win].number = false
+      vim.wo[target_win].relativenumber = false
+      vim.wo[target_win].statuscolumn = ""
+      vim.wo[target_win].cursorline = false
+      vim.wo[target_win].list = false
+    end)
+  end,
+})
+
 -- Disable heavy features for large files
 vim.api.nvim_create_autocmd("BufReadPre", {
   group = augroup("bigfile"),
