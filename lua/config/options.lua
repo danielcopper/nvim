@@ -12,6 +12,10 @@ vim.g.loaded_netrwPlugin = 1
 -- Disable built-in spellfile.vim (we handle SpellFileMissing in autocmds.lua)
 vim.g.loaded_spellfile_plugin = 1
 
+-- Disable unused providers (python3/node stay enabled for molten, LSP servers)
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+
 -- Appearance
 opt.number = true
 opt.relativenumber = true

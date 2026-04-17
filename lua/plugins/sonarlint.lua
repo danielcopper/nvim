@@ -12,7 +12,7 @@ return {
   config = function()
     -- Patch: fix find_server_url crash when sonarcloud is an array (plugin bug)
     -- The plugin expects sonarcloud as flat object but the language server needs an array.
-    -- Remove this patch once https://gitlab.com/schrieveslaach/sonarlint.nvim/-/issues/XX is fixed.
+    -- Remove this patch once https://gitlab.com/schrieveslaach/sonarlint.nvim/-/issues/42 is fixed.
     local cm = require("sonarlint.connected_mode")
     local _orig_notify = cm.notify_connection_result
     cm.notify_connection_result = function(_, params, ctx)

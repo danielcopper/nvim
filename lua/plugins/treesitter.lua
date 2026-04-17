@@ -41,7 +41,14 @@ return {
         return not vim.list_contains(installed, p)
       end):totable()
       if #to_install > 0 then
-        require("nvim-treesitter").install(to_install)
+        if vim.fn.executable("tree-sitter") == 0 then
+          vim.notify(
+            "tree-sitter CLI not found; parser install skipped (existing parsers still work)",
+            vim.log.levels.WARN
+          )
+        else
+          require("nvim-treesitter").install(to_install)
+        end
       end
 
       -- Enable highlighting and indentation via FileType autocmd

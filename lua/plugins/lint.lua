@@ -38,7 +38,7 @@ return {
     -- Auto-lint on save and text changes
     local lint_augroup = vim.api.nvim_create_augroup("nvim_lint", { clear = true })
 
-    vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "BufEnter", "InsertLeave", "TextChanged" }, {
+    vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "BufEnter", "InsertLeave" }, {
       group = lint_augroup,
       callback = function(ev)
         -- Swap sqlfluff dialect args depending on whether the project ships

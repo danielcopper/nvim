@@ -61,8 +61,6 @@ return {
 
       -- Java
       "jdtls",
-      "java-test",
-      "java-debug-adapter",
 
       -- DAP Adapters
       "netcoredbg",

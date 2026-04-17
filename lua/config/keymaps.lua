@@ -44,9 +44,6 @@ keymap("v", ">", ">gv", { desc = "Indent right" })
 keymap("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
 keymap("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
--- Paste without yanking in visual mode
-keymap("x", "<leader>p", [["_dP]], { desc = "Paste without yanking" })
-
 -- Better editing
 keymap("n", "J", "mzJ`z", { desc = "Join lines (keep cursor)" })
 keymap("n", "Y", "y$", { desc = "Yank to end of line" })
@@ -54,7 +51,6 @@ keymap("n", "Y", "y$", { desc = "Yank to end of line" })
 -- System clipboard
 keymap({ "n", "v" }, "<leader>y", [["+y]], { desc = "Yank to system clipboard" })
 keymap("n", "<leader>Y", [["+Y]], { desc = "Yank line to system clipboard" })
-keymap({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete to black hole register" })
 
 -- Search and replace word under cursor
 keymap("n", "<leader>sr", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "Search and replace" })

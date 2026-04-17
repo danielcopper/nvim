@@ -74,6 +74,14 @@ vim.api.nvim_create_autocmd("LspProgress", {
   end,
 })
 
+-- Clear busy state if a client detaches/crashes (prevents stale spinner)
+vim.api.nvim_create_autocmd("LspDetach", {
+  callback = function(args)
+    M.busy[args.data.client_id] = nil
+    vim.cmd.redrawstatus()
+  end,
+})
+
 -- Return module so lualine can require("config.lsp").busy
 -- (Lua modules are singletons — both files see the same table)
 
@@ -96,14 +104,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
       map("n", "gD", "<cmd>Telescope lsp_type_definitions<cr>", "Go to type definition")
     end
 
-    map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
-    map("n", "<leader>cr", vim.lsp.buf.rename, "Rename symbol")
+    if client and client:supports_method("textDocument/codeAction", { bufnr = bufnr }) then
+      map("n", "<leader>ca", vim.lsp.buf.code_action, "Code action")
+    end
+    if client and client:supports_method("textDocument/rename", { bufnr = bufnr }) then
+      map("n", "<leader>cr", vim.lsp.buf.rename, "Rename symbol")
+    end
     map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, "Previous diagnostic")
     map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, "Next diagnostic")
-    map("n", "<leader>vd", vim.diagnostic.open_float, "Show line diagnostics")
 
     -- Inlay hints (if supported)
-    if client and client:supports_method("textDocument/inlayHint") then
+    if client and client:supports_method("textDocument/inlayHint", { bufnr = bufnr }) then
       map("n", "<leader>uh", function()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }))
       end, "Toggle inlay hints")

@@ -3,6 +3,14 @@
 local jdtls_path = vim.fn.stdpath("data") .. "/mason/packages/jdtls"
 local launcher_jar = vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher_*.jar")
 
+if launcher_jar == "" then
+  vim.notify(
+    "jdtls launcher not found at " .. jdtls_path .. " — run :Mason and install jdtls",
+    vim.log.levels.ERROR
+  )
+  return
+end
+
 -- Find project root first
 local root_markers = { "pom.xml", "build.gradle", "settings.gradle", ".git" }
 local root_dir = require("jdtls.setup").find_root(root_markers)

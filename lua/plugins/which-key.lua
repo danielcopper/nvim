@@ -26,7 +26,6 @@ return {
       { "<leader>t", group = "tools", icon = { icon = icons.ui.tree, color = "green" } },
       { "<leader>tt", group = "tips", icon = { icon = icons.diagnostics.hint, color = "yellow" } },
       { "<leader>u", group = "ui/toggle", icon = { icon = icons.ui.toggle, color = "cyan" } },
-      { "<leader>v", group = "view", icon = { icon = icons.ui.view, color = "blue" } },
       { "<leader>x", group = "diagnostics/quickfix", icon = { icon = icons.diagnostics.error, color = "red" } },
       { "[", group = "prev" },
       { "]", group = "next" },
