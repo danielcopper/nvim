@@ -97,3 +97,7 @@ end
 if vim.fn.has("nvim-0.12") == 1 then
   opt.messagesopt = "hit-enter,history:500"
 end
+
+-- Default border style for floating windows (0.11+). Keeps vim.ui.input and
+-- other "ambient" floats borderless to match the borderless catppuccin scheme.
+opt.winborder = "none"

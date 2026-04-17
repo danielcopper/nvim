@@ -51,6 +51,14 @@ return {
             hl.BlinkCmpDocBorder = { fg = colors.mantle, bg = colors.mantle }
             -- Kind label on the right column: softer tone
             hl.BlinkCmpKind = { fg = colors.overlay1, bg = colors.crust }
+
+            -- Generic floats (vim.ui.input, :checkhealth, LSP inlay/diagnostics
+            -- popups, etc.) — match the borderless crust scheme. Also enforced
+            -- via ColorScheme autocmd below (integrations can override these).
+            hl.NormalFloat = { bg = colors.crust, fg = colors.text }
+            hl.FloatBorder = { bg = colors.crust, fg = colors.crust }
+            hl.FloatTitle = { bg = colors.peach, fg = colors.crust, bold = true }
+            hl.FloatFooter = { bg = colors.crust, fg = colors.overlay1 }
           end
 
           -- Notify highlights
@@ -75,6 +83,26 @@ return {
         end,
       })
       vim.cmd.colorscheme("catppuccin")
+
+      -- Enforce borderless float highlights after every colorscheme load
+      -- (catppuccin integrations can reset these from custom_highlights).
+      local function apply_float_hl()
+        local ok, palettes = pcall(require, "catppuccin.palettes")
+        if not ok then return end
+        local p = palettes.get_palette(variant)
+        if borders == "none" then
+          vim.api.nvim_set_hl(0, "NormalFloat", { bg = p.crust, fg = p.text })
+          vim.api.nvim_set_hl(0, "FloatBorder", { bg = p.crust, fg = p.crust })
+          vim.api.nvim_set_hl(0, "FloatTitle", { bg = p.peach, fg = p.crust, bold = true })
+          vim.api.nvim_set_hl(0, "FloatFooter", { bg = p.crust, fg = p.overlay1 })
+        end
+      end
+      apply_float_hl()
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        group = vim.api.nvim_create_augroup("catppuccin_float_hl", { clear = true }),
+        pattern = "catppuccin*",
+        callback = apply_float_hl,
+      })
     end,
   },
 

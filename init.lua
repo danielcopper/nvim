@@ -73,6 +73,7 @@ require("lazy").setup({
 require("config.keymaps")
 require("config.autocmds")
 require("config.lsp")
+require("config.input")
 
 -- Load VSCode-specific config when running in VSCode
 if vim.g.vscode then
