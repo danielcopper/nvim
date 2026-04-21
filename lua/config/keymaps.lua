@@ -81,3 +81,7 @@ keymap("n", "<leader>ut", function()
   vim.cmd("colorscheme " .. vim.g.colors_name)
   vim.notify("Transparency: " .. (vim.g.transparent_bg and "ON" or "OFF"))
 end, { desc = "Toggle transparency" })
+
+-- Neovim package manager (vim.pack)
+keymap("n", "<leader>nu", function() vim.pack.update() end, { desc = "Pack update" })
+keymap("n", "<leader>ns", function() vim.print(vim.pack.get()) end, { desc = "Pack status" })

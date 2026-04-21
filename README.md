@@ -1,6 +1,6 @@
 ![CopperVim](docs/banner.png)
 
-Personal Neovim configuration for Linux + Windows (WSL). Built on Neovim 0.12 with [Lazy.nvim](https://github.com/folke/lazy.nvim) and native LSP.
+Personal Neovim configuration for Linux + Windows (WSL). Built on Neovim 0.12 with [vim.pack](https://neovim.io/doc/user/pack/) (native plugin manager) and native LSP.
 
 ## Requirements
 
@@ -15,47 +15,57 @@ Personal Neovim configuration for Linux + Windows (WSL). Built on Neovim 0.12 wi
 ```bash
 git clone <repo-url> ~/.config/nvim
 cp ~/.config/nvim/.env.example ~/.config/nvim/.env  # fill in your tokens
-nvim                                                # bootstraps Lazy + Mason
+nvim                                                # bootstraps vim.pack + Mason
 ```
 
-First launch runs `mason-tool-installer` with a 3s delay, installing ~25 packages (LSP servers, formatters, linters, DAP adapters). Run `:checkhealth` afterwards to flag any missing externals.
+First launch clones all plugins via `vim.pack.add()`, then `mason-tool-installer` installs ~25 packages (LSP servers, formatters, linters, DAP adapters) with a 3s delay. Run `:checkhealth` afterwards to flag any missing externals.
 
 ## Architecture
 
 ```
-init.lua                      .env loader, Lazy bootstrap, module loads
-lua/config/                   core settings (options, keymaps, autocmds, LSP, icons)
-lua/plugins/                  one file per plugin (flat, ~47 plugins)
-lua/plugins/colorschemes/     one file per theme, highlights merged into other plugins
+init.lua                      .env loader, PackChanged build hooks, vim.pack.add, module loads
+lua/config/                   core settings (options, keymaps, autocmds)
+lua/                          shared modules (icons, ui preferences, lsp_state)
+plugin/                       one file per plugin setup (auto-sourced by Nvim after init.lua)
 lsp/<server>.lua              per-server configs (native vim.lsp.enable auto-discovery)
 ftplugin/<ft>.lua             filetype-specific settings
 lua/worktree.lua              git worktree switcher (<leader>gw)
 ```
 
-Inside VSCode-Neovim, only a small whitelist loads (treesitter, surround, autopairs, which-key). See `init.lua` for the list.
+## Plugin management
 
-See [`CLAUDE.md`](CLAUDE.md) for repo-specific rules (adding LSP servers, code conventions).
+All plugins are managed by `vim.pack` (Nvim 0.12+ built-in). Plugin URLs live in a single `vim.pack.add({...})` call in `init.lua`. Plugin setup code lives in `plugin/<name>.lua` — Nvim auto-sources these at startup.
+
+| Command                       | Description                               |
+| ----------------------------- | ----------------------------------------- |
+| `<leader>nu`                  | Update all plugins (`vim.pack.update()`)  |
+| `<leader>ns`                  | Show installed plugins (`vim.pack.get()`) |
+| `:lua vim.pack.update()`      | Interactive update with diff confirmation |
+| `:lua vim.pack.del({"name"})` | Remove a plugin                           |
+
+Lockfile: `nvim-pack-lock.json` (auto-managed, check into version control).
 
 ## Plugin highlights
 
-| Area | Plugin |
-|---|---|
-| Completion | blink.cmp |
-| LSP | native `vim.lsp.config` + Mason |
-| Explorer | neo-tree |
-| Finder | telescope |
-| Git | gitsigns · diffview · octo (GitHub) · adopure (Azure DevOps) |
-| Statusline / buffers | lualine · bufferline |
-| Syntax / folds | nvim-treesitter (main branch) · nvim-ufo |
-| Format / lint | conform.nvim · nvim-lint |
-| Debug | nvim-dap |
-| AI | claude-code.nvim |
-| SQL (T-SQL) | mssql.nvim · sqlfluff |
-| Notebooks | molten-nvim |
+| Area                 | Plugin                                                       |
+| -------------------- | ------------------------------------------------------------ |
+| Completion           | blink.cmp + LuaSnip                                          |
+| LSP                  | native `vim.lsp.config` + Mason                              |
+| Explorer             | neo-tree                                                     |
+| Finder               | telescope + fzf-native                                       |
+| Git                  | gitsigns · diffview · octo (GitHub) · adopure (Azure DevOps) |
+| Statusline / buffers | lualine · bufferline                                         |
+| Syntax / folds       | nvim-treesitter (main branch) · nvim-ufo                     |
+| Format / lint        | conform.nvim · nvim-lint · sonarlint                         |
+| Debug                | nvim-dap + dap-ui                                            |
+| AI                   | claude-code.nvim                                             |
+| SQL (T-SQL)          | mssql.nvim · sqlfluff                                        |
+| Notebooks            | molten-nvim                                                  |
+| UI                   | noice · nvim-notify · catppuccin                             |
 
 ## Worktree workflow
 
-Branches live as git worktrees under `.worktrees/` (globally gitignored):
+Branches live as git worktrees under `.worktrees/`:
 
 ```bash
 git worktree add .worktrees/feature/oauth -b feature/oauth main
@@ -67,25 +77,28 @@ git worktree add .worktrees/feature/oauth -b feature/oauth main
 
 ## Keybinding conventions
 
-| Prefix | Purpose |
-|---|---|
-| `<leader>c*` | code actions (format, rename) |
-| `<leader>d*` | debug (DAP) |
-| `<leader>x*` | diagnostics / quickfix (trouble) |
-| `<leader>g*` | git (diffview, worktree, lazygit) |
-| `<leader>h*` | git hunks (gitsigns) |
-| `<leader>f*` | find / file (telescope) |
-| `<leader>t*` | tools (explorer, tips, mason) |
-| `<leader>a*` | AI / claude |
-| `g*` | go to (definition, references, implementation) |
-| `]` / `[` | next / previous (buffers, diagnostics, hunks) |
+| Prefix       | Purpose                                        |
+| ------------ | ---------------------------------------------- |
+| `<leader>c*` | code actions (format, rename)                  |
+| `<leader>d*` | debug (DAP)                                    |
+| `<leader>x*` | diagnostics / quickfix (trouble)               |
+| `<leader>g*` | git (diffview, worktree, lazygit)              |
+| `<leader>h*` | git hunks (gitsigns)                           |
+| `<leader>f*` | find / file (telescope)                        |
+| `<leader>n*` | neovim (pack update, status)                   |
+| `<leader>t*` | tools (explorer, tips, mason)                  |
+| `<leader>a*` | AI / claude                                    |
+| `g*`         | go to (definition, references, implementation) |
+| `]` / `[`    | next / previous (buffers, diagnostics, hunks)  |
 
 Press `<leader>?` for buffer-local keymap overview (which-key).
 
 ## Customizing
 
-- Colorscheme + variant: `lua/plugins/colorschemes/init.lua`
+- Colorscheme: `plugin/catppuccin.lua`
+- UI preferences (borders): `lua/ui.lua`
 - Neovim options: `lua/config/options.lua`
-- Plugin config: one file in `lua/plugins/<name>.lua`
+- Plugin config: `plugin/<name>.lua`
 - Filetype-specific: `ftplugin/<ft>.lua`
-- New LSP server: add to `mason-packages.lua`, optionally `lsp/<name>.lua`, then `vim.lsp.enable({...})` in `lua/config/lsp.lua`
+- New LSP server: add to `plugin/mason-packages.lua`, optionally `lsp/<name>.lua`, then add to `vim.lsp.enable({...})` in `plugin/lsp.lua`
+- New plugin: add URL to `vim.pack.add({...})` in `init.lua`, optionally create `plugin/<name>.lua` for setup
