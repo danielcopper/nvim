@@ -1,6 +1,12 @@
+vim.pack.add({
+  "https://github.com/MunifTanjim/nui.nvim",
+  "https://github.com/saxon1964/neovim-tips",
+})
+
 require("neovim_tips").setup({
   daily_tip = 1, -- 0 = off, 1 = once per day, 2 = every startup
   bookmark_symbol = "🌟 ",
+  "https://github.com/MunifTanjim/nui.nvim",
 })
 
 vim.keymap.set("n", "<leader>tto", ":NeovimTips<CR>", { desc = "Neovim tips", silent = true })

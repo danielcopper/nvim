@@ -1,3 +1,5 @@
+vim.pack.add({ "https://github.com/3rd/image.nvim" })
+
 -- image.nvim: image display via terminal graphics protocol.
 -- Only set up if terminal + ImageMagick are available.
 local supported_term = vim.env.TERM_PROGRAM == "WezTerm"

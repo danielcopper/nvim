@@ -7,13 +7,15 @@ For architecture, plugin overview, and setup, see [README.md](README.md).
 
 ### Adding a new plugin
 
-1. Add the URL to `vim.pack.add({...})` in `init.lua`.
-2. (Optional) Create `plugin/<name>.lua` with `require("<name>").setup({...})` if custom config is needed.
-3. Plugins with default config need no setup file — the URL in `init.lua` is enough.
+1. Create `plugin/<name>.lua`.
+2. At the top: `vim.pack.add({ "https://github.com/<owner>/<repo>" })`.
+3. Below: `require("<name>").setup({...})` if custom config is needed.
+4. If the plugin has dependencies, list them **before** the plugin URL in the `vim.pack.add` array — array order = `packadd` order = `runtimepath` order.
+5. Plugins that depend on each other (e.g. mason + mason-tool-installer) belong in the **same file** to guarantee setup order.
 
 ### Adding a new LSP server
 
-1. Add the Mason package name to `plugin/mason-packages.lua`.
+1. Add the Mason package name to `plugin/mason.lua` (ensure_installed list).
 2. (Optional) Create `lsp/<server_name>.lua` returning `{ cmd, filetypes, root_markers, settings }` if custom settings are needed.
 3. Add the server name to the `vim.lsp.enable({...})` list in `plugin/lsp.lua`.
 

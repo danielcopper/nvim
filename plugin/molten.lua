@@ -1,3 +1,5 @@
+vim.pack.add({ { src = "https://github.com/benlubas/molten-nvim", version = vim.version.range("1.x") } })
+
 vim.g.molten_image_provider = "image.nvim"
 vim.g.molten_output_win_max_height = 20
 vim.g.molten_wrap_output = true

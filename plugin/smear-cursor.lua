@@ -1,3 +1,5 @@
+vim.pack.add({ "https://github.com/sphamba/smear-cursor.nvim" })
+
 require("smear_cursor").setup({
   stiffness = 0.8,
   trailing_stiffness = 0.6,

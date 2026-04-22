@@ -1,3 +1,5 @@
+vim.pack.add({ "https://github.com/folke/which-key.nvim" })
+
 local icons = require("icons")
 local ui = require("ui")
 

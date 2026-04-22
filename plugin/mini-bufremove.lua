@@ -1,3 +1,5 @@
+vim.pack.add({ "https://github.com/echasnovski/mini.bufremove" })
+
 -- No setup() call required — mini.bufremove exposes delete() directly.
 
 local br = function() return require("mini.bufremove") end

@@ -23,7 +23,7 @@ First launch clones all plugins via `vim.pack.add()`, then `mason-tool-installer
 ## Architecture
 
 ```
-init.lua                      .env loader, PackChanged build hooks, vim.pack.add, module loads
+init.lua                      .env loader, core module loads (options, keymaps, autocmds)
 lua/config/                   core settings (options, keymaps, autocmds)
 lua/                          shared modules (icons, ui preferences, lsp_state)
 plugin/                       one file per plugin setup (auto-sourced by Nvim after init.lua)
@@ -34,7 +34,9 @@ lua/worktree.lua              git worktree switcher (<leader>gw)
 
 ## Plugin management
 
-All plugins are managed by `vim.pack` (Nvim 0.12+ built-in). Plugin URLs live in a single `vim.pack.add({...})` call in `init.lua`. Plugin setup code lives in `plugin/<name>.lua` — Nvim auto-sources these at startup.
+All plugins are managed by `vim.pack` (Nvim 0.12+ built-in). Each plugin is self-contained in `plugin/<name>.lua` — the file calls `vim.pack.add({...})` to install and then sets up the plugin. Nvim auto-sources all `plugin/*.lua` files alphabetically after `init.lua`.
+
+**Dependency rule:** `vim.pack.add` array order determines load order. Dependencies must come **before** the plugin that needs them in the array. This ensures the dependency is on `runtimepath` before `require()` is called. Plugins that depend on each other belong in the **same file**.
 
 | Command                       | Description                               |
 | ----------------------------- | ----------------------------------------- |

@@ -1,3 +1,5 @@
+vim.pack.add({ "https://github.com/coder/claudecode.nvim" })
+
 require("claudecode").setup({
   auto_start = true,
   log_level = "info",

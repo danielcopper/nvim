@@ -1,3 +1,8 @@
+vim.pack.add({
+  "https://github.com/nvim-lua/plenary.nvim",
+  "https://github.com/pwntester/octo.nvim",
+})
+
 if vim.fn.executable("gh") == 0 then return end
 
 require("octo").setup({

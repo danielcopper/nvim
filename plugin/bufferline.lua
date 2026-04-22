@@ -1,3 +1,8 @@
+vim.pack.add({
+  "https://github.com/nvim-tree/nvim-web-devicons",
+  "https://github.com/akinsho/bufferline.nvim",
+})
+
 local icons = require("icons")
 
 require("bufferline").setup({

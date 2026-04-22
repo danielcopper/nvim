@@ -1,3 +1,5 @@
+vim.pack.add({ "https://github.com/catppuccin/nvim" })
+
 local ui = require("ui")
 local variant = "mocha"
 local borders = ui.borders

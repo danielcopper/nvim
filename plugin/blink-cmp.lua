@@ -1,3 +1,7 @@
+vim.pack.add({
+  { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.x") },
+})
+
 local icons = require("icons")
 local borders = require("ui").borders
 

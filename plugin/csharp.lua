@@ -1,3 +1,8 @@
+vim.pack.add({
+  "https://github.com/seblyng/roslyn.nvim",
+  "https://github.com/khoido2003/roslyn-filewatch.nvim",
+})
+
 -- Worktree-aware solution chooser for roslyn.nvim
 local function choose_target(targets)
   if #targets == 0 then

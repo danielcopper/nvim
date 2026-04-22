@@ -1,3 +1,7 @@
+vim.pack.add({
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
+})
+
 -- nvim-treesitter main branch stores queries under runtime/ which vim.pack
 -- doesn't auto-add to rtp. Prepend it so highlights/folds/indents are found.
 local ts_root = vim.fn.stdpath("data") .. "/site/pack/core/opt/nvim-treesitter/runtime"

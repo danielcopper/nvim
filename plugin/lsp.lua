@@ -1,6 +1,4 @@
--- LSP: diagnostics, capabilities, server enablement, keymaps
--- Server configs live in lsp/*.lua (native Neovim auto-discovery)
--- Servers are installed via Mason (see mason-packages.lua)
+vim.pack.add({ "https://github.com/b0o/schemastore.nvim" })
 
 local icons = require("icons")
 local borders = require("ui").borders

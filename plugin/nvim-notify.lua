@@ -1,3 +1,5 @@
+vim.pack.add({ "https://github.com/rcarriga/nvim-notify" })
+
 local icons = require("icons")
 local border = require("ui").borders
 

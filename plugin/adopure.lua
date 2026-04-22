@@ -1,3 +1,8 @@
+vim.pack.add({
+  "https://github.com/nvim-lua/plenary.nvim",
+  "https://github.com/Willem-J-an/adopure.nvim",
+})
+
 -- adopure.nvim has no setup() call — commands register themselves on :AdoPure.
 
 -- Load

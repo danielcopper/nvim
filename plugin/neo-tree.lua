@@ -1,3 +1,10 @@
+vim.pack.add({
+  "https://github.com/nvim-lua/plenary.nvim",
+  "https://github.com/nvim-tree/nvim-web-devicons",
+  "https://github.com/MunifTanjim/nui.nvim",
+  { src = "https://github.com/nvim-neo-tree/neo-tree.nvim", version = "v3.x" },
+})
+
 local icons = require("icons")
 
 require("neo-tree").setup({

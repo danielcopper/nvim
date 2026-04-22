@@ -1,3 +1,8 @@
+vim.pack.add({
+  "https://github.com/nvim-tree/nvim-web-devicons",
+  "https://github.com/folke/trouble.nvim",
+})
+
 local icons = require("icons")
 
 require("trouble").setup({

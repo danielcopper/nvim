@@ -2,6 +2,44 @@ local function augroup(name)
   return vim.api.nvim_create_augroup("config_" .. name, { clear = true })
 end
 
+-- vim.pack build hooks. Registered before vim.pack.add() in init.lua so
+-- they fire on first install.
+vim.api.nvim_create_autocmd("PackChanged", {
+  group = augroup("pack_build_hooks"),
+  callback = function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if kind ~= "install" and kind ~= "update" then
+      return
+    end
+
+    if name == "telescope-fzf-native.nvim" and vim.fn.executable("make") == 1 then
+      vim.system({ "make" }, { cwd = ev.data.path }):wait()
+    end
+
+    if name == "nvim-treesitter" and kind == "update" and vim.fn.executable("tree-sitter") == 1 then
+      if not ev.data.active then
+        vim.cmd.packadd("nvim-treesitter")
+      end
+      require("nvim-treesitter").update()
+    end
+
+    if name == "LuaSnip" and vim.fn.executable("make") == 1 then
+      vim.system({ "make", "install_jsregexp" }, { cwd = ev.data.path }):wait()
+    end
+
+    if name == "mason.nvim" then
+      if not ev.data.active then
+        vim.cmd.packadd("mason.nvim")
+      end
+      vim.cmd("MasonUpdate")
+    end
+
+    if name == "molten-nvim" then
+      vim.cmd("UpdateRemotePlugins")
+    end
+  end,
+})
+
 -- Highlight when yanking text (disabled in favor of tiny-glimmer.nvim)
 -- vim.api.nvim_create_autocmd("TextYankPost", {
 --   group = augroup("highlight_yank"),

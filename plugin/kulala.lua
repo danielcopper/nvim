@@ -1,3 +1,5 @@
+vim.pack.add({ "https://github.com/mistweaverco/kulala.nvim" })
+
 require("kulala").setup({
   request_timeout = 30000,
   additional_curl_options = { "--insecure" },
