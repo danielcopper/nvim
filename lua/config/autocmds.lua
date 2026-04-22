@@ -295,6 +295,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
       vim.wo[target_win].statuscolumn = ""
       vim.wo[target_win].cursorline = false
       vim.wo[target_win].list = false
+      vim.b[target_buf].miniindentscope_disable = true
+      vim.b[target_buf].indent_blankline_enabled = false
 
       -- Restore window options when banner buffer is replaced by a real file.
       vim.api.nvim_create_autocmd("BufWinLeave", {
