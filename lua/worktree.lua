@@ -177,26 +177,36 @@ function M.switch(target_path)
   remap_buffers(old_path, target_path)
 
   -- 4. Reset neo-tree (clear worktree cache, refresh at new root)
-  local prev_win = vim.api.nvim_get_current_win()
-  pcall(function()
-    local git = require("neo-tree.git")
-    git.worktrees = {}
-    if git._upward_worktree_cache then
-      git._upward_worktree_cache = setmetatable({}, { __mode = "kv" })
-    end
-  end)
-  -- Use action=show to refresh without stealing focus, avoid close/reopen race
-  pcall(vim.cmd, "Neotree action=show dir=" .. target_path)
-  -- Restore focus in case neo-tree took it
-  if vim.api.nvim_win_is_valid(prev_win) and vim.bo[vim.api.nvim_win_get_buf(prev_win)].buftype == "" then
-    vim.api.nvim_set_current_win(prev_win)
-  end
-  vim.defer_fn(function()
+  if pcall(require, "neo-tree") then
+    local prev_win = vim.api.nvim_get_current_win()
     pcall(function()
-      local events = require("neo-tree.events")
-      events.fire_event(events.GIT_EVENT)
+      local git = require("neo-tree.git")
+      git.worktrees = {}
+      if git._upward_worktree_cache then
+        git._upward_worktree_cache = setmetatable({}, { __mode = "kv" })
+      end
     end)
-  end, 200)
+    local neotree_open = false
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+      local buf = vim.api.nvim_win_get_buf(win)
+      if vim.bo[buf].filetype == "neo-tree" then
+        neotree_open = true
+        break
+      end
+    end
+    if neotree_open then
+      pcall(vim.cmd, "Neotree action=show dir=" .. target_path)
+      if vim.api.nvim_win_is_valid(prev_win) and vim.bo[vim.api.nvim_win_get_buf(prev_win)].buftype == "" then
+        vim.api.nvim_set_current_win(prev_win)
+      end
+      vim.defer_fn(function()
+        pcall(function()
+          local events = require("neo-tree.events")
+          events.fire_event(events.GIT_EVENT)
+        end)
+      end, 200)
+    end
+  end
 
   -- 5. Re-enable LSP after delay
   restart_lsp(managed_names)

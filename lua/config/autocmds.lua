@@ -31,11 +31,15 @@ vim.api.nvim_create_autocmd("PackChanged", {
       if not ev.data.active then
         vim.cmd.packadd("mason.nvim")
       end
-      vim.cmd("MasonUpdate")
+      if vim.fn.exists(":MasonUpdate") == 2 then
+        vim.cmd("MasonUpdate")
+      end
     end
 
     if name == "molten-nvim" then
-      vim.cmd("UpdateRemotePlugins")
+      if vim.fn.exists(":UpdateRemotePlugins") == 2 then
+        vim.cmd("UpdateRemotePlugins")
+      end
     end
   end,
 })
@@ -92,6 +96,27 @@ vim.api.nvim_create_autocmd("BufReadPost", {
       vim.schedule(function()
         vim.cmd("normal! zz")
       end)
+    end
+  end,
+})
+
+-- Persist folds across sessions
+local view_group = augroup("save_view")
+vim.api.nvim_create_autocmd("BufWinLeave", {
+  group = view_group,
+  pattern = "?*",
+  callback = function()
+    if vim.bo.buftype == "" then
+      vim.cmd("silent! mkview")
+    end
+  end,
+})
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  group = view_group,
+  pattern = "?*",
+  callback = function()
+    if vim.bo.buftype == "" then
+      vim.cmd("silent! loadview")
     end
   end,
 })
@@ -259,26 +284,28 @@ vim.api.nvim_create_autocmd("BufRead", {
   end,
 })
 
--- Banner splash: render the CopperVim banner in the empty unnamed main
--- buffer that Neo-Tree leaves behind when opening with `nvim .`.
--- Bare `nvim` still shows the default :intro (single-window case is skipped).
+-- Banner splash: render the CopperVim banner when opening nvim without a file
+-- (bare `nvim` or `nvim .`). Finds the first empty/directory buffer in a
+-- non-floating window and replaces it with the banner.
 vim.api.nvim_create_autocmd("VimEnter", {
   group = augroup("splash"),
   once = true,
   callback = function()
-    vim.schedule(function()
-      if #vim.api.nvim_list_wins() < 2 then return end
+    if vim.fn.argc() > 0 and vim.fn.isdirectory(vim.fn.argv(0)) == 0 then return end
 
+    vim.schedule(function()
       local target_buf, target_win
       for _, win in ipairs(vim.api.nvim_list_wins()) do
         if vim.api.nvim_win_get_config(win).relative == "" then
           local buf = vim.api.nvim_win_get_buf(win)
-          if vim.api.nvim_buf_get_name(buf) == ""
+          local name = vim.api.nvim_buf_get_name(buf)
+          local is_empty = name == ""
             and vim.bo[buf].buftype == ""
             and vim.bo[buf].filetype == ""
             and vim.api.nvim_buf_line_count(buf) <= 1
             and (vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or "") == ""
-          then
+          local is_dir = name ~= "" and vim.fn.isdirectory(name) == 1
+          if is_empty or is_dir then
             target_buf, target_win = buf, win
             break
           end

@@ -3,10 +3,12 @@ vim.pack.add({
   "https://github.com/saxon1964/neovim-tips",
 })
 
+local tips_state = vim.fn.stdpath("state") .. "/neovim_tips"
+local is_fresh_install = vim.fn.isdirectory(tips_state) == 0
+
 require("neovim_tips").setup({
-  daily_tip = 1, -- 0 = off, 1 = once per day, 2 = every startup
+  daily_tip = is_fresh_install and 0 or 1,
   bookmark_symbol = "🌟 ",
-  "https://github.com/MunifTanjim/nui.nvim",
 })
 
 vim.keymap.set("n", "<leader>tto", ":NeovimTips<CR>", { desc = "Neovim tips", silent = true })

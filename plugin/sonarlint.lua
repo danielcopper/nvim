@@ -1,4 +1,4 @@
-vim.pack.add({ "https://gitlab.com/schrieveslaach/sonarlint.nvim" })
+vim.pack.add({ "https://gitlab.com/schrieveslaach/sonarlint.nvim.git" })
 
 -- Patch: fix find_server_url crash when sonarcloud is an array (plugin bug)
 local cm = require("sonarlint.connected_mode")

@@ -77,8 +77,9 @@ opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldenable = true
 
--- Session options
+-- Session / view options
 opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
+opt.viewoptions = { "folds", "cursor" }
 
 -- Cross-platform: Windows shell config
 if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
