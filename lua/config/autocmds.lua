@@ -10,6 +10,25 @@ end
 --   end,
 -- })
 
+-- Absolute line numbers in insert mode, relative in normal mode.
+local line_numbers_group = augroup("line_numbers")
+vim.api.nvim_create_autocmd("InsertEnter", {
+  group = line_numbers_group,
+  callback = function()
+    if vim.wo.number then
+      vim.wo.relativenumber = false
+    end
+  end,
+})
+vim.api.nvim_create_autocmd("InsertLeave", {
+  group = line_numbers_group,
+  callback = function()
+    if vim.wo.number then
+      vim.wo.relativenumber = true
+    end
+  end,
+})
+
 -- Lualine LSP highlight groups (re-applied on colorscheme change)
 local function set_lsp_highlights()
   vim.api.nvim_set_hl(0, "CopperLspActive", { fg = "#a6e3a1" })
@@ -276,6 +295,20 @@ vim.api.nvim_create_autocmd("VimEnter", {
       vim.wo[target_win].statuscolumn = ""
       vim.wo[target_win].cursorline = false
       vim.wo[target_win].list = false
+
+      -- Restore window options when banner buffer is replaced by a real file.
+      vim.api.nvim_create_autocmd("BufWinLeave", {
+        buffer = target_buf,
+        once = true,
+        callback = function()
+          if vim.api.nvim_win_is_valid(target_win) then
+            vim.wo[target_win].number = true
+            vim.wo[target_win].relativenumber = true
+            vim.wo[target_win].statuscolumn = vim.go.statuscolumn
+            vim.wo[target_win].cursorline = true
+          end
+        end,
+      })
 
       -- Apply gradient highlights via extmarks (one hl group per art row)
       local ns = vim.api.nvim_create_namespace("coppervim_banner")

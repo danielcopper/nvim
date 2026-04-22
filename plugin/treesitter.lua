@@ -1,3 +1,10 @@
+-- nvim-treesitter main branch stores queries under runtime/ which vim.pack
+-- doesn't auto-add to rtp. Prepend it so highlights/folds/indents are found.
+local ts_root = vim.fn.stdpath("data") .. "/site/pack/core/opt/nvim-treesitter/runtime"
+if vim.uv.fs_stat(ts_root) then
+  vim.opt.rtp:prepend(ts_root)
+end
+
 -- Parsers to install via nvim-treesitter.
 -- Excluded: lua, c, markdown, markdown_inline, query, vim, vimdoc — shipped
 -- with Nvim 0.12 core and kept in sync with bundled queries.
