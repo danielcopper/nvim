@@ -44,13 +44,14 @@ vim.api.nvim_create_autocmd("PackChanged", {
   end,
 })
 
--- Highlight when yanking text (disabled in favor of tiny-glimmer.nvim)
--- vim.api.nvim_create_autocmd("TextYankPost", {
---   group = augroup("highlight_yank"),
---   callback = function()
---     vim.highlight.on_yank({ timeout = 200, visual = true })
---   end,
--- })
+-- Highlight yanked text (uses the `[ / `] marks set by the yank, so it
+-- covers the exact region for yy, yiw, yi", y$, visual yanks, etc.)
+vim.api.nvim_create_autocmd("TextYankPost", {
+  group = augroup("highlight_yank"),
+  callback = function()
+    (vim.hl or vim.highlight).on_yank({ higroup = "IncSearch", timeout = 200 })
+  end,
+})
 
 -- Absolute line numbers in insert mode, relative in normal mode.
 local line_numbers_group = augroup("line_numbers")
