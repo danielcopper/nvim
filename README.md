@@ -1,3 +1,15 @@
+> [!WARNING]
+> # ⚠️ Repository archived
+>
+> This nvim configuration has moved into the dotfiles monorepo and is now
+> maintained as a stow package alongside the rest of the configs.
+>
+> **New location:** [danielcopper/dotfiles → `nvim/.config/nvim/`](https://github.com/danielcopper/dotfiles/tree/main/nvim/.config/nvim)
+>
+> This repository is read-only. Future changes land in the dotfiles repo.
+
+---
+
 ![CopperVim](docs/banner.png)
 
 Personal Neovim configuration for Linux + Windows (WSL). Built on Neovim 0.12 with [vim.pack](https://neovim.io/doc/user/pack/) (native plugin manager) and native LSP.
